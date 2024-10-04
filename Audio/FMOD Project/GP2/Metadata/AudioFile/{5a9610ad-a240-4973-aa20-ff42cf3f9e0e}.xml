@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{5a9610ad-a240-4973-aa20-ff42cf3f9e0e}">
+		<property name="assetPath">
+			<value>Orchestra 3rd Star.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>3</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b01fa0e3-929f-406e-b7bc-5df2fa40aa50}</destination>
+		</relationship>
+	</object>
+</objects>

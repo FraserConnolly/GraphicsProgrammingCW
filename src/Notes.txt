@@ -1,0 +1,5 @@
+2024-02-05
+	Shaders are set to be copied to the build directory. 
+	However I can't find the right place to change the debuggers working directory to output in such a way 
+	that the setting will be persisted. So if this needs to be set again, go to:
+		Project -> Properties -> Debugging and set Working Directory to $(OutDir)

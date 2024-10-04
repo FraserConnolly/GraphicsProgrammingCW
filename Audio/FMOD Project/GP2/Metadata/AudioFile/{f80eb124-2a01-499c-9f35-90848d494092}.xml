@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{f80eb124-2a01-499c-9f35-90848d494092}">
+		<property name="assetPath">
+			<value>Orchestra 1st Star .wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>3</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b01fa0e3-929f-406e-b7bc-5df2fa40aa50}</destination>
+		</relationship>
+	</object>
+</objects>
