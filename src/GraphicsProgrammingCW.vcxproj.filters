@@ -398,4 +398,12 @@
   <ItemGroup>
     <Text Include="Notes.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\res\ads.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\res\ads.vert">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
 </Project>

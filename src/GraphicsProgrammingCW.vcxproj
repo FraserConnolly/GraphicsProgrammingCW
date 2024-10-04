@@ -278,6 +278,10 @@
   <ItemGroup>
     <CopyFileToFolders Include="..\res\stone_colour.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\res\ads.frag" />
+    <None Include="..\res\ads.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
