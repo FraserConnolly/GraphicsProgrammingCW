@@ -58,6 +58,13 @@ private:
 		MODEL_U,
 		VIEW_U,
 		PROJECTION_U,
+
+#ifdef USE_ADS
+		LIGHT_POSITION_U,
+		LIGHT_COLOUR_U,
+		OBJECT_COLOUR_U,
+#endif
+
 		NUM_UNIFORMS
 	};
 

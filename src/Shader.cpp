@@ -4,8 +4,13 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#ifdef USE_ADS
+#define VertexShaderPath "ads.vert"
+#define FragmentShaderPath "ads.frag"
+#else
 #define VertexShaderPath "shader.vert"
 #define FragmentShaderPath "shader.frag"
+#endif 
 
 Shader::Shader ( )
 	: _program ( 0 ), _shaders ( ), _uniforms ( )
@@ -63,6 +68,12 @@ void Shader::LoadShaders ( const char * vertexShader, const char * fargmentShade
 	_uniforms [ MODEL_U ]		= glGetUniformLocation ( _program, "model" );
 	_uniforms [ VIEW_U ]		= glGetUniformLocation ( _program, "view" );
 	_uniforms [ PROJECTION_U ]	= glGetUniformLocation ( _program, "projection" );
+
+#ifdef USE_ADS
+	_uniforms[ LIGHT_POSITION_U ] = glGetUniformLocation( _program, "lightPos" );
+	_uniforms[ LIGHT_COLOUR_U ]   = glGetUniformLocation( _program, "lightColor" );
+	_uniforms[ OBJECT_COLOUR_U ]  = glGetUniformLocation( _program, "objectColor" );
+#endif
 
 	for ( size_t i = 0; i < NUM_SHADERS; i++ )
 	{
@@ -209,6 +220,17 @@ void Shader::Update ( Transform & transform )
 		glm::mat4 projection = _camera->GetProjectionMatrix ( );
 		glUniformMatrix4fv ( _uniforms [ PROJECTION_U ], 1, GLU_FALSE, glm::value_ptr ( projection ) );
 	}
+
+#ifdef USE_ADS
+	// These should be moved to a lighting object
+	// Set the uniforms for the ADS shader
+	// Set the light position
+	glUniform3f ( _uniforms [ LIGHT_POSITION_U ], 20.0f, 20.0f, 20.0f);
+	// Set the light colour
+	glUniform3f ( _uniforms [ LIGHT_COLOUR_U ], 1.0f, 1.0f, 1.0f);
+	// Set the object colour
+	glUniform3f ( _uniforms [ OBJECT_COLOUR_U ], 0.7f, 0.7f, 0.7f);
+#endif
 
 }
 
