@@ -14,6 +14,8 @@ uniform mat4 projection;
 // Outputs to fragment shader
 out vec3 FragPos;       // Fragment position in world space
 out vec3 Normal;        // Transformed normal for lighting calculations
+out vec3 vertexColour; // output a colour to the fragment shader
+out vec2 textureCoord;
 
 // Pseudo code for main
 void main()
@@ -30,5 +32,8 @@ void main()
     // 3. Use the transform matrix to project the vertex position to clip space
     //    and store it in gl_Position.
     gl_Position = projection * view * model * vec4(aPosition, 1.0); // the 1.0 is the w value which is necessary for the matrix multiplication.
+
+    vertexColour = aVertexColour;
+    textureCoord = aTextureCoord;
 
 }

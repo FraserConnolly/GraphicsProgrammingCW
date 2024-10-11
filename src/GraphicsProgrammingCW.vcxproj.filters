@@ -394,16 +394,14 @@
     <CopyFileToFolders Include="..\res\stone_colour.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\ads.frag">
+      <Filter>Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\ads.vert">
+      <Filter>Shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\res\ads.frag">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\res\ads.vert">
-      <Filter>Shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>

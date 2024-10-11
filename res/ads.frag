@@ -3,11 +3,15 @@
 // Inputs from vertex shader
 in vec3 FragPos;    // Fragment position in world space
 in vec3 Normal;     // Interpolated and transformed normal
+in vec2 textureCoord;
+in vec3 vertexColour;
+
 
 // Uniforms
 uniform vec3 lightPos;      // Light position in world space
 uniform vec3 lightColor;    // Color of the light
 uniform vec3 objectColor;   // Base color of the object
+uniform sampler2D diffuse;
 
 // Output color
 out vec4 fragmentColour;
@@ -26,12 +30,11 @@ void main()
     float fDotProduct = max( 0.0, dot( norm, vLightDir ) );
     vec3 vDiffuseColor = lightColor * fDotProduct; // vDiffuseMaterial has been ommited.
 
-
     // 3. Combine ambient and diffuse components to get the final color.
     //    Multiply the combined lighting by the object's base color.
     vec3 colour = ( vDiffuseColor + ambient ) * objectColor;
 
     // 4. Set the final color output using FragColor.
-    fragmentColour = vec4( colour, 1.0 );
+    fragmentColour = texture(diffuse, textureCoord) * vec4(vertexColour, 1.0)  * vec4( colour, 1.0 );
 
 }
