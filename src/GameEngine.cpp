@@ -219,7 +219,7 @@ void GameEngine::initSystems ( )
 		}
 	}
 
-#if _DEBUG
+#if USE_DEBUG_CONSOLE
 	_debugScene.initaliseScene ( 0 );
 	_debugScene.SetTransformToMonitor ( mainCameraObj->GetTransform ( ) );
 	if ( toFollow != nullptr )
@@ -242,7 +242,7 @@ void GameEngine::gameLoop ( )
 
 		drawGame ( );
 
-#if _DEBUG
+#if USE_DEBUG_CONSOLE
 		_debugScene.processFrame ( );
 #endif
 	}

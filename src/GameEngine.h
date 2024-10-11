@@ -5,7 +5,7 @@
 
 #include "Display.h"
 
-#if _DEBUG
+#if USE_DEBUG_CONSOLE
 #include "ConsoleDebugScene.h"
 #endif
 
@@ -46,7 +46,7 @@ private:
 	Shader * m_shaderProgram = nullptr;
 	CubeMap * m_skyBox = nullptr;
 
-#if _DEBUG
+#if USE_DEBUG_CONSOLE
 	ConsoleDebugScene _debugScene;
 #endif
 };
