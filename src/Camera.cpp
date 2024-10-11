@@ -25,6 +25,10 @@ glm::mat4 Camera::GetViewMatrix ( )
 
 }
 
+glm::mat4 Camera::GetViewMatrixNoTranslation() {
+	return glm::lookAt( glm::vec3( ), m_transform.GetForward( ), m_transform.GetUp( ) );
+}
+
 glm::mat4 Camera::GetProjectionMatrix ( )
 {
 	if ( _projectionMatrixIsDirty )

@@ -95,8 +95,8 @@ void CubeMap::Draw ( )
     glDepthFunc ( GL_LEQUAL );  // change depth function so depth test passes when values are equal to depth buffer's content
     
     m_shader.Bind ( );
-    glm::mat4 view = glm::mat4 ( glm::mat3 ( m_camera->GetViewMatrix ( ) ) ); // remove translation from the view matrix
-    m_shader.SetUniform ( "view", view );
+
+    m_shader.SetUniform ( "view", m_camera->GetViewMatrixNoTranslation( ) );
     m_shader.SetUniform ( "projection", m_camera->GetProjectionMatrix ( ) );
     
     // skybox cube

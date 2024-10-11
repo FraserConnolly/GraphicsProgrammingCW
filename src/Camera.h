@@ -111,6 +111,7 @@ public:
 #pragma endregion
 
 	glm::mat4 GetViewMatrix ( );
+	glm::mat4 GetViewMatrixNoTranslation();
 	glm::mat4 GetProjectionMatrix ( ) ;
 
 #if _DEBUG
