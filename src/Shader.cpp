@@ -97,6 +97,10 @@ void Shader::LoadShaders ( const char * vertexShader, const char * geoShader, co
 	_uniforms [ PROJECTION_U ]	= glGetUniformLocation ( _program, "projection" );
 	_uniforms [ TIME_U ]		= glGetUniformLocation ( _program, "time" );
 
+	_uniforms [ FOG_COLOUR ]	= glGetUniformLocation( _program, "fogColor" );
+	_uniforms [ FOG_MIN_DIST ]	= glGetUniformLocation( _program, "maxDist" );
+	_uniforms [ FOG_MAX_DIST ]  = glGetUniformLocation( _program, "minDist" );
+
 #ifdef USE_ADS
 	_uniforms[ LIGHT_POSITION_U ] = glGetUniformLocation( _program, "lightPos" );
 	_uniforms[ LIGHT_COLOUR_U ]   = glGetUniformLocation( _program, "lightColor" );
@@ -204,6 +208,16 @@ void Shader::SetUniform ( const GLchar * name, const GLint v ) const
 void Shader::SetUniform ( const GLint location, const GLint v ) const
 { 
 	glUniform1i ( location, v );
+}
+
+void Shader::SetUniform ( const GLint location, const float value ) const
+{
+	glUniform1f ( location, value );
+}
+
+void Shader::SetUniform ( const GLint location, const float x, const float y, const float z ) const
+{
+	glUniform3f ( location, x, y, z );
 }
 
 void Shader::SetUniform ( const GLchar * name, const GLfloat v ) const

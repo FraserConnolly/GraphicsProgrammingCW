@@ -100,9 +100,21 @@ void GameEngine::initSystems ( )
 	m_shaderProgram->LoadDefaultShaders ( );
 	m_shaderProgram->SetCamera ( mainCamera );
 
-	m_shaderProgramGeo = new Shader( );
-	m_shaderProgramGeo->LoadDefaultGeometoryShaders( );
-	m_shaderProgramGeo->SetCamera( mainCamera );
+	m_shaderProgramGeo = new Shader ( );
+	m_shaderProgramGeo->LoadDefaultGeometoryShaders ( );
+	m_shaderProgramGeo->SetCamera ( mainCamera );
+
+	m_shaderProgramFog = new Shader ( );
+	m_shaderProgramFog->LoadShaders ( "fogShader.vert", "fogShader.frag" );
+	m_shaderProgramFog->SetCamera ( mainCamera );
+
+	m_shaderProgramRim = new Shader ( );
+	m_shaderProgramRim->LoadShaders ( "shaderRim.vert", "shaderRim.frag" );
+	m_shaderProgramRim->SetCamera ( mainCamera );
+
+	m_shaderProgramToon = new Shader ( );
+	m_shaderProgramToon->LoadShaders ( "shaderToon.vert", "shaderToon.frag" );
+	m_shaderProgramToon->SetCamera ( mainCamera );
 
 	m_SyntyTexture = new Texture ( );
 	m_SyntyTexture->LoadTexture ( "PolygonCity_Texture_01_A.png" );
@@ -115,6 +127,11 @@ void GameEngine::initSystems ( )
 
 	m_BrickMaterial = new Material ( m_shaderProgramGeo );
 	m_BrickMaterial->SetTexture ( "diffuse", m_BrickTexture );
+
+	m_FogMaterial	= new Material ( m_shaderProgramFog );
+	m_FogMaterial->SetFloat3 ( "fogColor", 0.5f, 0.5f, 0.5f );
+	m_FogMaterial->SetFloat  ( "maxDist", 50.0f);
+	m_FogMaterial->SetFloat  ( "minDist",  5.0f);
 
 #pragma endregion
 

@@ -83,6 +83,22 @@ void Renderer::Service ( )
             shader.SetUniform ( pair.first, texture->_activeBind );
         }
 
+        // the pair here is a GLint representing the uniform location that this value that should be set to it.
+        for (auto& pair : material->m_floats)
+        {
+            float value = pair.second;
+
+            shader.SetUniform(pair.first, value);
+        }
+
+        // the pair here is a GLint representing the uniform location that this value that should be set to it.
+        for (auto& pair : material->m_float3s)
+        {
+            glm::vec3 value = pair.second;
+
+            shader.SetUniform(pair.first, value.x, value.y, value.z);
+        }
+
         // draw the mesh
         object->Draw ( );
     }
