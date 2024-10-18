@@ -49,10 +49,9 @@ public:
 	void SetUniform ( const GLchar * name, const GLfloat x, const GLfloat y, const GLfloat z, const GLfloat w ) const;
 	void SetUniform ( const GLchar * name, const glm::mat4 & matrix );
 	void SetTransform ( const glm::mat4 & transform );
-	GLint GetUnifromLocation ( const GLchar * name ) const;
+	GLint GetUniformLocation ( const GLchar * name ) const;
 
-	//void Update ( Transform & transform );
-	void Update ( Transform & transform, float gameTime );
+	void Update ( Transform & transform );
 
 private:
 	

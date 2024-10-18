@@ -10,6 +10,7 @@
 #include "ColliderBox.h"
 #include "ColliderSphere.h"
 #include "PlayerController.h"
+#include "ExplosionController.h"
 
 unsigned int GameObject::s_objectIDCounter = 0;
 
@@ -54,6 +55,8 @@ Component * GameObject::CreateComponent ( ComponentTypes component, GameObject &
             return new PathFollow ( hostObject );
         case PLAYER_CONTROLLER:
             return new PlayerController ( hostObject );
+        case EXPLOSION_CONTROLLER:
+			return new ExplosionController ( hostObject );
     }
 
     return nullptr;

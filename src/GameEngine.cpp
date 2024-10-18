@@ -20,6 +20,7 @@
 #include "Audio Listener.h"
 #include "Audio.h"
 #include "Path Follow.h"
+#include "ExplosionController.h"
 
 GameEngine::GameEngine ( ) { }
 
@@ -172,6 +173,7 @@ void GameEngine::initSystems ( )
 			transforms.push_back ( &( obj->GetTransform ( ) ) );
 
 			auto r = ( Rotator * ) obj->AddComponent ( ComponentTypes::ROTATOR );
+			ExplosionController * exp = nullptr;
 
 			switch ( i % 4 )
 			{
@@ -180,6 +182,9 @@ void GameEngine::initSystems ( )
 					mesh->SetMaterial ( m_BrickMaterial );
 					r->SetRotationAxis ( true, !true, !true );
 					emitter->LoadEvent ( "event:/Orchestra 1st Star" );
+					exp = ( ExplosionController * ) obj->AddComponent ( ComponentTypes::EXPLOSION_CONTROLLER );
+					exp->SetMaterial ( m_BrickMaterial );
+					exp->SetSpeed ( 5.0f );
 					break;
 				case 1:
 					mesh->loadObjModel ( "SM_Prop_Cone_02.obj" );

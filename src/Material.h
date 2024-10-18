@@ -25,13 +25,21 @@ public:
 		return m_pShaderProgram;
 	}
 
-	void SetTexture ( const GLchar * const name, Texture * const pTexture )
+	GLint GetUniformLocation ( const GLchar * const name )
 	{
 		// get the uniform location of the name in the shader program
+		m_pShaderProgram.Bind( );
+		return m_pShaderProgram.GetUniformLocation ( name );
+	}
 
-		m_pShaderProgram.Bind ( );
-		auto location = m_pShaderProgram.GetUnifromLocation ( name );
+	void SetTexture ( const GLchar * const name, Texture * const pTexture )
+	{
+		auto location = GetUniformLocation ( name );
+		SetTexture ( location, pTexture );
+	}
 
+	void SetTexture ( const GLint location, Texture * const pTexture )
+	{
 		if ( location >= 0 )
 		{
 			m_textures [ location ] = pTexture;
@@ -44,14 +52,15 @@ public:
 
 	void SetFloat(const GLchar* const name, const float const value )
 	{
-		// get the uniform location of the name in the shader program
+		auto location = GetUniformLocation ( name );
+		SetFloat ( location , value );
+	}
 
-		m_pShaderProgram.Bind();
-		auto location = m_pShaderProgram.GetUnifromLocation(name);
-
-		if (location >= 0)
+	void SetFloat ( const GLint location , const float const value )
+	{
+		if ( location >= 0 )
 		{
-			m_floats[location] = value;
+			m_floats [ location ] = value;
 		}
 		else
 		{
@@ -59,16 +68,27 @@ public:
 		}
 	}
 
+	void SetFloat3 ( const GLchar * const name , glm::vec3 & value  )
+	{
+		SetFloat3 ( name , value.x , value.y , value.z );
+	}
+
+	void SetFloat3 ( const GLint location , glm::vec3 & value )
+	{
+		SetFloat3 ( location , value.x , value.y , value.z );
+	}
+
 	void SetFloat3(const GLchar* const name, const float const x, const float const y, const float const z)
 	{
-		// get the uniform location of the name in the shader program
+		auto location = GetUniformLocation ( name );
+		SetFloat3 ( location , x, y, z );
+	}
 
-		m_pShaderProgram.Bind();
-		auto location = m_pShaderProgram.GetUnifromLocation(name);
-
-		if (location >= 0)
+	void SetFloat3 ( const GLint location , const float const x , const float const y , const float const z )
+	{
+		if ( location >= 0 )
 		{
-			m_float3s[location] = glm::vec3(x, y, z);
+			m_float3s [ location ] = glm::vec3 ( x , y , z );
 		}
 		else
 		{

@@ -2,7 +2,6 @@
 #include "GameObject.h"
 #include "Mesh.h"
 #include "Material.h"
-#include "Time.h"
 
 #include <GL\glew.h>
 
@@ -45,7 +44,7 @@ void Renderer::Service ( )
 
         // bind and update the shader
         shader.Bind ( );
-        shader.Update ( object->GetGameObject ( ).GetTransform ( ), Time::GetTime( ) );
+        shader.Update ( object->GetGameObject ( ).GetTransform ( ) );
 
         // count the number of unbound textures
 

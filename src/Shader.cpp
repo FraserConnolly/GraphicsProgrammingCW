@@ -189,7 +189,7 @@ GLuint Shader::CreateShader ( const std::string & text, GLenum type )
 
 #pragma region Uniform Sets
 
-inline GLint Shader::GetUnifromLocation ( const GLchar * name ) const
+inline GLint Shader::GetUniformLocation ( const GLchar * name ) const
 {
 	auto location = glGetUniformLocation ( _program, name );
 	return location;
@@ -197,12 +197,12 @@ inline GLint Shader::GetUnifromLocation ( const GLchar * name ) const
 
 void Shader::SetUniform ( const GLchar * name, const GLboolean v ) const
 {
-	glUniform1i ( GetUnifromLocation ( name ), v );
+	glUniform1i ( GetUniformLocation ( name ), v );
 }
 
 void Shader::SetUniform ( const GLchar * name, const GLint v ) const
 {
-	glUniform1i ( GetUnifromLocation ( name ), v );
+	glUniform1i ( GetUniformLocation ( name ), v );
 }
 
 void Shader::SetUniform ( const GLint location, const GLint v ) const
@@ -222,22 +222,22 @@ void Shader::SetUniform ( const GLint location, const float x, const float y, co
 
 void Shader::SetUniform ( const GLchar * name, const GLfloat v ) const
 { 
-	glUniform1f ( GetUnifromLocation ( name ), v );
+	glUniform1f ( GetUniformLocation ( name ), v );
 }
 
 void Shader::SetUniform ( const GLchar * name, const GLfloat x, const GLfloat y, const GLfloat z ) const
 { 
-	glUniform3f ( GetUnifromLocation ( name ), x, y, z );
+	glUniform3f ( GetUniformLocation ( name ), x, y, z );
 }
 
 void Shader::SetUniform ( const GLchar * name, const GLfloat x, const GLfloat y, const GLfloat z, const GLfloat w ) const
 {
-	glUniform4f ( GetUnifromLocation ( name ), x, y, z, w );
+	glUniform4f ( GetUniformLocation ( name ), x, y, z, w );
 }
 
 void Shader::SetUniform ( const GLchar * name, const glm::mat4 & matrix )
 {
-	glUniformMatrix4fv ( GetUnifromLocation ( name ), 1, GLU_FALSE, glm::value_ptr ( matrix ) );
+	glUniformMatrix4fv ( GetUniformLocation ( name ), 1, GLU_FALSE, glm::value_ptr ( matrix ) );
 }
 
 #pragma endregion
@@ -246,7 +246,7 @@ void Shader::SetTransform ( const glm::mat4 & modelMatrix )
 {
 }
 
-void Shader::Update ( Transform & transform, float gameTime )
+void Shader::Update ( Transform & transform )
 { 
 	glm::mat4 model = transform.GetModel ( ); 
 	// The last parameter of glUnifromMatrix4fv the actual matrix data, 
@@ -273,8 +273,6 @@ void Shader::Update ( Transform & transform, float gameTime )
 	// Set the object colour
 	glUniform3f ( _uniforms [ OBJECT_COLOUR_U ], 0.7f, 0.7f, 0.7f);
 #endif
-
-	glUniform1f ( _uniforms [ TIME_U ], gameTime );
 
 }
 
