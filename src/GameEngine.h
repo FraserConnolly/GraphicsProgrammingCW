@@ -44,6 +44,7 @@ private:
 	Texture * m_SyntyTexture = nullptr;
 	Texture * m_BrickTexture = nullptr;
 	Shader * m_shaderProgram = nullptr;
+	Shader * m_shaderProgramGeo = nullptr;
 	CubeMap * m_skyBox = nullptr;
 
 #if USE_DEBUG_CONSOLE

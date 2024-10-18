@@ -12,8 +12,12 @@
 #define FragmentShaderPath "shader.frag"
 #endif 
 
+#define VertexGeoShaderPath "shaderGeoText.vert"
+#define GeometryShaderPath "shaderGeoText.geom"
+#define FragmentGeoShaderPath "shaderGeoText.frag"
+
 Shader::Shader ( )
-	: _program ( 0 ), _shaders ( ), _uniforms ( )
+	: _program( 0 ), _shaders( ), _uniforms( ), _numShaders( 0 ), _camera( nullptr )
 { 
 
 }
@@ -21,7 +25,7 @@ Shader::Shader ( )
 Shader::~Shader ( )
 { 
 	// detach and delete our shaders from the program
-	for ( size_t i = 0; i < NUM_SHADERS; i++ )
+	for ( size_t i = 0; i < _numShaders; i++ )
 	{
 		glDetachShader ( _program, _shaders [ i ] ); //detach shader from program
 		glDeleteShader ( _shaders [ i ] ); //delete the shaders
@@ -35,14 +39,30 @@ void Shader::LoadDefaultShaders ( )
 	LoadShaders ( VertexShaderPath, FragmentShaderPath );
 }
 
-void Shader::LoadShaders ( const std::string & vertShader, const std::string & fragShader )
-{
-	LoadShaders ( vertShader.c_str ( ), fragShader.c_str ( ) );
+void Shader::LoadDefaultGeometoryShaders() {
+	LoadShaders ( VertexGeoShaderPath, GeometryShaderPath, FragmentGeoShaderPath );
 }
 
-void Shader::LoadShaders ( const char * vertexShader, const char * fargmentShader )
+void Shader::LoadShaders ( const std::string & vertShader, const std::string & fragShader )
+{
+	LoadShaders ( vertShader.c_str ( ), NULL, fragShader.c_str ( ) );
+}
+
+void Shader::LoadShaders(const std::string& vertShader, const std::string& geoShader, const std::string& fragShader)
+{
+	LoadShaders(vertShader.c_str(), geoShader.c_str(), fragShader.c_str());
+}
+
+void Shader::LoadShaders ( const char * vertexShader, const char * geoShader, const char * fargmentShader )
 { 
 	_program = glCreateProgram ( );
+
+	_numShaders = 2;
+
+	if ( geoShader != NULL ) 
+	{
+		_numShaders = 3;
+	}
 
 	_shaders [ 0 ] = CreateShader (
 		LoadShader ( vertexShader ),
@@ -52,7 +72,14 @@ void Shader::LoadShaders ( const char * vertexShader, const char * fargmentShade
 		LoadShader ( fargmentShader ),
 		GL_FRAGMENT_SHADER );
 
-	for ( size_t i = 0; i < NUM_SHADERS; i++ )
+	if ( geoShader != NULL )
+	{
+		_shaders[2] = CreateShader(
+			LoadShader(geoShader),
+			GL_GEOMETRY_SHADER);
+	}
+
+	for ( size_t i = 0; i < _numShaders; i++ )
 	{
 		glAttachShader ( _program, _shaders [ i ] ); //attach the shader to the program
 	}
@@ -68,6 +95,7 @@ void Shader::LoadShaders ( const char * vertexShader, const char * fargmentShade
 	_uniforms [ MODEL_U ]		= glGetUniformLocation ( _program, "model" );
 	_uniforms [ VIEW_U ]		= glGetUniformLocation ( _program, "view" );
 	_uniforms [ PROJECTION_U ]	= glGetUniformLocation ( _program, "projection" );
+	_uniforms [ TIME_U ]		= glGetUniformLocation ( _program, "time" );
 
 #ifdef USE_ADS
 	_uniforms[ LIGHT_POSITION_U ] = glGetUniformLocation( _program, "lightPos" );
@@ -75,7 +103,7 @@ void Shader::LoadShaders ( const char * vertexShader, const char * fargmentShade
 	_uniforms[ OBJECT_COLOUR_U ]  = glGetUniformLocation( _program, "objectColor" );
 #endif
 
-	for ( size_t i = 0; i < NUM_SHADERS; i++ )
+	for ( size_t i = 0; i < _numShaders; i++ )
 	{
 		glDeleteShader ( _shaders [ i ] ); //delete the shader's source - not needed after compilation
 	}
@@ -204,7 +232,7 @@ void Shader::SetTransform ( const glm::mat4 & modelMatrix )
 {
 }
 
-void Shader::Update ( Transform & transform )
+void Shader::Update ( Transform & transform, float gameTime )
 { 
 	glm::mat4 model = transform.GetModel ( ); 
 	// The last parameter of glUnifromMatrix4fv the actual matrix data, 
@@ -231,6 +259,8 @@ void Shader::Update ( Transform & transform )
 	// Set the object colour
 	glUniform3f ( _uniforms [ OBJECT_COLOUR_U ], 0.7f, 0.7f, 0.7f);
 #endif
+
+	glUniform1f ( _uniforms [ TIME_U ], gameTime );
 
 }
 

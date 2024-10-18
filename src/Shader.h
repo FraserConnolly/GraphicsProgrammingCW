@@ -18,8 +18,10 @@ public:
 	~Shader ( );
 	
 	void LoadDefaultShaders ( );
-	void LoadShaders ( const std::string & vertShader, const std::string & fragShader );
-	void LoadShaders ( const char * vertexShader, const char * fargmentShader );
+	void LoadDefaultGeometoryShaders( );
+	void LoadShaders ( const std::string& vertShader, const std::string& fragShader );
+	void LoadShaders ( const std::string & vertShader, const std::string& geoShader, const std::string & fragShader );
+	void LoadShaders ( const char * vertexShader, const char * geoShader, const char * fargmentShader );
 	
 	void SetCamera ( Camera * const camera )
 	{
@@ -47,17 +49,19 @@ public:
 	void SetTransform ( const glm::mat4 & transform );
 	GLint GetUnifromLocation ( const GLchar * name ) const;
 
-	void Update ( Transform & transform );
+	//void Update ( Transform & transform );
+	void Update ( Transform & transform, float gameTime );
 
 private:
 	
-	static const unsigned int NUM_SHADERS = 2; // number of shaders
+	static const unsigned int MAX_SHADER_COUNT = 3; // number of shaders
 	
 	enum
 	{
 		MODEL_U,
 		VIEW_U,
 		PROJECTION_U,
+		TIME_U,
 
 #ifdef USE_ADS
 		LIGHT_POSITION_U,
@@ -69,14 +73,15 @@ private:
 	};
 
 	Shader ( const Shader & other )
-		:_program( 0 ), _shaders { 0, 0 }, _uniforms{ 0 }
+		:_program( 0 ), _shaders { 0, 0, 0 }, _uniforms{ 0 }, _numShaders( 0 )
 	{ }
 	
 	void operator=( const Shader & other )
 	{ }
 	
+	int _numShaders;
 	GLuint _program; // Track the shader program
-	GLuint _shaders [ NUM_SHADERS ]; //array of shaders
+	GLuint _shaders [ MAX_SHADER_COUNT ]; //array of shaders
 	GLuint _uniforms [ NUM_UNIFORMS ];
 
 	Camera * _camera = nullptr;

@@ -100,6 +100,10 @@ void GameEngine::initSystems ( )
 	m_shaderProgram->LoadDefaultShaders ( );
 	m_shaderProgram->SetCamera ( mainCamera );
 
+	m_shaderProgramGeo = new Shader( );
+	m_shaderProgramGeo->LoadDefaultGeometoryShaders( );
+	m_shaderProgramGeo->SetCamera( mainCamera );
+
 	m_SyntyTexture = new Texture ( );
 	m_SyntyTexture->LoadTexture ( "PolygonCity_Texture_01_A.png" );
 	
@@ -109,7 +113,7 @@ void GameEngine::initSystems ( )
 	m_SyntyMaterial = new Material ( m_shaderProgram );
 	m_SyntyMaterial->SetTexture ( "diffuse", m_SyntyTexture );
 
-	m_BrickMaterial = new Material ( m_shaderProgram );
+	m_BrickMaterial = new Material ( m_shaderProgramGeo );
 	m_BrickMaterial->SetTexture ( "diffuse", m_BrickTexture );
 
 #pragma endregion
@@ -145,9 +149,6 @@ void GameEngine::initSystems ( )
 
 		// create a mesh object
 		auto mesh = ( MeshRenderer * ) obj->AddComponent ( ComponentTypes::MESH_RENDERER );
-
-		Texture * ptrTexture = nullptr;  new Texture ( "PolygonPrototype_Texture_01.png" );
-		Material * ptrMaterial = nullptr; new Material ( m_shaderProgram );
 
 		if ( i != points.size ( ) )
 		{
