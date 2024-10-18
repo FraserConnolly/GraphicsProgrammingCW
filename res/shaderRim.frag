@@ -1,20 +1,20 @@
 #version 400
 
-uniform mat4 u_pm;
-uniform mat4 u_vm;
+uniform mat4 projection;
+uniform mat4 view;
 uniform vec3 lightDir;
 
 in vec3 normal;
  
-layout( location = 0 ) out vec4 fragcolor;
- 
 in vec3 v_norm;
 in vec4 v_pos; 
+
+layout( location = 0 ) out vec4 fragcolor;
  
 void main() {
  
-  vec3 n = normalize(mat3(u_vm) * v_norm);      // convert normal to view space
-  vec3 p = vec3((u_pm) * v_pos);                // position in clip space
+  vec3 n = normalize(mat3(view) * v_norm);      // convert normal to view space
+  vec3 p = vec3((projection) * v_pos);                // position in clip space
   vec3 v = normalize(p);                        // normalised eye vector
   float vdn = max(dot(v, n), 0.0);        // the rim contribution
 

@@ -107,6 +107,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MaterialSwitch.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MouseInput.cpp" />
     <ClCompile Include="obj_loader.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="KeyboardInput.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="MaterialSwitch.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MouseInput.h" />
     <ClInclude Include="obj_loader.h" />

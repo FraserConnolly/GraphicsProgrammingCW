@@ -40,6 +40,8 @@ private:
 	Display _gameDisplay;
 
 	Material * m_FogMaterial = nullptr;
+	Material * m_RimMaterial = nullptr;
+	Material * m_ToonMaterial = nullptr;
 	Material * m_BrickMaterial = nullptr;
 	Material * m_SyntyMaterial = nullptr;
 	Texture * m_SyntyTexture = nullptr;

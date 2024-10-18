@@ -20,6 +20,32 @@ public:
 	{
 	}
 
+	~Material ( )
+	{
+	}
+
+	Material * Clone ( )
+	{
+		auto pMaterial = new Material ( &m_pShaderProgram );
+
+		for ( auto & texture : m_textures )
+		{
+			pMaterial->SetTexture ( texture.first , texture.second );
+		}
+
+		for ( auto & floatVal : m_floats )
+		{
+			pMaterial->SetFloat ( floatVal.first , floatVal.second );
+		}
+
+		for ( auto & float3Val : m_float3s )
+		{
+			pMaterial->SetFloat3 ( float3Val.first , float3Val.second );
+		}
+
+		return pMaterial;
+	}
+
 	Shader & GetShader ( ) const
 	{
 		return m_pShaderProgram;

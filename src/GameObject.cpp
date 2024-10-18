@@ -11,6 +11,7 @@
 #include "ColliderSphere.h"
 #include "PlayerController.h"
 #include "ExplosionController.h"
+#include "MaterialSwitch.h"
 
 unsigned int GameObject::s_objectIDCounter = 0;
 
@@ -57,6 +58,8 @@ Component * GameObject::CreateComponent ( ComponentTypes component, GameObject &
             return new PlayerController ( hostObject );
         case EXPLOSION_CONTROLLER:
 			return new ExplosionController ( hostObject );
+        case MATERIAL_SWITCHER:
+            return new MaterialSwitch ( hostObject );
     }
 
     return nullptr;
@@ -206,33 +209,7 @@ void GameObject::RemoveAllComponentsImmediately ( )
     m_components.clear ( );
 }
 
-template<typename T>
-void GameObject::GetComponent ( ComponentTypes type, T *& pComp )
-{
-    size_t size = m_components.size ( );
-    for ( size_t i = 0; i < size; ++i )
-    {
-        //if we found the correct type, set and return 
-        if ( m_components [ i ]->GetType ( ) == type )
-        {
-            pComp = static_cast< T * >( m_components [ i ] );
-            return;
-        }
-    }
-    pComp = 0;
-}
 
-template<typename T>
-void GameObject::GetAllComponent ( ComponentTypes type, std::vector<T *> & comps )
-{
-    size_t size = m_components.size ( );
-    for ( size_t i = 0; i < size; ++i )
-    {
-        //if we found the correct type, add to vector 
-        if ( m_components [ i ]->GetType ( ) == type )
-            comps.push_back ( static_cast< T * >( m_components [ i ] ) );
-    }
-}
 
 void GameObject::CleanUpComponents ( )
 { 

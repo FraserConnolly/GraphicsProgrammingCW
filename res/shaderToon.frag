@@ -1,7 +1,12 @@
 #version 400
 
+in vec3 v_norm;
+in vec4 v_pos; 
+in vec3 vertexColour;
+in vec2 textureCoord;
+
 uniform vec3 lightDir;
-in vec3 normal;
+
 out vec4 FragColour;
 
 void main()
@@ -9,7 +14,7 @@ void main()
 	float intensity;
 	vec4 color;
 
-	intensity = dot(lightDir, normal);
+	intensity = dot(lightDir, v_norm);
 
 	if (intensity > 0.9)
 		color = vec4(1.0,0.5,0.5,1.0);

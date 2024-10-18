@@ -77,9 +77,32 @@ public:
 	void        RemoveAllComponents ( ComponentTypes type );
 	
 	template<typename T>
-	void GetComponent ( ComponentTypes type, T *& pComp );
+	void GetComponent ( ComponentTypes type , T *& pComp )
+	{
+		size_t size = m_components.size ( );
+		for ( size_t i = 0; i < size; ++i )
+		{
+			//if we found the correct type, set and return 
+			if ( m_components [ i ]->GetType ( ) == type )
+			{
+				pComp = static_cast< T * >( m_components [ i ] );
+				return;
+			}
+		}
+		pComp = 0;
+	}
+
 	template<typename T>
-	void GetAllComponent ( ComponentTypes type, std::vector<T *> & comps );
+	void GetAllComponent ( ComponentTypes type , std::vector<T *> & comps )
+	{
+		size_t size = m_components.size ( );
+		for ( size_t i = 0; i < size; ++i )
+		{
+			//if we found the correct type, add to vector 
+			if ( m_components [ i ]->GetType ( ) == type )
+				comps.push_back ( static_cast< T * >( m_components [ i ] ) );
+		}
+	}
 
 private:
 	/// <summary>

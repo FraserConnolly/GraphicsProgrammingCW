@@ -13,11 +13,15 @@ uniform mat4 projection;
 
 out vec3 v_norm;
 out vec4 v_pos; 
+out vec3 vertexColour; 
+out vec2 textureCoord;
 
 void main()
 {
 	mat4 transform = projection * view * model;
 	v_norm = aNormal;
 	v_pos = transform * vec4(aPosition, 1.0);
+	vertexColour = aVertexColour;
+    textureCoord = aTextureCoord;
     gl_Position = transform * vec4(aPosition, 1.0); // the 1.0 is the w value which is necessary for the matrix multiplication.
 }

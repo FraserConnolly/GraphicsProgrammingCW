@@ -21,6 +21,7 @@
 #include "Audio.h"
 #include "Path Follow.h"
 #include "ExplosionController.h"
+#include "MaterialSwitch.h"
 
 GameEngine::GameEngine ( ) { }
 
@@ -126,13 +127,22 @@ void GameEngine::initSystems ( )
 	m_SyntyMaterial = new Material ( m_shaderProgram );
 	m_SyntyMaterial->SetTexture ( "diffuse", m_SyntyTexture );
 
-	m_BrickMaterial = new Material ( m_shaderProgramGeo );
+	m_BrickMaterial = new Material ( m_shaderProgram );
 	m_BrickMaterial->SetTexture ( "diffuse", m_BrickTexture );
 
 	m_FogMaterial	= new Material ( m_shaderProgramFog );
-	m_FogMaterial->SetFloat3 ( "fogColor", 0.5f, 0.5f, 0.5f );
-	m_FogMaterial->SetFloat  ( "maxDist", 50.0f);
-	m_FogMaterial->SetFloat  ( "minDist",  5.0f);
+	m_FogMaterial->SetFloat3	( "fogColor", 0.5f, 0.1f, 0.1f );
+	m_FogMaterial->SetFloat		( "maxDist", 50.0f);
+	m_FogMaterial->SetFloat		( "minDist",  5.0f);
+	m_FogMaterial->SetTexture	( "diffuse", m_BrickTexture );
+
+	m_ToonMaterial = new Material ( m_shaderProgramToon );
+	m_ToonMaterial->SetTexture	( "diffuse", m_BrickTexture );
+	m_ToonMaterial->SetFloat3	( "lightDir", 0.5f, 0.1f, 0.1f );
+
+	m_RimMaterial = new Material ( m_shaderProgramRim );
+	m_RimMaterial->SetTexture ( "diffuse" , m_BrickTexture );
+	m_RimMaterial->SetFloat3 ( "lightDir" , 0.5f , 0.1f , 0.1f );
 
 #pragma endregion
 
@@ -173,7 +183,6 @@ void GameEngine::initSystems ( )
 			transforms.push_back ( &( obj->GetTransform ( ) ) );
 
 			auto r = ( Rotator * ) obj->AddComponent ( ComponentTypes::ROTATOR );
-			ExplosionController * exp = nullptr;
 
 			switch ( i % 4 )
 			{
@@ -182,9 +191,6 @@ void GameEngine::initSystems ( )
 					mesh->SetMaterial ( m_BrickMaterial );
 					r->SetRotationAxis ( true, !true, !true );
 					emitter->LoadEvent ( "event:/Orchestra 1st Star" );
-					exp = ( ExplosionController * ) obj->AddComponent ( ComponentTypes::EXPLOSION_CONTROLLER );
-					exp->SetMaterial ( m_BrickMaterial );
-					exp->SetSpeed ( 5.0f );
 					break;
 				case 1:
 					mesh->loadObjModel ( "SM_Prop_Cone_02.obj" );
@@ -241,6 +247,28 @@ void GameEngine::initSystems ( )
 			//toFollow = &obj->GetTransform ( );
 		}
 	}
+
+	auto explodingMaterial = new Material ( m_shaderProgramGeo );
+	explodingMaterial->SetTexture ( "diffuse" , m_BrickTexture );
+
+	auto obj = GameObjectManager::CreateObject ( );
+	obj->GetTransform ( ).SetScale ( 3.0f );
+
+	auto mesh = ( MeshRenderer * ) obj->AddComponent ( ComponentTypes::MESH_RENDERER );
+	mesh->SetMaterial ( explodingMaterial );
+	mesh->loadObjModel ( "monkey3.obj" );
+
+	auto exp = ( ExplosionController * ) obj->AddComponent ( ComponentTypes::EXPLOSION_CONTROLLER );
+	exp->SetMaterial ( explodingMaterial );
+	exp->SetSpeed ( 0.5f );
+
+	auto switcher = ( MaterialSwitch * ) obj->AddComponent ( ComponentTypes::MATERIAL_SWITCHER );
+	switcher->AddMaterial ( SDLK_1 , explodingMaterial );
+	switcher->AddMaterial ( SDLK_2 , m_BrickMaterial );
+	switcher->AddMaterial ( SDLK_3 , m_SyntyMaterial );
+	switcher->AddMaterial ( SDLK_4 , m_FogMaterial );
+	switcher->AddMaterial ( SDLK_5 , m_RimMaterial );
+	switcher->AddMaterial ( SDLK_6 , m_ToonMaterial );
 
 #if USE_DEBUG_CONSOLE
 	_debugScene.initaliseScene ( 0 );

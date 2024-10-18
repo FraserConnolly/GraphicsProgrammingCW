@@ -80,6 +80,13 @@ bool KeyboardInput::registerOnKeyPressed ( const int keyCode, std::function<void
 bool KeyboardInput::wasPressedThisFrame ( const int keyCode )
 {
     auto const status = m_keyRegistrations [ keyCode ];
+    
+    if ( status == nullptr )
+	{
+        // log warning
+		return false;
+	}
+
     return status->isPressed && status->pressedDuration == 0;
 }
 
