@@ -58,9 +58,13 @@ void FrameBuffer::Bind ( )
 	}
 
 	glBindFramebuffer ( GL_FRAMEBUFFER , m_FBO );
-	glEnable ( GL_DEPTH_TEST );
-	glClearColor ( 0.1f , 0.1f , 0.1f , 1.0f );
+	//glEnable ( GL_DEPTH_TEST );
+	
+	glClearColor ( 0.0f , 0.0f , 0.0f , 0.0f );
 	glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+	glEnable ( GL_BLEND );
+	glBlendFunc ( GL_SRC_ALPHA , GL_ONE_MINUS_SRC_ALPHA );
 }
 
 void FrameBuffer::Unbind ( )
@@ -77,6 +81,8 @@ void FrameBuffer::PrepareQuad ( )
 {
 	// vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
 
+	// FC 2024-11-08 I changed the quadVertices to be just the bottom left corner by changing the 
+	// three position values that were 1.0 to 0.0.
 	float quadVertices [ ] = {
 		//positions   // texCoords
 		-1.0f,  0.0f,  0.0f, 1.0f,
@@ -103,7 +109,7 @@ void FrameBuffer::PrepareQuad ( )
 
 void FrameBuffer::RenderQuad ( Shader * fboShader )
 {
-	glDisable ( GL_DEPTH_TEST );
+	//glDisable ( GL_DEPTH_TEST );
 	glClearColor ( 1.0f , 1.0f , 1.0f , 1.0f ); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
 	glClear ( GL_COLOR_BUFFER_BIT );
 

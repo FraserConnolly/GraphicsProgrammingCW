@@ -363,6 +363,10 @@ void GameEngine::drawGame ( )
 	{
 		m_FBO->Bind ( );
 		Renderer::Service ( );
+		if ( m_skyBox != nullptr )
+		{
+			//m_skyBox->Draw ( );
+		}
 		m_FBO->Unbind ( );
 	}
 
@@ -374,7 +378,7 @@ void GameEngine::drawGame ( )
 	Renderer::Service ( );
 	if ( m_skyBox != nullptr )
 	{
-		//m_skyBox->Draw ( );
+		m_skyBox->Draw ( );
 	}
 
 	_gameDisplay.swapBuffer ( );

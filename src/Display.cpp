@@ -52,7 +52,17 @@ int Display::getHeight ( ) const
 void Display::initDisplay()
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
+
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	// Request an OpenGL context with an alpha channel
+	SDL_GL_SetAttribute ( SDL_GL_RED_SIZE , 8 );
+	SDL_GL_SetAttribute ( SDL_GL_GREEN_SIZE , 8 );
+	SDL_GL_SetAttribute ( SDL_GL_BLUE_SIZE , 8 );
+	SDL_GL_SetAttribute ( SDL_GL_ALPHA_SIZE , 8 ); // Request an alpha channel
+	SDL_GL_SetAttribute ( SDL_GL_DEPTH_SIZE , 24 );
+	SDL_GL_SetAttribute ( SDL_GL_STENCIL_SIZE , 8 );
+
 	_window = SDL_CreateWindow("Offstage Controls",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
