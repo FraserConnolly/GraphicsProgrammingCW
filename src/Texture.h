@@ -13,6 +13,8 @@ public:
 	Texture ( );
 	Texture ( const std::string & fileName );
 	Texture ( const char * fileName );
+	Texture ( const int width , const int height ); // used for render textures.
+
 	~Texture ( );
 	
 	void LoadTexture ( const char * filename );

@@ -8,6 +8,7 @@
 #if USE_DEBUG_CONSOLE
 #include "ConsoleDebugScene.h"
 #endif
+#include "FrameBuffer.h"
 
 enum class GameState
 {
@@ -51,7 +52,9 @@ private:
 	Shader * m_shaderProgramRim = nullptr;
 	Shader * m_shaderProgramFog = nullptr;
 	Shader * m_shaderProgramToon = nullptr;
+	Shader * m_shaderProgramFBO = nullptr;
 	CubeMap * m_skyBox = nullptr;
+	FrameBuffer * m_FBO = nullptr;
 
 #if USE_DEBUG_CONSOLE
 	ConsoleDebugScene _debugScene;

@@ -13,7 +13,7 @@
 #include "GameObject.h"
 #include "CubeMap.h"
 
-// Components
+// ComponentsMaterialSwitch
 #include "Rotator.h"
 #include "CameraFlyController.h"
 #include "Audio Event Emitter.h"
@@ -118,6 +118,10 @@ void GameEngine::initSystems ( )
 	m_shaderProgramToon->LoadShaders ( "shaderToon.vert", "shaderToon.frag" );
 	m_shaderProgramToon->SetCamera ( mainCamera );
 
+	m_shaderProgramFBO = new Shader ( );
+	m_shaderProgramFBO->LoadShaders ( "shaderFBO.vert" , "shaderFBO.frag" );
+	m_shaderProgramToon->SetCamera ( mainCamera );
+
 	m_SyntyTexture = new Texture ( );
 	m_SyntyTexture->LoadTexture ( "PolygonCity_Texture_01_A.png" );
 	
@@ -143,6 +147,11 @@ void GameEngine::initSystems ( )
 	m_RimMaterial = new Material ( m_shaderProgramRim );
 	m_RimMaterial->SetTexture ( "diffuse" , m_BrickTexture );
 	m_RimMaterial->SetFloat3 ( "lightDir" , 0.5f , 0.1f , 0.1f );
+
+	// get screen size from SDL
+	int width , height;
+	m_FBO = new FrameBuffer ( _gameDisplay.getWidth( ), _gameDisplay.getHeight( ) );
+
 
 #pragma endregion
 
@@ -349,11 +358,25 @@ void GameEngine::processInput ( )
 void GameEngine::drawGame ( )
 {
 	_gameDisplay.clearDisplay ( );
+
+	if ( m_FBO != nullptr )
+	{
+		m_FBO->Bind ( );
+		Renderer::Service ( );
+		m_FBO->Unbind ( );
+	}
+
+	if ( m_FBO != nullptr )
+	{
+		m_FBO->RenderQuad ( m_shaderProgramFBO );
+	}
+
 	Renderer::Service ( );
 	if ( m_skyBox != nullptr )
 	{
-		m_skyBox->Draw ( );
+		//m_skyBox->Draw ( );
 	}
+
 	_gameDisplay.swapBuffer ( );
 }
 

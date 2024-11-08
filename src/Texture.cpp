@@ -8,7 +8,8 @@ enum Texture::TextureType
 {
 	UNDEFINED,
 	TEXTURE_2D,
-	CUBEMAP
+	CUBEMAP,
+	RENDER_TEXTURE
 };
 
 Texture::Texture ( ) : 
@@ -27,6 +28,18 @@ Texture::Texture ( const char * fileName ) :
 { 
 	LoadTexture ( fileName );
 }
+
+Texture::Texture ( const int width , const int height ) :
+	m_textureType ( RENDER_TEXTURE )
+{
+	glGenTextures ( 1 , &_texture );
+	glBindTexture ( GL_TEXTURE_2D , _texture );
+	glTexImage2D ( GL_TEXTURE_2D , 0 , GL_RGB , width , height , 0 , GL_RGB , GL_UNSIGNED_BYTE , NULL );
+	glTexParameteri ( GL_TEXTURE_2D , GL_TEXTURE_MIN_FILTER , GL_LINEAR );
+	glTexParameteri ( GL_TEXTURE_2D , GL_TEXTURE_MAG_FILTER , GL_LINEAR );
+	glFramebufferTexture2D ( GL_FRAMEBUFFER , GL_COLOR_ATTACHMENT0 , GL_TEXTURE_2D , _texture , 0 );
+}
+
 
 Texture::~Texture ( ) 
 {
@@ -128,6 +141,9 @@ void Texture::Bind ( GLint unit )
 			break;
 		case Texture::CUBEMAP:
 			glBindTexture ( GL_TEXTURE_CUBE_MAP, _texture );
+			break;
+		case Texture::RENDER_TEXTURE:
+			glBindTexture ( GL_TEXTURE_2D , _texture );
 			break;
 		case Texture::UNDEFINED:
 		default:
