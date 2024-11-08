@@ -156,6 +156,9 @@
     <ClCompile Include="PlayerController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Display.h">
@@ -286,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="PlayerController.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameBuffer.h">
+      <Filter>Header Files\Game Engine\Sub Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
