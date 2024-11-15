@@ -60,7 +60,7 @@ void FrameBuffer::Bind ( )
 	glBindFramebuffer ( GL_FRAMEBUFFER , m_FBO );
 	//glEnable ( GL_DEPTH_TEST );
 	
-	glClearColor ( 1.0f , 1.0f , 1.0f , 0.0f );
+	glClearColor ( 0.0f , 0.0f , 0.0f , 0.0f );
 	glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	glEnable ( GL_BLEND );
@@ -112,8 +112,11 @@ void FrameBuffer::RenderQuad ( Shader * fboShader )
 	//glDisable ( GL_DEPTH_TEST );
 	glClearColor ( 1.0f , 1.0f , 1.0f , 1.0f ); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
 	glClear ( GL_COLOR_BUFFER_BIT );
+	
 
 	fboShader->Bind ( );
+	//fboShader->SetUniform ( "invert" , true );
+	//fboShader->SetUniform ( "grayScale" , true );
 	glBindVertexArray ( m_quadVAO );
 
 	GLint tu = Renderer::BindTexture ( m_texture );

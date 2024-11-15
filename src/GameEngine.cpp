@@ -119,8 +119,8 @@ void GameEngine::initSystems ( )
 	m_shaderProgramToon->SetCamera ( mainCamera );
 
 	m_shaderProgramFBO = new Shader ( );
-	m_shaderProgramFBO->LoadShaders ( "shaderFBO.vert" , "shaderFBO.frag" );
-	m_shaderProgramToon->SetCamera ( mainCamera );
+	m_shaderProgramFBO->LoadShaders ( "shaderFBO.vert" , "edgeDetectionShader.frag" );
+	m_shaderProgramFBO->SetCamera ( mainCamera );
 
 	m_SyntyTexture = new Texture ( );
 	m_SyntyTexture->LoadTexture ( "PolygonCity_Texture_01_A.png" );
@@ -365,7 +365,7 @@ void GameEngine::drawGame ( )
 		Renderer::Service ( );
 		if ( m_skyBox != nullptr )
 		{
-			//m_skyBox->Draw ( );
+			m_skyBox->Draw ( );
 		}
 		m_FBO->Unbind ( );
 	}

@@ -451,6 +451,9 @@
     <CopyFileToFolders Include="..\res\shaderFBO.frag">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\EdgeDetectionShader.frag">
+      <Filter>Shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />

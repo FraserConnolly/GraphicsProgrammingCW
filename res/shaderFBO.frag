@@ -3,18 +3,30 @@ out vec4 FragColor;
   
 in vec2 TexCoords;
 
+uniform bool invert;
+uniform bool grayScale;
 uniform sampler2D screenTexture;
 
 void main()
 { 
-    //FragColor = texture(screenTexture, TexCoords);
-
     vec4 texColor = texture(screenTexture, TexCoords);
     
-    // Discard fragments where alpha is 1.0 (fully opaque)
-    if (texColor.rgb == vec3(1)) {
+    // Discard fragments where the colour value is black
+    if (texColor.rgb == vec3(0)) {
         discard;
     }
     
-    FragColor = texColor; // Output the color if alpha < 1.0
+    if ( invert ) 
+    {
+        // invert the colour
+        texColor = vec4(vec3(1.0 - texture(screenTexture, TexCoords)), 1.0);
+    }
+
+    if ( grayScale )
+    {
+        float average = 0.2126 * texColor.r + 0.7152 * texColor.g + 0.0722 * texColor.b;                                                          
+        texColor = vec4(average, average, average, 1.0);
+    }
+
+    FragColor = texColor;
 }
