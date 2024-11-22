@@ -22,6 +22,7 @@
 #include "Path Follow.h"
 #include "ExplosionController.h"
 #include "MaterialSwitch.h"
+#include "NoiseController.h"
 
 GameEngine::GameEngine ( ) { }
 
@@ -122,9 +123,22 @@ void GameEngine::initSystems ( )
 	m_shaderProgramFBO->LoadShaders ( "shaderFBO.vert" , "edgeDetectionShader.frag" );
 	m_shaderProgramFBO->SetCamera ( mainCamera );
 
+	m_shaderProgramNoise = new Shader ( );
+	m_shaderProgramNoise->LoadShaders ( "shaderNoise.vert" , "shaderNoise.frag" );
+	m_shaderProgramNoise->SetCamera ( mainCamera );
+
 	m_SyntyTexture = new Texture ( );
 	m_SyntyTexture->LoadTexture ( "PolygonCity_Texture_01_A.png" );
 	
+	m_BrickTexture = new Texture ( );
+	m_BrickTexture->LoadTexture ( "bricks.jpg" );
+
+	m_Lava = new Texture ( );
+	m_Lava->LoadTexture ( "lava.jpg" );
+
+	m_Noise = new Texture ( );
+	m_Noise->LoadTexture ( "noise.png" );
+
 	m_BrickTexture = new Texture ( );
 	m_BrickTexture->LoadTexture ( "bricks.jpg" );
 
@@ -135,22 +149,25 @@ void GameEngine::initSystems ( )
 	m_BrickMaterial->SetTexture ( "diffuse", m_BrickTexture );
 
 	m_FogMaterial	= new Material ( m_shaderProgramFog );
-	m_FogMaterial->SetFloat3	( "fogColor", 0.5f, 0.1f, 0.1f );
-	m_FogMaterial->SetFloat		( "maxDist", 50.0f);
-	m_FogMaterial->SetFloat		( "minDist",  5.0f);
-	m_FogMaterial->SetTexture	( "diffuse", m_BrickTexture );
+	m_FogMaterial->SetFloat3ByName	( "fogColor", 0.5f, 0.1f, 0.1f );
+	m_FogMaterial->SetFloatByName	( "maxDist", 50.0f);
+	m_FogMaterial->SetFloatByName	( "minDist",  5.0f);
+	m_FogMaterial->SetTexture		( "diffuse", m_BrickTexture );
 
-	m_ToonMaterial = new Material ( m_shaderProgramToon );
-	m_ToonMaterial->SetTexture	( "diffuse", m_BrickTexture );
-	m_ToonMaterial->SetFloat3	( "lightDir", 0.5f, 0.1f, 0.1f );
+	m_ToonMaterial = new Material	( m_shaderProgramToon );
+	m_ToonMaterial->SetTexture		( "diffuse", m_BrickTexture );
+	m_ToonMaterial->SetFloat3ByName	( "lightDir", 0.5f, 0.1f, 0.1f );
 
-	m_RimMaterial = new Material ( m_shaderProgramRim );
-	m_RimMaterial->SetTexture ( "diffuse" , m_BrickTexture );
-	m_RimMaterial->SetFloat3 ( "lightDir" , 0.5f , 0.1f , 0.1f );
+	m_RimMaterial = new Material	( m_shaderProgramRim );
+	m_RimMaterial->SetTexture		( "diffuse" , m_BrickTexture );
+	m_RimMaterial->SetFloat3ByName	( "lightDir" , 0.5f , 0.1f , 0.1f );
+
+	m_PlanetMaterial = new Material ( m_shaderProgramNoise );
+	m_PlanetMaterial->SetTexture ( "texture1" , m_Noise );
+	m_PlanetMaterial->SetTexture ( "texture2" , m_Lava );
 
 	// get screen size from SDL
-	int width , height;
-	m_FBO = new FrameBuffer ( _gameDisplay.getWidth( ), _gameDisplay.getHeight( ) );
+	//m_FBO = new FrameBuffer ( _gameDisplay.getWidth( ), _gameDisplay.getHeight( ) );
 
 
 #pragma endregion
@@ -160,10 +177,10 @@ void GameEngine::initSystems ( )
 	std::vector<glm::vec3> points;
 	std::vector<const Transform *> transforms;
 
-	points.push_back ( glm::vec3 ( -2.5, 0, -2.5 ) );
-	points.push_back ( glm::vec3 ( +2.5, 5, -2.5 ) );
-	points.push_back ( glm::vec3 ( +2.5, 0, +2.5 ) );
-	points.push_back ( glm::vec3 ( -2.5, 0, +2.5 ) );
+	//points.push_back ( glm::vec3 ( -2.5, 0, -2.5 ) );
+	//points.push_back ( glm::vec3 ( +2.5, 5, -2.5 ) );
+	//points.push_back ( glm::vec3 ( +2.5, 0, +2.5 ) );
+	//points.push_back ( glm::vec3 ( -2.5, 0, +2.5 ) );
 
 	for ( size_t i = 0; i < points.size ( ) + 1; i++ )
 	{
@@ -257,27 +274,49 @@ void GameEngine::initSystems ( )
 		}
 	}
 
-	auto explodingMaterial = new Material ( m_shaderProgramGeo );
-	explodingMaterial->SetTexture ( "diffuse" , m_BrickTexture );
+#pragma region Suzanna
 
-	auto obj = GameObjectManager::CreateObject ( );
-	obj->GetTransform ( ).SetScale ( 3.0f );
+	//auto obj = GameObjectManager::CreateObject ( );
+	//obj->GetTransform ( ).SetScale ( 2.5f );
+	//obj->GetTransform ( ).SetPosition ( 4.0f , 0.0f , 0.0f );
 
-	auto mesh = ( MeshRenderer * ) obj->AddComponent ( ComponentTypes::MESH_RENDERER );
-	mesh->SetMaterial ( explodingMaterial );
-	mesh->loadObjModel ( "monkey3.obj" );
+	//auto explodingMaterial = new Material ( m_shaderProgramGeo );
+	//explodingMaterial->SetTexture ( "diffuse" , m_BrickTexture );
 
-	auto exp = ( ExplosionController * ) obj->AddComponent ( ComponentTypes::EXPLOSION_CONTROLLER );
-	exp->SetMaterial ( explodingMaterial );
-	exp->SetSpeed ( 0.5f );
+	//auto mesh = ( MeshRenderer * ) obj->AddComponent ( ComponentTypes::MESH_RENDERER );
+	//mesh->SetMaterial ( explodingMaterial );
+	//mesh->loadObjModel ( "monkey3.obj" );
 
-	auto switcher = ( MaterialSwitch * ) obj->AddComponent ( ComponentTypes::MATERIAL_SWITCHER );
-	switcher->AddMaterial ( SDLK_1 , explodingMaterial );
-	switcher->AddMaterial ( SDLK_2 , m_BrickMaterial );
-	switcher->AddMaterial ( SDLK_3 , m_SyntyMaterial );
-	switcher->AddMaterial ( SDLK_4 , m_FogMaterial );
-	switcher->AddMaterial ( SDLK_5 , m_RimMaterial );
-	switcher->AddMaterial ( SDLK_6 , m_ToonMaterial );
+	//auto exp = ( ExplosionController * ) obj->AddComponent ( ComponentTypes::EXPLOSION_CONTROLLER );
+	//exp->SetMaterial ( explodingMaterial );
+	//exp->SetSpeed ( 0.5f );
+
+	//auto switcher = ( MaterialSwitch * ) obj->AddComponent ( ComponentTypes::MATERIAL_SWITCHER );
+	//switcher->AddMaterial ( SDLK_1 , explodingMaterial );
+	//switcher->AddMaterial ( SDLK_2 , m_BrickMaterial );
+	//switcher->AddMaterial ( SDLK_3 , m_SyntyMaterial );
+	//switcher->AddMaterial ( SDLK_4 , m_FogMaterial );
+	//switcher->AddMaterial ( SDLK_5 , m_RimMaterial );
+	//switcher->AddMaterial ( SDLK_6 , m_ToonMaterial );
+
+#pragma endregion
+
+#pragma region Planet
+
+	auto planetObj = GameObjectManager::CreateObject ( );
+	planetObj->GetTransform ( ).SetScale ( 1.0f );
+	planetObj->GetTransform ( ).SetPosition ( 0.0f , 5.0f , 0.0f );
+
+	auto planetMesh = ( MeshRenderer * ) planetObj->AddComponent ( ComponentTypes::MESH_RENDERER );
+	planetMesh->SetMaterial ( m_PlanetMaterial );
+	planetMesh->loadObjModel ( "ball.obj" );
+
+	auto noise = ( NoiseController * ) planetObj->AddComponent ( ComponentTypes::NOISE_CONTROLLER );
+	noise->SetMaterial ( m_PlanetMaterial );
+	noise->SetSpeed ( 0.5f );
+
+#pragma endregion
+
 
 #if USE_DEBUG_CONSOLE
 	_debugScene.initaliseScene ( 0 );

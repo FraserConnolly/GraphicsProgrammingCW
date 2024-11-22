@@ -45,15 +45,23 @@ private:
 	Material * m_ToonMaterial = nullptr;
 	Material * m_BrickMaterial = nullptr;
 	Material * m_SyntyMaterial = nullptr;
+	Material * m_PlanetMaterial = nullptr;
+
 	Texture * m_SyntyTexture = nullptr;
 	Texture * m_BrickTexture = nullptr;
+	Texture * m_Lava = nullptr;
+	Texture * m_Noise = nullptr;
+	
 	Shader * m_shaderProgram = nullptr;
 	Shader * m_shaderProgramGeo = nullptr;
 	Shader * m_shaderProgramRim = nullptr;
 	Shader * m_shaderProgramFog = nullptr;
 	Shader * m_shaderProgramToon = nullptr;
 	Shader * m_shaderProgramFBO = nullptr;
+	Shader * m_shaderProgramNoise = nullptr;
+	
 	CubeMap * m_skyBox = nullptr;
+	
 	FrameBuffer * m_FBO = nullptr;
 
 #if USE_DEBUG_CONSOLE

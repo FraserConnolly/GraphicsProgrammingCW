@@ -111,6 +111,7 @@
     <ClCompile Include="MaterialSwitch.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MouseInput.cpp" />
+    <ClCompile Include="NoiseController.cpp" />
     <ClCompile Include="obj_loader.cpp" />
     <ClCompile Include="Path Follow.cpp" />
     <ClCompile Include="PlayerController.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="MaterialSwitch.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MouseInput.h" />
+    <ClInclude Include="NoiseController.h" />
     <ClInclude Include="obj_loader.h" />
     <ClInclude Include="Path Follow.h" />
     <ClInclude Include="PlayerController.h" />
@@ -334,6 +336,25 @@
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\res\edgeDetectionShader.frag">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\res\lava.jpg" />
+    <CopyFileToFolders Include="..\res\lava1.jpg" />
+    <CopyFileToFolders Include="..\res\lava3.jpg" />
+    <CopyFileToFolders Include="..\res\noise.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\res\shaderNoise.frag">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\shaderNoise.vert">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\res\Ball.obj">
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>

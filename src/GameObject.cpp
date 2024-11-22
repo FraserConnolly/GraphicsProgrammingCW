@@ -12,6 +12,7 @@
 #include "PlayerController.h"
 #include "ExplosionController.h"
 #include "MaterialSwitch.h"
+#include "NoiseController.h"
 
 unsigned int GameObject::s_objectIDCounter = 0;
 
@@ -60,6 +61,8 @@ Component * GameObject::CreateComponent ( ComponentTypes component, GameObject &
 			return new ExplosionController ( hostObject );
         case MATERIAL_SWITCHER:
             return new MaterialSwitch ( hostObject );
+        case NOISE_CONTROLLER:
+			return new NoiseController ( hostObject );
     }
 
     return nullptr;

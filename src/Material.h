@@ -76,7 +76,7 @@ public:
 		}
 	}
 
-	void SetFloat(const GLchar* const name, const float const value )
+	void SetFloatByName(const GLchar* const name, const float const value )
 	{
 		auto location = GetUniformLocation ( name );
 		SetFloat ( location , value );
@@ -94,9 +94,9 @@ public:
 		}
 	}
 
-	void SetFloat3 ( const GLchar * const name , glm::vec3 & value  )
+	void SetFloat3ByName ( const GLchar * const name , glm::vec3 & value  )
 	{
-		SetFloat3 ( name , value.x , value.y , value.z );
+		SetFloat3ByName ( name , value.x , value.y , value.z );
 	}
 
 	void SetFloat3 ( const GLint location , glm::vec3 & value )
@@ -104,7 +104,7 @@ public:
 		SetFloat3 ( location , value.x , value.y , value.z );
 	}
 
-	void SetFloat3(const GLchar* const name, const float const x, const float const y, const float const z)
+	void SetFloat3ByName(const GLchar* const name, const float const x, const float const y, const float const z)
 	{
 		auto location = GetUniformLocation ( name );
 		SetFloat3 ( location , x, y, z );
