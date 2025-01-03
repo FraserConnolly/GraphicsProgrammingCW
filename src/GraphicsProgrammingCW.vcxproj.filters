@@ -165,6 +165,9 @@
     <ClCompile Include="MaterialSwitch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NoiseController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Display.h">
@@ -303,6 +306,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MaterialSwitch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NoiseController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -453,6 +459,24 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\res\EdgeDetectionShader.frag">
       <Filter>Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\lava.jpg">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\lava1.jpg">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\lava3.jpg">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\noise.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\shaderNoise.frag" />
+    <CopyFileToFolders Include="..\res\shaderNoise.vert" />
+    <CopyFileToFolders Include="..\res\Ball.obj" />
+    <CopyFileToFolders Include="..\res\DefaultGame.fgame">
+      <Filter>Resource Files</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

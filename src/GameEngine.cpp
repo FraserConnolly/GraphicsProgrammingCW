@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 
 // Sub systems
 #include "GameObjectManager.h"
@@ -28,6 +29,37 @@ GameEngine::GameEngine ( ) { }
 
 GameEngine::~GameEngine ( ) { }
 
+int GameEngine::loadGame ( const wchar_t * filename )
+{
+	// load game data from file
+
+	std::ifstream gameFile ( filename );
+	
+	if ( !gameFile.is_open ( ) ) {
+		std::cerr << "Failed to open game file: " << filename << std::endl;
+		return 1;
+	}
+
+	try
+	{
+		m_gameData = json::parse ( gameFile );
+
+		gameFile.close ( );
+
+		// load game data into game engine
+		m_gameName = m_gameData [ "GameName" ].get<string> ( );
+		m_screenWidth = m_gameData [ "Display" ][ "Width" ].get<int> ( );
+		m_screenHeight = m_gameData [ "Display" ][ "Height" ].get<int> ( );
+	}
+	catch ( const std::exception & )
+	{
+		gameFile.close ( );
+		return 2;
+	}
+
+	return 0;
+}
+
 void GameEngine::run ( )
 {
 	initSystems ( );
@@ -37,7 +69,7 @@ void GameEngine::run ( )
 
 void GameEngine::initSystems ( )
 {
-	_gameDisplay.initDisplay ( );
+	m_gameDisplay.initDisplay ( m_screenWidth, m_screenHeight, m_gameName );
 
 	SDL_SetRelativeMouseMode ( SDL_TRUE );
 
@@ -98,73 +130,121 @@ void GameEngine::initSystems ( )
 
 #pragma region Set up materials and textures
 
+	// load shaders
 
-	m_shaderProgram = new Shader ( );
-	m_shaderProgram->LoadDefaultShaders ( );
-	m_shaderProgram->SetCamera ( mainCamera );
+	if ( m_gameData.contains ( "Shaders" ) )
+	{
+		try
+		{
+			auto shaderData = m_gameData [ "Shaders" ];
+			for ( auto & shader : shaderData )
+			{
+				auto newShader = new Shader ( );
 
-	m_shaderProgramGeo = new Shader ( );
-	m_shaderProgramGeo->LoadDefaultGeometoryShaders ( );
-	m_shaderProgramGeo->SetCamera ( mainCamera );
+				auto shaderName = shader [ "Name" ].get<string> ( );
+				auto vertexShader = shader [ "Vertex" ].get<string> ( );
+				auto fragmentShader = shader [ "Fragment" ].get<string> ( );
 
-	m_shaderProgramFog = new Shader ( );
-	m_shaderProgramFog->LoadShaders ( "fogShader.vert", "fogShader.frag" );
-	m_shaderProgramFog->SetCamera ( mainCamera );
+				if ( shader.contains ( "Geometry" ) )
+				{
+					auto geometryShader = shader [ "Geometry" ].get<string> ( );
+					newShader->LoadShaders ( vertexShader.c_str ( ) , geometryShader.c_str ( ) , fragmentShader.c_str ( ) );
+				}
+				else
+				{
+					newShader->LoadShaders ( vertexShader.c_str ( ) , fragmentShader.c_str ( ) );
+				}
 
-	m_shaderProgramRim = new Shader ( );
-	m_shaderProgramRim->LoadShaders ( "shaderRim.vert", "shaderRim.frag" );
-	m_shaderProgramRim->SetCamera ( mainCamera );
+				m_shaders [ shaderName ] = newShader;
+			}
+		}
+		catch ( const std::exception & )
+		{
+			std::cerr << "Failed to load shaders" << std::endl;
+		}
+	}
 
-	m_shaderProgramToon = new Shader ( );
-	m_shaderProgramToon->LoadShaders ( "shaderToon.vert", "shaderToon.frag" );
-	m_shaderProgramToon->SetCamera ( mainCamera );
+	// load textures
 
-	m_shaderProgramFBO = new Shader ( );
-	m_shaderProgramFBO->LoadShaders ( "shaderFBO.vert" , "edgeDetectionShader.frag" );
-	m_shaderProgramFBO->SetCamera ( mainCamera );
+	if ( m_gameData.contains ( "ImageTextures" ) )
+	{
+		try
+		{
+			auto textureData = m_gameData [ "ImageTextures" ];
+			for ( auto & texture : textureData )
+			{
+				auto newTexture = new Texture ( );
+				auto textureName = texture [ "Name" ].get<string> ( );
+				auto textureFile = texture [ "Path" ].get<string> ( );
+				newTexture->LoadTexture ( textureFile.c_str ( ) );
+				m_textures [ textureName ] = newTexture;
+			}
+		}
+		catch ( const std::exception & )
+		{
+			std::cerr << "Failed to load textures" << std::endl;
+		}
+	}
 
-	m_shaderProgramNoise = new Shader ( );
-	m_shaderProgramNoise->LoadShaders ( "shaderNoise.vert" , "shaderNoise.frag" );
-	m_shaderProgramNoise->SetCamera ( mainCamera );
+	// load materials
 
-	m_SyntyTexture = new Texture ( );
-	m_SyntyTexture->LoadTexture ( "PolygonCity_Texture_01_A.png" );
-	
-	m_BrickTexture = new Texture ( );
-	m_BrickTexture->LoadTexture ( "bricks.jpg" );
+	if ( m_gameData.contains ( "Materials" ) )
+	{
+		try
+		{
+			auto materialData = m_gameData [ "Materials" ];
+			for ( auto & material : materialData )
+			{
+				auto materialName = material [ "Name" ].get<string> ( );
 
-	m_Lava = new Texture ( );
-	m_Lava->LoadTexture ( "lava.jpg" );
+				auto shaderName = material [ "Shader" ].get<string> ( );
+				auto newMaterial = new Material ( m_shaders [ shaderName ] );
 
-	m_Noise = new Texture ( );
-	m_Noise->LoadTexture ( "noise.png" );
+				if ( material.contains ( "Uniforms" ) )
+				{
+					for ( auto & uniform : material [ "Uniforms" ] )
+					{
+						auto type = uniform [ "Type" ].get<string> ( );
+						auto name = uniform [ "Name" ].get<string> ( );
 
-	m_BrickTexture = new Texture ( );
-	m_BrickTexture->LoadTexture ( "bricks.jpg" );
+						if ( type == "float" )
+						{
+							newMaterial->SetFloatByName ( name.c_str ( ) , uniform [ "Value" ].get<float> ( ) );
+						}
+						else if ( type == "vec3" )
+						{
+							newMaterial->SetFloat3ByName ( name.c_str ( ) ,
+								uniform [ "Value" ][ 0 ].get<float> ( ) ,
+								uniform [ "Value" ][ 1 ].get<float> ( ) ,
+								uniform [ "Value" ][ 2 ].get<float> ( ) );
+						}
+						else if ( type == "Texture" )
+						{
+							auto textureName = uniform [ "Value" ].get<string> ( );
+							newMaterial->SetTexture ( name.c_str ( ) , m_textures [ textureName ] );
+						}
+						else
+						{
+							// error
+							std::cerr << "Unknown uniform type: " << type << std::endl;
+						}
+					}
+				}
 
-	m_SyntyMaterial = new Material ( m_shaderProgram );
-	m_SyntyMaterial->SetTexture ( "diffuse", m_SyntyTexture );
+				m_materials [ materialName ] = newMaterial;
+			}
+		}
+		catch ( const std::exception & )
+		{
+			std::cerr << "Failed to load materials" << std::endl;
+		}
+	}
 
-	m_BrickMaterial = new Material ( m_shaderProgram );
-	m_BrickMaterial->SetTexture ( "diffuse", m_BrickTexture );
-
-	m_FogMaterial	= new Material ( m_shaderProgramFog );
-	m_FogMaterial->SetFloat3ByName	( "fogColor", 0.5f, 0.1f, 0.1f );
-	m_FogMaterial->SetFloatByName	( "maxDist", 50.0f);
-	m_FogMaterial->SetFloatByName	( "minDist",  5.0f);
-	m_FogMaterial->SetTexture		( "diffuse", m_BrickTexture );
-
-	m_ToonMaterial = new Material	( m_shaderProgramToon );
-	m_ToonMaterial->SetTexture		( "diffuse", m_BrickTexture );
-	m_ToonMaterial->SetFloat3ByName	( "lightDir", 0.5f, 0.1f, 0.1f );
-
-	m_RimMaterial = new Material	( m_shaderProgramRim );
-	m_RimMaterial->SetTexture		( "diffuse" , m_BrickTexture );
-	m_RimMaterial->SetFloat3ByName	( "lightDir" , 0.5f , 0.1f , 0.1f );
-
-	m_PlanetMaterial = new Material ( m_shaderProgramNoise );
-	m_PlanetMaterial->SetTexture ( "texture1" , m_Noise );
-	m_PlanetMaterial->SetTexture ( "texture2" , m_Lava );
+	// don't forget to set the camera for the shaders.
+	for ( auto & shader : m_shaders )
+	{
+		shader.second->SetCamera ( mainCamera );
+	}
 
 	// get screen size from SDL
 	//m_FBO = new FrameBuffer ( _gameDisplay.getWidth( ), _gameDisplay.getHeight( ) );
@@ -177,10 +257,10 @@ void GameEngine::initSystems ( )
 	std::vector<glm::vec3> points;
 	std::vector<const Transform *> transforms;
 
-	//points.push_back ( glm::vec3 ( -2.5, 0, -2.5 ) );
-	//points.push_back ( glm::vec3 ( +2.5, 5, -2.5 ) );
-	//points.push_back ( glm::vec3 ( +2.5, 0, +2.5 ) );
-	//points.push_back ( glm::vec3 ( -2.5, 0, +2.5 ) );
+	points.push_back ( glm::vec3 ( -2.5, 0, -2.5 ) );
+	points.push_back ( glm::vec3 ( +2.5, 5, -2.5 ) );
+	points.push_back ( glm::vec3 ( +2.5, 0, +2.5 ) );
+	points.push_back ( glm::vec3 ( -2.5, 0, +2.5 ) );
 
 	for ( size_t i = 0; i < points.size ( ) + 1; i++ )
 	{
@@ -214,25 +294,25 @@ void GameEngine::initSystems ( )
 			{
 				case 0:
 					mesh->loadObjModel ( "monkey3.obj" );
-					mesh->SetMaterial ( m_BrickMaterial );
+					mesh->SetMaterial ( m_materials[ "Brick" ] );
 					r->SetRotationAxis ( true, !true, !true );
 					emitter->LoadEvent ( "event:/Orchestra 1st Star" );
 					break;
 				case 1:
 					mesh->loadObjModel ( "SM_Prop_Cone_02.obj" );
-					mesh->SetMaterial ( m_SyntyMaterial );
+					mesh->SetMaterial ( m_materials[ "Synty" ] );
 					r->SetRotationAxis ( !true, true, !true );
 					emitter->LoadEvent ( "event:/Orchestra 2nd Star" );
 					break;
 				case 2:
 					mesh->loadObjModel ( "SM_Prop_Cone_01.obj" );
-					mesh->SetMaterial ( m_SyntyMaterial );
+					mesh->SetMaterial ( m_materials [ "Synty" ] );
 					r->SetRotationAxis ( !true, !true, true );
 					emitter->LoadEvent ( "event:/Orchestra 3rd Star" );
 					break;
 				case 3:
 					mesh->loadObjModel ( "UnitCube.obj" );
-					mesh->SetMaterial ( m_SyntyMaterial );
+					mesh->SetMaterial ( m_materials [ "Synty" ] );
 					r->SetRotationAxis ( !true, !true, !true );
 					emitter->LoadEvent ( "event:/Casual Win 1" );
 					break;
@@ -250,17 +330,17 @@ void GameEngine::initSystems ( )
 			// This object is an arrow that will move between the four previously defined objects.
 			mesh->loadObjModel ( "ArrowNegZ.obj" );
 
-			mesh->SetMaterial ( m_SyntyMaterial );
+			mesh->SetMaterial ( m_materials [ "Synty" ] );
 
 			obj->GetTransform ( ).SetPosition ( ( float ) ( 0 ), 0, 0 );
 
 			auto path = ( PathFollow * ) obj->AddComponent ( PATH_FOLLOW );
 
 			// using world coordinates
-			//for ( auto & point : points )
-			//{
-			//	path->AddWayPoint ( point );
-			//}
+			for ( auto & point : points )
+			{
+				path->AddWayPoint ( point );
+			}
 
 			// using Transforms 
 			for ( auto point : transforms )
@@ -270,34 +350,32 @@ void GameEngine::initSystems ( )
 
 			path->SetSpeed ( 2.5f );
 
-			//toFollow = &obj->GetTransform ( );
+			toFollow = &obj->GetTransform ( );
 		}
 	}
 
 #pragma region Suzanna
 
-	//auto obj = GameObjectManager::CreateObject ( );
-	//obj->GetTransform ( ).SetScale ( 2.5f );
-	//obj->GetTransform ( ).SetPosition ( 4.0f , 0.0f , 0.0f );
+	auto obj = GameObjectManager::CreateObject ( );
+	obj->GetTransform ( ).SetScale ( 2.5f );
+	obj->GetTransform ( ).SetPosition ( 4.0f , 0.0f , 0.0f );
 
-	//auto explodingMaterial = new Material ( m_shaderProgramGeo );
-	//explodingMaterial->SetTexture ( "diffuse" , m_BrickTexture );
+	auto mesh = ( MeshRenderer * ) obj->AddComponent ( ComponentTypes::MESH_RENDERER );
+	mesh->SetMaterial ( m_materials [ "Exploding" ] );
+	mesh->loadObjModel ( "monkey3.obj" );
 
-	//auto mesh = ( MeshRenderer * ) obj->AddComponent ( ComponentTypes::MESH_RENDERER );
-	//mesh->SetMaterial ( explodingMaterial );
-	//mesh->loadObjModel ( "monkey3.obj" );
+	auto exp = ( ExplosionController * ) obj->AddComponent ( ComponentTypes::EXPLOSION_CONTROLLER );
+	exp->SetMaterial ( m_materials [ "Exploding" ] );
+	exp->SetSpeed ( 0.5f );
 
-	//auto exp = ( ExplosionController * ) obj->AddComponent ( ComponentTypes::EXPLOSION_CONTROLLER );
-	//exp->SetMaterial ( explodingMaterial );
-	//exp->SetSpeed ( 0.5f );
-
-	//auto switcher = ( MaterialSwitch * ) obj->AddComponent ( ComponentTypes::MATERIAL_SWITCHER );
-	//switcher->AddMaterial ( SDLK_1 , explodingMaterial );
-	//switcher->AddMaterial ( SDLK_2 , m_BrickMaterial );
-	//switcher->AddMaterial ( SDLK_3 , m_SyntyMaterial );
-	//switcher->AddMaterial ( SDLK_4 , m_FogMaterial );
-	//switcher->AddMaterial ( SDLK_5 , m_RimMaterial );
-	//switcher->AddMaterial ( SDLK_6 , m_ToonMaterial );
+	auto switcher = ( MaterialSwitch * ) obj->AddComponent ( ComponentTypes::MATERIAL_SWITCHER );
+	switcher->AddMaterial ( SDLK_1 , m_materials [ "Exploding" ] );
+	switcher->AddMaterial ( SDLK_2 , m_materials [ "Brick" ] );
+	switcher->AddMaterial ( SDLK_3 , m_materials [ "Synty" ] );
+	switcher->AddMaterial ( SDLK_4 , m_materials [ "Fog" ] );
+	switcher->AddMaterial ( SDLK_5 , m_materials [ "Rim" ] );
+	switcher->AddMaterial ( SDLK_6 , m_materials [ "Toon" ] );
+	switcher->AddMaterial ( SDLK_7 , m_materials [ "Planet" ] );
 
 #pragma endregion
 
@@ -308,11 +386,11 @@ void GameEngine::initSystems ( )
 	planetObj->GetTransform ( ).SetPosition ( 0.0f , 5.0f , 0.0f );
 
 	auto planetMesh = ( MeshRenderer * ) planetObj->AddComponent ( ComponentTypes::MESH_RENDERER );
-	planetMesh->SetMaterial ( m_PlanetMaterial );
+	planetMesh->SetMaterial ( m_materials[ "Planet" ] );
 	planetMesh->loadObjModel ( "ball.obj" );
 
 	auto noise = ( NoiseController * ) planetObj->AddComponent ( ComponentTypes::NOISE_CONTROLLER );
-	noise->SetMaterial ( m_PlanetMaterial );
+	noise->SetMaterial ( m_materials [ "Planet" ] );
 	noise->SetSpeed ( 0.5f );
 
 #pragma endregion
@@ -330,9 +408,9 @@ void GameEngine::initSystems ( )
 
 void GameEngine::gameLoop ( )
 {
-	while ( _gameState != GameState::EXIT )
+	while ( m_gameState != GameState::EXIT )
 	{
-		Time::Service ( _gameDisplay.getTime ( ) );
+		Time::Service ( m_gameDisplay.getTime ( ) );
 
 		processInput ( );
 		CollisionManager::Service ( );
@@ -349,11 +427,23 @@ void GameEngine::gameLoop ( )
 
 void GameEngine::shutdown ( )
 {
-	delete m_SyntyMaterial;
-	delete m_BrickMaterial;
-	delete m_shaderProgram;
-	delete m_BrickTexture;
-	delete m_SyntyTexture;
+	for ( auto & material : m_materials )
+	{
+		delete material.second;
+	}
+	m_materials.clear ( );
+
+	for ( auto & texture : m_textures )
+	{
+		delete texture.second;
+	}
+	m_textures.clear ( );
+
+	for ( auto & shader : m_shaders )
+	{
+		delete shader.second;
+	}
+	m_shaders.clear ( );
 
 	GameObjectManager::Shutdown ( );
 	CollisionManager::Shutdown ( );
@@ -383,20 +473,20 @@ void GameEngine::processInput ( )
 				Input::ProcessWheel ( eventData.wheel.x, eventData.wheel.y );
 				break;
 			case SDL_QUIT:
-				_gameState = GameState::EXIT;
+				m_gameState = GameState::EXIT;
 				break;
 		}
 	}
 
 	if ( Input::IsKeyPressed ( SDLK_ESCAPE ) )
 	{
-		_gameState = GameState::EXIT;
+		m_gameState = GameState::EXIT;
 	}
 }
 
 void GameEngine::drawGame ( )
 {
-	_gameDisplay.clearDisplay ( );
+	m_gameDisplay.clearDisplay ( );
 
 	if ( m_FBO != nullptr )
 	{
@@ -411,7 +501,7 @@ void GameEngine::drawGame ( )
 
 	if ( m_FBO != nullptr )
 	{
-		m_FBO->RenderQuad ( m_shaderProgramFBO );
+		m_FBO->RenderQuad ( m_shaders[ "FBO" ] );
 	}
 
 	Renderer::Service ( );
@@ -420,6 +510,6 @@ void GameEngine::drawGame ( )
 		m_skyBox->Draw ( );
 	}
 
-	_gameDisplay.swapBuffer ( );
+	m_gameDisplay.swapBuffer ( );
 }
 

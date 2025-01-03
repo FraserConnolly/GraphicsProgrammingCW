@@ -63,7 +63,7 @@ void Display::initDisplay()
 	SDL_GL_SetAttribute ( SDL_GL_DEPTH_SIZE , 24 );
 	SDL_GL_SetAttribute ( SDL_GL_STENCIL_SIZE , 8 );
 
-	_window = SDL_CreateWindow("Offstage Controls",
+	_window = SDL_CreateWindow( _title.c_str( ),
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
 		_screenWidth,
@@ -106,6 +106,12 @@ void Display::initDisplay ( const float width, const float height )
 	_screenWidth = (int) width;
 	_screenHeight = (int) height;
 	initDisplay ( );
+}
+
+void Display::initDisplay ( const float width , const float height, const string title )
+{
+	_title = title;
+	initDisplay ( width, height );
 }
 
 void Display::clearDisplay ( )

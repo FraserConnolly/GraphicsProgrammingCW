@@ -3,6 +3,9 @@
 #include <SDL\SDL.h>
 #include <GL\glew.h>
 
+#include "json/json.hpp"
+using json = nlohmann::json;
+
 #include "Display.h"
 
 #if USE_DEBUG_CONSOLE
@@ -27,6 +30,7 @@ public:
 	GameEngine ( );
 	~GameEngine ( );
 
+	int loadGame ( const wchar_t * filename ) ;
 	void run ( );
 
 private:
@@ -37,29 +41,19 @@ private:
 	void shutdown ( );
 	void drawGame ( );
 
-	GameState _gameState = GameState::PLAY;
-	Display _gameDisplay;
+	GameState m_gameState = GameState::PLAY;
+	Display m_gameDisplay;
 
-	Material * m_FogMaterial = nullptr;
-	Material * m_RimMaterial = nullptr;
-	Material * m_ToonMaterial = nullptr;
-	Material * m_BrickMaterial = nullptr;
-	Material * m_SyntyMaterial = nullptr;
-	Material * m_PlanetMaterial = nullptr;
+	json m_gameData;
+	
+	string m_gameName;
+	int m_screenWidth = 640;
+	int m_screenHeight = 480;
 
-	Texture * m_SyntyTexture = nullptr;
-	Texture * m_BrickTexture = nullptr;
-	Texture * m_Lava = nullptr;
-	Texture * m_Noise = nullptr;
-	
-	Shader * m_shaderProgram = nullptr;
-	Shader * m_shaderProgramGeo = nullptr;
-	Shader * m_shaderProgramRim = nullptr;
-	Shader * m_shaderProgramFog = nullptr;
-	Shader * m_shaderProgramToon = nullptr;
-	Shader * m_shaderProgramFBO = nullptr;
-	Shader * m_shaderProgramNoise = nullptr;
-	
+	map<string, Texture *> m_textures;
+	map<string, Shader *> m_shaders;
+	map<string, Material *> m_materials;
+
 	CubeMap * m_skyBox = nullptr;
 	
 	FrameBuffer * m_FBO = nullptr;

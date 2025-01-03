@@ -3,19 +3,26 @@
 #include <GL\glew.h>
 #include <iostream>
 #include <string>
-using namespace std;
 
+using namespace std;
 
 class Display
 {
+
 public:
+	
 	Display();
 	~Display();
+	
 	void initDisplay ( );
 	void initDisplay ( const float width, const float height );
+	void initDisplay ( const float width , const float height , const string title );
+	
 	void clearDisplay ( );
 	void clearDisplay ( const float r, const float g, const float b, const float a);
+	
 	void swapBuffer();
+	
 	float getTime ( );
 
 	int getWidth  ( ) const;
@@ -29,5 +36,7 @@ private:
 	SDL_GLContext _glContext;
 	int _screenWidth;
 	int _screenHeight;
+	string _title = "Offstage Controls";
+
 };
 

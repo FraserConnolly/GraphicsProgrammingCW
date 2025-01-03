@@ -1,0 +1,175 @@
+{
+	"GameName": "Game Name",
+	"Display": {
+		"Width": 800,
+		"Height": 600
+	},
+	"Shaders": [
+		{
+			"Name": "Default",
+			"Vertex": "ads.vert",
+			"Fragment": "ads.frag"
+		},
+		{
+			"Name": "Geometry",
+			"Vertex": "shaderGeoText.vert",
+			"Geometry": "shaderGeoText.geom",
+			"Fragment": "shaderGeoText.frag"
+		},
+		{
+			"Name": "Fog",
+			"Vertex": "fogShader.vert",
+			"Fragment": "fogShader.frag"
+		},
+		{
+			"Name": "Rim",
+			"Vertex": "shaderRim.vert",
+			"Fragment": "shaderRim.frag"
+		},
+		{
+			"Name": "Toon",
+			"Vertex": "shaderToon.vert",
+			"Fragment": "shaderToon.frag"
+		},
+		{
+			"Name": "EdgeDetection",
+			"Vertex": "shaderFBO.vert",
+			"Fragment": "edgeDetectionShader.frag"
+		},
+		{
+			"Name": "Noise",
+			"Vertex": "shaderNoise.vert",
+			"Fragment": "shaderNoise.frag"
+		}
+	],
+	"ImageTextures": [
+		{
+			"Name": "PolygonCity_Texture_01_A",
+			"Path": "PolygonCity_Texture_01_A.png"
+		},
+		{
+			"Name": "Brick",
+			"Path": "bricks.jpg"
+		},
+		{
+			"Name": "Lava",
+			"Path": "lava.jpg"
+		},
+		{
+			"Name": "Noise",
+			"Path": "noise.png"
+		}
+	],
+
+	"Materials": [
+		{
+			"Name": "Synty",
+			"Shader": "Default",
+			"Uniforms": [
+				{
+					"Name": "diffuse",
+					"Type": "Texture",
+					"Value": "PolygonCity_Texture_01_A"
+				}
+			]
+		},
+		{
+			"Name": "Brick",
+			"Shader": "Default",
+			"Uniforms": [
+				{
+					"Name": "diffuse",
+					"Type": "Texture",
+					"Value": "Brick"
+				}
+			]
+		},
+		{
+			"Name": "Fog",
+			"Shader": "Fog",
+			"Uniforms": [
+				{
+					"Name": "diffuse",
+					"Type": "Texture",
+					"Value": "Brick"
+				},
+				{
+					"Name": "maxDist",
+					"Type": "float",
+					"Value": 0.1
+				},
+				{
+					"Name": "minDist",
+					"Type": "float",
+					"Value": 0.1
+				},
+				{
+					"Name": "fogColor",
+					"Type": "vec3",
+					"Value": [ 0.5, 0.1, 0.1 ]
+				}
+			]
+		},
+		{
+			"Name": "Toon",
+			"Shader": "Toon",
+			"Uniforms": [
+				{
+					"Name": "diffuse",
+					"Type": "Texture",
+					"Value": "Brick"
+				},
+				{
+					"Name": "lightDir",
+					"Type": "vec3",
+					"Value": [ 0.5, 0.1, 0.1 ]
+				}
+			]
+		},
+		{
+			"Name": "Rim",
+			"Shader": "Rim",
+			"Uniforms": [
+				{
+					"Name": "diffuse",
+					"Type": "Texture",
+					"Value": "Brick"
+				},
+				{
+					"Name": "lightDir",
+					"Type": "vec3",
+					"Value": [ 0.5, 0.1, 0.1 ]
+				}
+			]
+		},
+		{
+			"Name": "Planet",
+			"Shader": "Noise",
+			"Uniforms": [
+				{
+					"Name": "texture1",
+					"Type": "Texture",
+					"Value": "Noise"
+				},
+				{
+					"Name": "texture2",
+					"Type": "Texture",
+					"Value": "Lava"
+				}
+			]
+		},
+		{
+			"Name": "Exploding",
+			"Shader": "Geometry",
+			"Unifroms": [
+        {
+          "Name": "diffuse",
+          "Type": "Texture",
+          "Value": "Brick"
+        }
+      ]
+		}
+
+	]
+
+}
