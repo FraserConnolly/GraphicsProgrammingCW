@@ -109,25 +109,6 @@ void GameEngine::initSystems ( )
 
 #pragma endregion
 
-#pragma region Skybox
-
-	m_skyBox = new CubeMap ( );
-
-	vector<char *> faces
-	{
-		"right.jpg",
-		"left.jpg",
-		"top.jpg",
-		"bottom.jpg",
-		"front.jpg",
-		"back.jpg"
-	};
-
-	m_skyBox->LoadCubeMap ( faces );
-	m_skyBox->SetCamera ( *mainCamera );
-
-#pragma endregion
-
 #pragma region Set up materials and textures
 
 	// load shaders
@@ -164,7 +145,7 @@ void GameEngine::initSystems ( )
 		}
 	}
 
-	// load textures
+	// load image textures
 
 	if ( m_gameData.contains ( "ImageTextures" ) )
 	{
@@ -186,8 +167,39 @@ void GameEngine::initSystems ( )
 		}
 	}
 
-	// load materials
+	// load cube map textures
 
+	if ( m_gameData.contains ( "CubeMaps" ) )
+	{
+		try
+		{
+			auto cubeMapData = m_gameData [ "CubeMaps" ];
+			for ( auto & texture : cubeMapData )
+			{
+				auto newTexture = new Texture ( );
+				auto textureName = texture [ "Name" ].get<string> ( );
+				auto textureFiles = texture [ "Paths" ];
+				vector<char *> faces;
+
+				// Loop through the JSON array and convert each string to char*
+				for ( const auto & path : textureFiles ) {
+					// Convert each string to char* and push to the vector
+					// We use strdup here to create a copy of the string
+					faces.push_back ( _strdup ( path.get<std::string> ( ).c_str ( ) ) );
+				}
+
+				newTexture->LoadCubeMap ( faces );
+				m_textures [ textureName ] = newTexture;
+			}
+		}
+		catch ( const std::exception & )
+		{
+			std::cerr << "Failed to load textures" << std::endl;
+		}
+	}
+
+	// load materials
+	
 	if ( m_gameData.contains ( "Materials" ) )
 	{
 		try
@@ -249,6 +261,28 @@ void GameEngine::initSystems ( )
 	// get screen size from SDL
 	//m_FBO = new FrameBuffer ( _gameDisplay.getWidth( ), _gameDisplay.getHeight( ) );
 
+
+#pragma endregion
+
+#pragma region Skybox
+
+	if ( m_gameData.contains ( "Skybox" ) )
+	{
+		try
+		{
+			auto skyboxData = m_gameData [ "Skybox" ];
+			m_skyBox = new CubeMap (
+				m_shaders [ skyboxData [ "Shader" ] ] ,
+				m_textures [ skyboxData [ "Texture" ] ] );
+
+			m_skyBox->SetCamera ( *mainCamera );
+
+		}
+		catch ( const std::exception & )
+		{
+			std::cerr << "Failed to load skybox" << std::endl;
+		}
+	}
 
 #pragma endregion
 

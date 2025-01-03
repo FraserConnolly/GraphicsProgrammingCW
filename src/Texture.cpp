@@ -48,6 +48,8 @@ Texture::~Texture ( )
 
 void Texture::LoadTexture ( const char * filename )
 {
+	stbi_set_flip_vertically_on_load ( true );
+
 	DeleteCurrentTexture ( );
 	m_textureType = TEXTURE_2D;
 
@@ -59,7 +61,6 @@ void Texture::LoadTexture ( const char * filename )
     // ... but 'n' will always be the number that it would have been if you said 0
 	
 	// we must use 4 because we later have GL_RGBA which requires all four channels.
-	stbi_set_flip_vertically_on_load(true);
 	unsigned char * data = stbi_load ( filename, &_width, &_height, &_nrChannels, 4 );
 
 	if ( ! data )
@@ -88,6 +89,8 @@ void Texture::LoadTexture ( const char * filename )
 // Heavily influenced by LearnOpenGL.com website. - https://learnopengl.com/Advanced-OpenGL/Cubemaps
 void Texture::LoadCubeMap ( const std::vector<char *> & cubeMapFilePaths )
 { 
+	stbi_set_flip_vertically_on_load ( false );
+
 	DeleteCurrentTexture ( );
 	m_textureType = CUBEMAP;
 
@@ -117,6 +120,8 @@ void Texture::LoadCubeMap ( const std::vector<char *> & cubeMapFilePaths )
 	glTexParameteri ( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameteri ( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	glTexParameteri ( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
+
+	_fileLoaded = true;
 }
 
 void Texture::Bind ( GLint unit )
