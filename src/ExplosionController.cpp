@@ -38,3 +38,8 @@ void ExplosionController::SetMaterial ( Material * const material )
 	m_material = material;
 	m_uniformTimeLocation = m_material -> GetUniformLocation ( "time" );
 }
+
+void ExplosionController::Deserialise ( const json & data )
+{
+	__debugbreak ( );
+}

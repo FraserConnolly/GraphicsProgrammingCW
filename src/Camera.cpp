@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Transform.h"
+#include "Renderer.h"
 
 Camera::Camera ( GameObject & hostObject )
 	: Component( hostObject, ComponentTypes::CAMERA ),
@@ -10,6 +11,21 @@ Camera::Camera ( GameObject & hostObject )
 
 Camera::~Camera ( )
 { }	
+
+void Camera::Awake ( )
+{
+	Renderer::RegisterCamera ( this );
+}
+
+void Camera::OnDestroy ( )
+{
+	Renderer::DeregisterCamera ( this );
+}
+
+void Camera::Deserialise ( const json & data )
+{
+	__debugbreak ( );
+}
 
 glm::mat4 Camera::GetViewMatrix ( )
 {

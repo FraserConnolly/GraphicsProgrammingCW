@@ -14,6 +14,9 @@ public:
 
 	static GameObject * CreateObject( );
 
+	static GameObject * FindObject ( const int id );
+	static GameObject * FindObjectByName ( const std::string name );
+
 private:
 
 	GameObjectManager ( );

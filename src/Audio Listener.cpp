@@ -14,3 +14,8 @@ void AudioListener::Update ( )
 		Audio::Set3dListenerAndOrientation ( m_listenerIndex, m_position, m_forward, m_up );
 	}
 }
+
+void AudioListener::Deserialise ( const json & data )
+{
+	__debugbreak ( );
+}

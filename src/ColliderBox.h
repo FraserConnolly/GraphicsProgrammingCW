@@ -18,6 +18,8 @@ public:
     const glm::quat & GetRotation ( ) const override;
     const Transform & GetTransform ( ) const; // just a short cut
 
+    void Deserialise ( const json & data ) override;
+
 private:
 
     glm::vec3 m_extents;

@@ -70,3 +70,8 @@ void PlayerController::Update ( )
     m_transform.SetPosition ( Position );
 }
 
+void PlayerController::Deserialise ( const json & data )
+{
+    __debugbreak ( );
+}
+

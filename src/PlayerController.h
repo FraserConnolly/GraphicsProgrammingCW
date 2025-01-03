@@ -28,6 +28,8 @@ public:
         return m_speed;
     }
 
+    void Deserialise ( const json & data ) override;
+
 private:
 
     float m_speed;

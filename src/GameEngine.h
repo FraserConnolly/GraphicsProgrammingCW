@@ -2,16 +2,16 @@
 
 #include <SDL\SDL.h>
 #include <GL\glew.h>
-
-#include "json/json.hpp"
-using json = nlohmann::json;
+#include <map>
 
 #include "Display.h"
 
 #if USE_DEBUG_CONSOLE
 #include "ConsoleDebugScene.h"
 #endif
-#include "FrameBuffer.h"
+
+#include "json/json.hpp"
+using json = nlohmann::json;
 
 enum class GameState
 {
@@ -22,6 +22,7 @@ class Texture;
 class Shader;
 class Material;
 class CubeMap;
+class Camera;
 
 class GameEngine
 {
@@ -53,10 +54,6 @@ private:
 	map<string, Texture *> m_textures;
 	map<string, Shader *> m_shaders;
 	map<string, Material *> m_materials;
-
-	CubeMap * m_skyBox = nullptr;
-	
-	FrameBuffer * m_FBO = nullptr;
 
 #if USE_DEBUG_CONSOLE
 	ConsoleDebugScene _debugScene;

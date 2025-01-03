@@ -37,3 +37,8 @@ void Rotator::SetRotationAxis ( glm::bvec3 & axisRotation )
 	m_y_speed = m_axisRotation.y ? m_speed : 0.0f;
 	m_z_speed = m_axisRotation.z ? m_speed : 0.0f;
 }
+
+void Rotator::Deserialise ( const json & data )
+{
+	__debugbreak ( );
+}

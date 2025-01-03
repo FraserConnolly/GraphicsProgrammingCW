@@ -6,6 +6,9 @@ class GameObject;
 class Transform;
 class Collider;
 
+#include "json/json.hpp"
+using json = nlohmann::json;
+
 class Component
 {
 public: 
@@ -41,6 +44,8 @@ public:
 	{
 		return m_componentType;
 	}
+
+	virtual void Deserialise ( const json & data ) = 0;
 
 protected:
 

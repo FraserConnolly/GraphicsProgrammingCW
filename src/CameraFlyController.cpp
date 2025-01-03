@@ -69,6 +69,31 @@ void CameraFlyController::ProcessMouseScroll ( int yoffset )
         Zoom = 45.0f;
 }
 
+void CameraFlyController::Awake ( )
+{
+    // Technically these only need to be called on the first script.
+    // But there currently isn't away of doing that.
+    Input::RegisterKey ( SDLK_a ); // left
+    Input::RegisterKey ( SDLK_d ); // right
+    Input::RegisterKey ( SDLK_w ); // forward
+    Input::RegisterKey ( SDLK_s ); // back
+    Input::RegisterKey ( SDLK_q ); // down
+    Input::RegisterKey ( SDLK_e ); // up
+    Input::RegisterKey ( SDLK_SPACE ); // lock mouse
+
+    Yaw = m_transform.GetRotationEuler ( ).y;
+    Pitch = m_transform.GetRotationEuler ( ).x;
+
+    GetGameObject ( ).GetComponent ( ComponentTypes::CAMERA , m_camera );
+    Zoom = m_camera->GetFoV ( );
+
+    if ( m_camera == nullptr )
+    {
+		// CameraFlyController requires a camera component to be attached to the same GameObject."
+        SetActive ( false );
+	}
+}
+
 void CameraFlyController::Update ( )
 {
     Component::Update ( );
@@ -123,6 +148,11 @@ void CameraFlyController::Update ( )
 
 #pragma endregion
 
+}
+
+void CameraFlyController::Deserialise ( const json & data )
+{
+    __debugbreak ( );
 }
 
 void CameraFlyController::UpdateCamera ( )

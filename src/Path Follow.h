@@ -28,6 +28,8 @@ public:
 	void SetSpeed ( float speed );
 	const float GetSpeed ( );
 
+	void Deserialise ( const json & data ) override;
+
 private:
 
 	float m_speed;

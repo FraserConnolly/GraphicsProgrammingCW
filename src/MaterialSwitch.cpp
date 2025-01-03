@@ -42,3 +42,8 @@ void MaterialSwitch::ClearMaterials ( )
 {
 	m_materials.clear( );
 }
+
+void MaterialSwitch::Deserialise ( const json & data )
+{
+	__debugbreak( );
+}

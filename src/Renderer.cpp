@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "Camera.h"
+#include "CubeMap.h"
 
 #include <GL\glew.h>
 
@@ -23,9 +25,40 @@ void Renderer::Startup ( )
 
 void Renderer::Service ( )
 { 
+    for ( auto & camera : s_instance->m_cameras )
+    {
+        if ( !camera->IsActiveAndEnabled ( ) )
+        {
+            // this camera should not be rendered
+			continue;
+        }
+
+        FrameBuffer * fbo = camera->GetFrameBufferObject ( );
+
+        if ( fbo != nullptr )
+        {
+            fbo->Bind ( );
+        }
+
+        RenderObjectsForCamera ( camera );
+
+        if ( camera->GetRenderSkybox ( ) && s_instance->m_skybox != nullptr )
+        {
+            s_instance->m_skybox->Draw ( *camera );
+        }
+
+        if ( fbo != nullptr )
+        {
+			fbo->Unbind ( );
+		}
+    }
+}
+
+void Renderer::RenderObjectsForCamera ( Camera *& camera )
+{
     for ( auto & object : s_instance->m_renderers )
     {
-        if ( ! object->IsActiveAndEnabled( ) )
+        if ( !object->IsActiveAndEnabled ( ) )
         {
             // this mesh should not be rendered
             continue;
@@ -44,7 +77,7 @@ void Renderer::Service ( )
 
         // bind and update the shader
         shader.Bind ( );
-        shader.Update ( object->GetGameObject ( ).GetTransform ( ) );
+        shader.Update ( *camera , object->GetGameObject ( ).GetTransform ( ) );
 
         // count the number of unbound textures
 
@@ -66,7 +99,7 @@ void Renderer::Service ( )
             continue;
         }
 
-        if ( ! CheckUnitsAvilable ( textureCount ) )
+        if ( !CheckUnitsAvilable ( textureCount ) )
         {
             // we need more texture units
             FreeAllTextureUnits ( );
@@ -79,23 +112,23 @@ void Renderer::Service ( )
 
             BindTexture ( texture );
 
-            shader.SetUniform ( pair.first, texture->_activeBind );
+            shader.SetUniform ( pair.first , texture->_activeBind );
         }
 
         // the pair here is a GLint representing the uniform location that this value that should be set to it.
-        for (auto& pair : material->m_floats)
+        for ( auto & pair : material->m_floats )
         {
             float value = pair.second;
 
-            shader.SetUniform(pair.first, value);
+            shader.SetUniform ( pair.first , value );
         }
 
         // the pair here is a GLint representing the uniform location that this value that should be set to it.
-        for (auto& pair : material->m_float3s)
+        for ( auto & pair : material->m_float3s )
         {
             glm::vec3 value = pair.second;
 
-            shader.SetUniform(pair.first, value.x, value.y, value.z);
+            shader.SetUniform ( pair.first , value.x , value.y , value.z );
         }
 
         // draw the mesh
@@ -105,6 +138,8 @@ void Renderer::Service ( )
 
 void Renderer::Shutdown ( )
 {
+    // to do, this deletion is not ideal.
+    delete s_instance->m_skybox;
     delete s_instance;
     delete[ ] s_activeTextures;
 }
@@ -138,6 +173,42 @@ void Renderer::DeregisterMeshRenderer ( const MeshRenderer * pMeshRenderer )
         return;
 
     s_instance->m_renderers.erase ( itor );
+}
+
+void Renderer::RegisterCamera ( Camera * pCamera )
+{
+    if ( pCamera == nullptr )
+    {
+        // to do - log this error.
+        return;
+    }
+
+    //Make sure this component doesn't already exist in the list
+    auto found = std::find ( s_instance->m_cameras.begin ( ) ,
+        s_instance->m_cameras.end ( ) , pCamera );
+
+    if ( found != s_instance->m_cameras.end ( ) )
+    {
+        return;
+    }
+
+    s_instance->m_cameras.push_back ( pCamera );
+}
+
+void Renderer::DeregisterCamera ( Camera * pCamera )
+{
+    auto end = s_instance->m_cameras.end ( );
+    auto itor = std::find ( s_instance->m_cameras.begin ( ) , end , pCamera );
+
+    if ( itor == end )
+        return;
+
+    s_instance->m_cameras.erase ( itor );
+}
+
+void Renderer::SetSkybox ( CubeMap * pCubeMap )
+{
+    s_instance->m_skybox = pCubeMap;
 }
 
 GLint Renderer::FindFreeTextureUnit ( )

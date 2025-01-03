@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 
+
 // Sub systems
 #include "GameObjectManager.h"
 #include "Time.h"
@@ -24,6 +25,8 @@
 #include "ExplosionController.h"
 #include "MaterialSwitch.h"
 #include "NoiseController.h"
+
+using json = nlohmann::json;
 
 GameEngine::GameEngine ( ) { }
 
@@ -95,21 +98,7 @@ void GameEngine::initSystems ( )
 
 #pragma endregion
 
-#pragma region Main Camera
-
-	auto mainCameraObj = GameObjectManager::CreateObject ( );
-	auto mainCamera = ( Camera * ) mainCameraObj->AddComponent ( ComponentTypes::CAMERA );
-
-	auto flyController = ( CameraFlyController * ) mainCameraObj->AddComponent ( ComponentTypes::CAMERA_FLY_CONTROLLER );
-	flyController->SetCamera ( *mainCamera );
-
-	mainCameraObj->GetTransform ( ).SetPosition ( glm::vec3 ( 0.0f, 7.5f, 10.0f ) );
-	mainCameraObj->GetTransform ( ).SetRotationEulerInDegrees ( -29, 0, 0 );
-	mainCameraObj->AddComponent ( ComponentTypes::AUDIO_LISTENER );
-
-#pragma endregion
-
-#pragma region Set up materials and textures
+#pragma region Load shaders, materials, and textures
 
 	// load shaders
 
@@ -252,15 +241,8 @@ void GameEngine::initSystems ( )
 		}
 	}
 
-	// don't forget to set the camera for the shaders.
-	for ( auto & shader : m_shaders )
-	{
-		shader.second->SetCamera ( mainCamera );
-	}
-
 	// get screen size from SDL
 	//m_FBO = new FrameBuffer ( _gameDisplay.getWidth( ), _gameDisplay.getHeight( ) );
-
 
 #pragma endregion
 
@@ -271,16 +253,78 @@ void GameEngine::initSystems ( )
 		try
 		{
 			auto skyboxData = m_gameData [ "Skybox" ];
-			m_skyBox = new CubeMap (
+			CubeMap * skyBox = new CubeMap (
 				m_shaders [ skyboxData [ "Shader" ] ] ,
 				m_textures [ skyboxData [ "Texture" ] ] );
 
-			m_skyBox->SetCamera ( *mainCamera );
-
+			Renderer::SetSkybox ( skyBox );
 		}
 		catch ( const std::exception & )
 		{
 			std::cerr << "Failed to load skybox" << std::endl;
+		}
+	}
+
+#pragma endregion
+
+#pragma region Create game objects
+
+	if ( m_gameData.contains ( "Objects" ) )
+	{
+		try
+		{
+			auto objects = m_gameData [ "Objects" ];
+			for ( auto & object : objects )
+			{
+				// Note, object name is currently not implemented.
+
+				auto obj = GameObjectManager::CreateObject ( );
+				
+				if ( object.contains ( "Name" ) )
+				{
+					obj->SetName ( object [ "Name" ].get<string> ( ) );
+				}
+
+				if ( object.contains ( "Position" ) )
+				{
+					auto position = object [ "Position" ];
+					obj->GetTransform ( ).SetPosition ( position [ 0 ].get<float> ( ) ,
+						position [ 1 ].get<float> ( ) ,
+						position [ 2 ].get<float> ( ) );
+				}
+
+				if ( object.contains ( "Rotation" ) )
+				{
+					auto rotation = object [ "Rotation" ];
+					obj->GetTransform ( ).SetRotationEulerInDegrees ( rotation [ 0 ].get<float> ( ) ,
+												rotation [ 1 ].get<float> ( ) ,
+												rotation [ 2 ].get<float> ( ) );
+				}
+
+				if ( object.contains ( "Scale" ) )
+				{
+					auto scale = object [ "Scale" ];
+					obj->GetTransform ( ).SetScale ( scale [ 0 ].get<float> ( ) ,
+						scale [ 1 ].get<float> ( ) ,
+						scale [ 2 ].get<float> ( ) );
+				}
+
+				if ( object.contains ( "Components" ) )
+				{
+					auto components = object [ "Components" ];
+					for ( auto & component : components )
+					{
+						auto type = component [ "Type" ].get<string> ( );
+						auto newComponent = obj->AddComponent ( type );
+						newComponent->Deserialise ( component );
+					}
+				}
+
+			}
+		}
+		catch ( const std::exception & )
+		{
+			std::cerr << "Failed to load objects" << std::endl;
 		}
 	}
 
@@ -522,7 +566,7 @@ void GameEngine::drawGame ( )
 {
 	m_gameDisplay.clearDisplay ( );
 
-	if ( m_FBO != nullptr )
+	/*if ( m_FBO != nullptr )
 	{
 		m_FBO->Bind ( );
 		Renderer::Service ( );
@@ -533,16 +577,17 @@ void GameEngine::drawGame ( )
 		m_FBO->Unbind ( );
 	}
 
+	// not yet implemented in RendererService!
 	if ( m_FBO != nullptr )
 	{
 		m_FBO->RenderQuad ( m_shaders[ "FBO" ] );
-	}
+	}*/
 
 	Renderer::Service ( );
-	if ( m_skyBox != nullptr )
+	/*if ( m_skyBox != nullptr )
 	{
 		m_skyBox->Draw ( );
-	}
+	}*/
 
 	m_gameDisplay.swapBuffer ( );
 }

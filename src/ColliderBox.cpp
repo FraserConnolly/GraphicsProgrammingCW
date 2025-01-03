@@ -40,3 +40,8 @@ const Transform & ColliderBox::GetTransform ( ) const
 {
     return m_transform;
 }
+
+void ColliderBox::Deserialise ( const json & data )
+{
+    __debugbreak ( );
+}

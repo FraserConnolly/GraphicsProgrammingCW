@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "GameObject.h"
 #include "Camera.h"
 #include "Mesh.h"
@@ -17,9 +19,13 @@
 unsigned int GameObject::s_objectIDCounter = 0;
 
 GameObject::GameObject ( )
-    : m_transform ( *new Transform ( *this ) ), m_id ( 0 )
+    : m_transform ( *new Transform ( *this ) ), m_id ( s_objectIDCounter++ )
 {
-    m_id = s_objectIDCounter++;
+    // assign a default name for this object
+    std::ostringstream oss;
+    oss << "Object " << m_id;
+    m_name = oss.str ( );
+
     AddComponent ( &m_transform );
 }
 
@@ -111,6 +117,51 @@ void GameObject::OnCollisionExit ( const Collider & otherCollider )
             comp->OnCollisionExit ( otherCollider );
         }
     }
+}
+
+/// <summary>
+/// Adds a new component based on the strings used in the FGame file.
+/// </summary>
+/// <param name="component"></param>
+/// <returns></returns>
+Component * GameObject::AddComponent ( const std::string component )
+{
+    ComponentTypes type = ComponentTypes::NOT_FOUND;
+
+    if ( component == "MeshRenderer" )
+        type = MESH_RENDERER;
+    else if ( component == "BoxCollider" )
+        type = BOX_COLIDER;
+    else if ( component == "SphereCollider" )
+        type = SPHERE_COLIDER;
+    else if ( component == "Camera" )
+        type = CAMERA;
+    else if ( component == "CameraFlyController" )
+        type = CAMERA_FLY_CONTROLLER;
+    else if ( component == "Rotator" )
+        type = ROTATOR;
+    else if ( component == "AudioEventEmitter" )
+        type = AUDIO_EVENT_EMITTER;
+    else if ( component == "AudioListener" )
+        type = AUDIO_LISTENER;
+    else if ( component == "PathFollow" )
+        type = PATH_FOLLOW;
+    else if ( component == "PlayerController" )
+        type = PLAYER_CONTROLLER;
+    else if ( component == "ExplosionController" )
+        type = EXPLOSION_CONTROLLER;
+    else if ( component == "MaterialSwitch" )
+        type = MATERIAL_SWITCHER;
+    else if ( component == "NoiseController" )
+        type = NOISE_CONTROLLER;
+
+    if ( type == ComponentTypes::NOT_FOUND )
+    {
+        // unknown component type requested in the FGame file.
+        return nullptr;
+    }
+
+    return AddComponent ( type );
 }
 
 Component * GameObject::AddComponent ( ComponentTypes component )

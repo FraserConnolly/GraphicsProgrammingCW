@@ -34,6 +34,8 @@ public:
 
 	void SetCollisionBehaviour ( bool startOnCollisionEnter, bool stopOnCollisionExit );
 
+	void Deserialise ( const json & data );
+
 private:
 
 	glm::vec3 m_position;

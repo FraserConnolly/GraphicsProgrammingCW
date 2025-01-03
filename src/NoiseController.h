@@ -24,6 +24,8 @@ public:
 	const float GetSpeed ( ) const;
 	
 	void SetMaterial ( Material * const material );
+
+	void Deserialise ( const json & data ) override;
 	
 private:
 

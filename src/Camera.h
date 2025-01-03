@@ -5,6 +5,8 @@
 #include <glm/glm.hpp> 
 #include <glm/gtx/transform.hpp> 
 
+#include "FrameBuffer.h"
+
 class Transform;
 
 class Camera : public Component
@@ -19,7 +21,11 @@ public:
 
 	friend class GameObject;
 
+
+
+
 private:
+
 	Camera ( GameObject & hostObject );
 	~Camera ( );
 
@@ -114,9 +120,30 @@ public:
 	glm::mat4 GetViewMatrixNoTranslation();
 	glm::mat4 GetProjectionMatrix ( ) ;
 
+	void SetFrameBufferObject ( FrameBuffer * fbo ) {
+		m_frameBufferObject = fbo;
+	}
+
+	FrameBuffer * GetFrameBufferObject ( ) const {
+		return m_frameBufferObject;
+	}
+
+	void SetRenderSkybox ( bool renderSkybox ) {
+		m_renderSkybox = renderSkybox;
+	}
+
+	bool GetRenderSkybox ( ) const {
+		return m_renderSkybox;
+	}
+
 #if _DEBUG
 	void Update ( ) override;
 #endif
+
+	void Awake ( ) override;
+	void OnDestroy ( ) override;
+
+	void Deserialise ( const json & data ) override;
 
 private:
 	
@@ -130,6 +157,9 @@ private:
 	glm::mat4 _projectionMatrix;
 
 	bool _projectionMatrixIsDirty = true;
+	
+	bool m_renderSkybox = true;
+	FrameBuffer * m_frameBufferObject = nullptr;
 
 #if _DEBUG
 	Transform * m_debugTransform = nullptr;

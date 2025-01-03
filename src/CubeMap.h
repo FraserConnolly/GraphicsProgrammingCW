@@ -17,8 +17,7 @@ public:
 	~CubeMap ( );
 
 	void LoadCubeMap ( const std::vector<char *> & cubeMapFilePaths );
-	void SetCamera ( Camera & camera );
-	void Draw ( );
+	void Draw ( Camera & camera );
 
 private:
 
@@ -27,6 +26,8 @@ private:
 	Camera * m_camera;
 	GLuint m_skyboxVAO;
 	GLuint m_skyboxVBO;
+
+    bool m_deleteResources = false;
 
     float m_skyboxVertices [ 108 ] = {
         // positions          

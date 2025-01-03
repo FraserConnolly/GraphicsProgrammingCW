@@ -46,6 +46,8 @@ public:
 	void Awake ( ) override;
 	void OnDestroy ( ) override;
 
+	void Deserialise ( const json & data ) override;
+
 private:
 
 	/*

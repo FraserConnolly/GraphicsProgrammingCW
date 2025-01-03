@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "Component.h"
 #include "Transform.h"
@@ -29,6 +30,16 @@ public:
 	const int GetID ( ) const
 	{
 		return m_id;
+	}
+
+	void SetName ( const std::string & name )
+	{
+		m_name = name;
+	}
+
+	const std::string & GetName ( ) const
+	{
+		return m_name;
 	}
 
 	void Destroy ( )
@@ -69,6 +80,7 @@ public:
 
 #pragma region Components
 
+	Component * AddComponent ( const std::string Component );
 	Component * AddComponent ( ComponentTypes Component );
 	void        RemoveComponent ( Component * const pToRemove );
 	
@@ -132,6 +144,7 @@ private:
 	~GameObject ( );
 
 	unsigned int m_id;
+	std::string m_name; // name of the object - TO DO replace this with a more memory efficient implementation in GP3.
 	Transform & m_transform;
 	
 	//Shorter name for my vector 

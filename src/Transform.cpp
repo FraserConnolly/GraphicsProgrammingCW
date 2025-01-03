@@ -23,6 +23,11 @@ void Transform::OnDisable ( )
 	m_gameObject.OnActiveChanged ( false );
 }
 
+void Transform::Deserialise ( const json & data )
+{
+	// nothing to deserialise as it is handled when the GameObject is created.
+}
+
 void Transform::AddChild ( Transform * const pChild )
 {
 	auto found = std::find ( m_children.begin ( ),

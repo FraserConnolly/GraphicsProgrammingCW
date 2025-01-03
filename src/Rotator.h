@@ -36,6 +36,7 @@ public:
 		return m_axisRotation;
 	}
 
+	void Deserialise ( const json & data );
 
 private:
 

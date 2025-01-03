@@ -18,6 +18,9 @@ private:
 public:
 
 	void Update ( );
+
+	void Deserialise ( const json & data );
+
 	
 private:
 

@@ -2,7 +2,8 @@
 #include <string>
 #include <GL\glew.h>
 #include "Transform.h"
-#include "Camera.h"
+
+class Camera;
 
 class Shader
 {
@@ -23,11 +24,6 @@ public:
 	void LoadShaders ( const std::string & vertShader, const std::string& geoShader, const std::string & fragShader );
 	void LoadShaders ( const char * vertexShader, const char * geoShader, const char * fargmentShader );
 	
-	void SetCamera ( Camera * const camera )
-	{
-		_camera = camera;
-	}
-
 	void Bind ( ) const; //Set GPU to use our shaders
 
 	std::string LoadShader ( const std::string & fileName );
@@ -51,7 +47,7 @@ public:
 	void SetTransform ( const glm::mat4 & transform );
 	GLint GetUniformLocation ( const GLchar * name ) const;
 
-	void Update ( Transform & transform );
+	void Update ( Camera & camera, Transform & transform );
 
 private:
 	
@@ -87,7 +83,5 @@ private:
 	GLuint _program; // Track the shader program
 	GLuint _shaders [ MAX_SHADER_COUNT ]; //array of shaders
 	GLuint _uniforms [ NUM_UNIFORMS ];
-
-	Camera * _camera = nullptr;
 
 };

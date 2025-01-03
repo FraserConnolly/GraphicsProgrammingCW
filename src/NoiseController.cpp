@@ -47,3 +47,8 @@ void NoiseController::SetMaterial ( Material * const material )
 	m_UnifromMinDist = m_material->GetUniformLocation ( "minDist" );
 
 }
+
+void NoiseController::Deserialise ( const json & data )
+{
+	__debugbreak ( );
+}

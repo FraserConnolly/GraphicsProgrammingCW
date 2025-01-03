@@ -82,3 +82,8 @@ const float PathFollow::GetSpeed ( )
 {
 	return m_speed;
 }
+
+void PathFollow::Deserialise ( const json & data )
+{
+	__debugbreak ( );
+}

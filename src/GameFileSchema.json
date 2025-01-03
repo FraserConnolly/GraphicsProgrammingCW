@@ -1,0 +1,818 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "GameName": {
+      "type": "string"
+    },
+    "Display": {
+      "type": "object",
+      "properties": {
+        "Width": {
+          "type": "integer"
+        },
+        "Height": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "Width",
+        "Height"
+      ]
+    },
+    "Shaders": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Vertex": {
+              "type": "string"
+            },
+            "Fragment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Vertex",
+            "Fragment"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Vertex": {
+              "type": "string"
+            },
+            "Geometry": {
+              "type": "string"
+            },
+            "Fragment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Vertex",
+            "Geometry",
+            "Fragment"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Vertex": {
+              "type": "string"
+            },
+            "Fragment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Vertex",
+            "Fragment"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Vertex": {
+              "type": "string"
+            },
+            "Fragment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Vertex",
+            "Fragment"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Vertex": {
+              "type": "string"
+            },
+            "Fragment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Vertex",
+            "Fragment"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Vertex": {
+              "type": "string"
+            },
+            "Fragment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Vertex",
+            "Fragment"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Vertex": {
+              "type": "string"
+            },
+            "Fragment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Vertex",
+            "Fragment"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Vertex": {
+              "type": "string"
+            },
+            "Fragment": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Vertex",
+            "Fragment"
+          ]
+        }
+      ]
+    },
+    "ImageTextures": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Name",
+            "Path"
+          ]
+        }
+      ]
+    },
+    "CubeMaps": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Paths": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "required": [
+            "Name",
+            "Paths"
+          ]
+        }
+      ]
+    },
+    "Materials": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Shader": {
+              "type": "string"
+            },
+            "Uniforms": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "Name",
+            "Shader",
+            "Uniforms"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Shader": {
+              "type": "string"
+            },
+            "Uniforms": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "Name",
+            "Shader",
+            "Uniforms"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Shader": {
+              "type": "string"
+            },
+            "Uniforms": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "Name",
+            "Shader",
+            "Uniforms"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Shader": {
+              "type": "string"
+            },
+            "Uniforms": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "Name",
+            "Shader",
+            "Uniforms"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Shader": {
+              "type": "string"
+            },
+            "Uniforms": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "array",
+                      "items": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "Name",
+            "Shader",
+            "Uniforms"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Shader": {
+              "type": "string"
+            },
+            "Uniforms": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "Name",
+            "Shader",
+            "Uniforms"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Shader": {
+              "type": "string"
+            },
+            "Unifroms": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "Name": {
+                      "type": "string"
+                    },
+                    "Type": {
+                      "type": "string"
+                    },
+                    "Value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Name",
+                    "Type",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "Name",
+            "Shader",
+            "Unifroms"
+          ]
+        }
+      ]
+    },
+    "Skybox": {
+      "type": "object",
+      "properties": {
+        "Shader": {
+          "type": "string"
+        },
+        "Texture": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "Shader",
+        "Texture"
+      ]
+    },
+    "Objects": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "Name": {
+              "type": "string"
+            },
+            "Position": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "Rotation": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "Scale": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "Components": {
+              "type": "array",
+              "items": {}
+            },
+            "Children": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          "required": [
+            "Name",
+            "Position",
+            "Rotation",
+            "Scale",
+            "Components",
+            "Children"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "GameName",
+    "Display",
+    "Shaders",
+    "ImageTextures",
+    "CubeMaps",
+    "Materials",
+    "Skybox",
+    "Objects"
+  ]
+}

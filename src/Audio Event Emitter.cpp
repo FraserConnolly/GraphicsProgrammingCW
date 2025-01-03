@@ -90,3 +90,8 @@ void AudioEventEmitter::SetCollisionBehaviour ( bool startOnCollisionEnter, bool
 	m_playOnCollisionEnter = startOnCollisionEnter;
 	m_stopOnCollisionExit = stopOnCollisionExit;
 }
+
+void AudioEventEmitter::Deserialise ( const json & data )
+{
+	__debugbreak ( );
+}

@@ -22,6 +22,8 @@ public:
 	void RemoveMaterial ( const int keycode );
 	void ClearMaterials ( );
 
+	void Deserialise ( const json & data ) override;
+
 private:
 
 	std::unordered_map<int, Material *> m_materials;

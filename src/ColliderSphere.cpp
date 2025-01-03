@@ -28,6 +28,11 @@ inline void ColliderSphere::SetRadious ( const float radious )
     m_radious = radious;
 }
 
+void ColliderSphere::Deserialise ( const json & data )
+{
+    __debugbreak ( );
+}
+
 const glm::quat & ColliderSphere::GetRotation ( ) const
 {
     // Sphere's don't have a rotation. This will be ignored in Collision Manager.

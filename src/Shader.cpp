@@ -4,6 +4,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Camera.h"
+
 #ifdef USE_ADS
 #define VertexShaderPath "ads.vert"
 #define FragmentShaderPath "ads.frag"
@@ -17,7 +19,7 @@
 #define FragmentGeoShaderPath "shaderGeoText.frag"
 
 Shader::Shader ( )
-	: _program( 0 ), _shaders( ), _uniforms( ), _numShaders( 0 ), _camera( nullptr )
+	: _program( 0 ), _shaders( ), _uniforms( ), _numShaders( 0 )
 { 
 
 }
@@ -246,7 +248,7 @@ void Shader::SetTransform ( const glm::mat4 & modelMatrix )
 {
 }
 
-void Shader::Update ( Transform & transform )
+void Shader::Update ( Camera & camera, Transform & transform )
 { 
 	glm::mat4 model = transform.GetModel ( ); 
 	// The last parameter of glUnifromMatrix4fv the actual matrix data, 
@@ -254,14 +256,11 @@ void Shader::Update ( Transform & transform )
 	// so we first convert the data with GLM's built-in function value_ptr.
 	glUniformMatrix4fv ( _uniforms [ MODEL_U ], 1, GLU_FALSE, glm::value_ptr ( model ) );
 
-	if ( _camera != nullptr )
-	{
-		glm::mat4 view = _camera->GetViewMatrix ( );
-		glUniformMatrix4fv ( _uniforms [ VIEW_U ], 1, GLU_FALSE, glm::value_ptr ( view ) );
+	glm::mat4 view = camera.GetViewMatrix ( );
+	glUniformMatrix4fv ( _uniforms [ VIEW_U ], 1, GLU_FALSE, glm::value_ptr ( view ) );
 
-		glm::mat4 projection = _camera->GetProjectionMatrix ( );
-		glUniformMatrix4fv ( _uniforms [ PROJECTION_U ], 1, GLU_FALSE, glm::value_ptr ( projection ) );
-	}
+	glm::mat4 projection = camera.GetProjectionMatrix ( );
+	glUniformMatrix4fv ( _uniforms [ PROJECTION_U ], 1, GLU_FALSE, glm::value_ptr ( projection ) );
 
 #ifdef USE_ADS
 	// These should be moved to a lighting object

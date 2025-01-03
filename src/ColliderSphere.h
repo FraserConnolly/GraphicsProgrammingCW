@@ -17,6 +17,8 @@ public:
     const float GetRadious ( ) const;
     void SetRadious ( const float radious );
 
+    void Deserialise ( const json & data ) override;
+
 private:
 
     float m_radious;

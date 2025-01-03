@@ -5,27 +5,27 @@
 CubeMap::CubeMap ( ) :
 	m_shader ( new Shader ( ) ), 
     m_texture ( new Texture ( ) ) ,
-    m_camera ( nullptr )
+    m_deleteResources ( true )
 {
 	m_shader->LoadShaders ( "cubeMap.vert", "cubeMap.frag" );
 
     InitaliseSkybox ( );
 }
 
-
-
 CubeMap::CubeMap ( Shader * shader, Texture * texture ) :
     m_shader ( shader ) ,
-    m_texture ( texture ) ,
-    m_camera ( nullptr )
+    m_texture ( texture ) 
 {
     InitaliseSkybox ( );
 }
 
 CubeMap::~CubeMap ( )
 { 
-	delete &m_shader;
-	delete &m_texture;
+    if ( m_deleteResources )
+    {
+        delete m_shader;
+        delete m_texture;
+    }
     glDeleteVertexArrays ( 1, &m_skyboxVAO );
     glDeleteBuffers ( 1, &m_skyboxVBO );
 }
@@ -47,26 +47,15 @@ void CubeMap::LoadCubeMap ( const std::vector<char *> & cubeMapFilePaths )
 	m_texture->LoadCubeMap ( cubeMapFilePaths );
 }
 
-void CubeMap::SetCamera ( Camera & camera )
+void CubeMap::Draw ( Camera & camera )
 { 
-	m_shader->SetCamera ( &camera );
-    m_camera = &camera;
-}
-
-void CubeMap::Draw ( )
-{ 
-    if ( m_camera == nullptr )
-    {
-        return;
-    }
-
    // draw skybox as last
     glDepthFunc ( GL_LEQUAL );  // change depth function so depth test passes when values are equal to depth buffer's content
     
     m_shader->Bind ( );
 
-    m_shader->SetUniform ( "view", m_camera->GetViewMatrixNoTranslation( ) );
-    m_shader->SetUniform ( "projection", m_camera->GetProjectionMatrix ( ) );
+    m_shader->SetUniform ( "view", camera.GetViewMatrixNoTranslation( ) );
+    m_shader->SetUniform ( "projection", camera.GetProjectionMatrix ( ) );
     
     // skybox cube
     glBindVertexArray ( m_skyboxVAO );

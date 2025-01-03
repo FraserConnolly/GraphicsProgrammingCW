@@ -190,5 +190,49 @@
 	"Skybox": {
 		"Shader": "Skybox",
 		"Texture": "Skybox"
-	}
+	},
+	"Objects": [
+		{
+			"Name": "MainCamera",
+			"Position": [ 0.0, 7.5, 10.0 ],
+			"Rotation": [ -29, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "Camera"
+				},
+				{
+					"Type": "CameraFlyController"
+				},
+				{
+					"Type": "AudioListener"
+				}
+			],
+			"Children": [
+
+			]
+		},
+
+
+
+
+		{
+			"Name": "",
+			"Position": [ 0, 0, 0 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+
+			],
+			"Children": [
+
+			]
+		}
+
+
+
+
+
+	]
+
 }

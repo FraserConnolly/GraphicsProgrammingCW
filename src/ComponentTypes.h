@@ -1,5 +1,6 @@
 enum ComponentTypes
 {
+	NOT_FOUND = -1,
 	TRANSFORM,
 	MESH_RENDERER,
 	BOX_COLIDER,

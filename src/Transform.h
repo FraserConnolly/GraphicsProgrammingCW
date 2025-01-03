@@ -193,6 +193,8 @@ public:
 
 	void OnDisable ( ) override;
 
+	void Deserialise ( const json & data ) override;
+
 protected: 
 
 	void SetDirty ( )

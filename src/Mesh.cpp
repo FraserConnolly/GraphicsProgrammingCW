@@ -92,6 +92,11 @@ void MeshRenderer::OnDestroy ( )
 	Renderer::DeregisterMeshRenderer ( this );
 }
 
+void MeshRenderer::Deserialise ( const json & data )
+{
+	__debugbreak ( );
+}
+
 void MeshRenderer::initModel ( const IndexedModel & model )
 { 
 	_drawCount = model.indices.size ( );
