@@ -305,6 +305,11 @@ void GameEngine::initSystems ( )
 						scale [ 2 ].get<float> ( ) );
 				}
 
+				if ( object.contains ( "Active" ) )
+				{
+					obj->SetActive ( object [ "Active" ].get<bool> ( ) );
+				}
+
 				if ( object.contains ( "Components" ) )
 				{
 					objectComponents[ obj ] = object [ "Components" ];

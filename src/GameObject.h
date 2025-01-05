@@ -54,6 +54,11 @@ public:
 		return m_isDestroyed;
 	}
 
+	void SetActive ( bool active )
+	{
+		m_transform.SetActive ( active );
+	}
+
 	const bool IsActive ( ) const
 	{
 		return m_transform.IsEnabled ( );

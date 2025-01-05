@@ -213,29 +213,6 @@
 			]
 		},
 
-
-		{
-			"Name": "Planet",
-			"Position": [ 0, 5, 0 ],
-			"Rotation": [ 0, 0, 0 ],
-			"Scale": [ 1, 1, 1 ],
-			"Components": [
-				{
-					"Type": "MeshRenderer",
-					"Material": "Planet",
-					"Mesh": "ball.obj"
-				},
-				{
-					"Type": "NoiseController",
-					"Speed": 0.5,
-					"Material": "Planet"
-				}
-			],
-			"Children": [
-
-			]
-		},
-
 		{
 			"Name": "Suzanna",
 			"Position": [ 4, 0, 0 ],
@@ -284,6 +261,28 @@
 							"Material": "Planet"
 						}
 					]
+				}
+			],
+			"Children": [
+
+			]
+		},
+
+		{
+			"Name": "Planet",
+			"Position": [ 0, 5, 0 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "Planet",
+					"Mesh": "ball.obj"
+				},
+				{
+					"Type": "NoiseController",
+					"Speed": 0.5,
+					"Material": "Planet"
 				}
 			],
 			"Children": [
@@ -416,6 +415,7 @@
 
 		{
 			"Name": "Arrow",
+			"Active": true,
 			"Position": [ 0, 0, 0 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],

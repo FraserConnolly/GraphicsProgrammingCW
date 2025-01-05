@@ -54,7 +54,7 @@ void Component::SetActive ( const bool enable )
 
 	if ( enable )
 	{
-		OnEnable();
+		OnEnable( );
 	}
 	else
 	{
