@@ -17,5 +17,5 @@ void AudioListener::Update ( )
 
 void AudioListener::Deserialise ( const json & data )
 {
-	__debugbreak ( );
+	// nothing to deserialise (yet)
 }

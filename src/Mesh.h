@@ -22,7 +22,7 @@ private:
 
 public:
 
-	void loadObjModel ( const std::string & filename );
+	void LoadObjModel ( const std::string & filename );
 
 	void SetMesh ( const Vertex1P1D1U * vertices, const unsigned int numVertices, const  unsigned int * indices, const int numIndicies );
 	

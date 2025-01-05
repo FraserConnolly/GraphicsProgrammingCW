@@ -93,5 +93,25 @@ void AudioEventEmitter::SetCollisionBehaviour ( bool startOnCollisionEnter, bool
 
 void AudioEventEmitter::Deserialise ( const json & data )
 {
-	__debugbreak ( );
+	bool startOnEnter = false;
+	bool stopOnExit = false;
+
+	if ( data.contains ( "EventName" ) )
+	{
+		auto eventName = data [ "EventName" ].get <std::string> ( );
+		LoadEvent ( eventName );
+	}
+
+	if ( data.contains ( "StartOnEnter" ) )
+	{
+		startOnEnter = data [ "StartOnEnter" ].get<bool> ( );
+	}
+
+	if ( data.contains ( "StopOnExit" ) )
+	{
+		stopOnExit = data [ "StopOnExit" ].get<bool> ( );
+	}
+
+	SetCollisionBehaviour ( startOnEnter , stopOnExit );
+
 }

@@ -152,7 +152,15 @@ void CameraFlyController::Update ( )
 
 void CameraFlyController::Deserialise ( const json & data )
 {
-    __debugbreak ( );
+    if ( data.contains ( "Speed" ) )
+    {
+		MovementSpeed = data [ "Speed" ].get<float> ( );
+	}
+
+    if ( data.contains ( "MouseSensitivity" ) )
+    {
+		MouseSensitivity = data [ "MouseSensitivity" ].get<float> ( );
+	}
 }
 
 void CameraFlyController::UpdateCamera ( )

@@ -2,6 +2,7 @@
 #include "Material.h"
 #include "Mesh.h"
 #include "Input.h"
+#include "Renderer.h"
 
 MaterialSwitch::MaterialSwitch ( GameObject & hostObject ) :
 	Component( hostObject, ComponentTypes::MATERIAL_SWITCHER ), m_materials( )
@@ -45,5 +46,29 @@ void MaterialSwitch::ClearMaterials ( )
 
 void MaterialSwitch::Deserialise ( const json & data )
 {
-	__debugbreak( );
+	if ( data.contains ( "Materials" ) && data [ "Materials" ].is_array( ) )
+	{
+
+		for ( auto & material : data [ "Materials" ] )
+		{
+			if ( !material.contains ( "Keycode" ) || !material.contains ( "Material" ) )
+			{
+				// log error
+				continue;
+			}
+
+			int keycode = material [ "Keycode" ].get<int> ( );
+			std::string materialName = material [ "Material" ].get<std::string> ( );
+
+			Material * material = Renderer::GetMaterial ( materialName );
+
+			if ( material == nullptr )
+			{
+				// log error
+				continue;
+			}
+
+			AddMaterial ( keycode , material );
+		}
+	}
 }

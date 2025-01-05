@@ -72,6 +72,9 @@ void PlayerController::Update ( )
 
 void PlayerController::Deserialise ( const json & data )
 {
-    __debugbreak ( );
+    if ( data.contains ( "Speed" ) )
+    {
+        SetSpeed ( data [ "Speed" ].get<float> ( ) );
+    }
 }
 

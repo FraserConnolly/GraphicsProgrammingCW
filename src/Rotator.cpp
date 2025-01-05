@@ -40,5 +40,18 @@ void Rotator::SetRotationAxis ( glm::bvec3 & axisRotation )
 
 void Rotator::Deserialise ( const json & data )
 {
-	__debugbreak ( );
+	if ( data.contains ( "Speed" ) )
+	{
+		SetSpeed( data [ "Speed" ].get<float> ( ) );
+	}
+	
+	if ( data.contains ( "Axis" ) )
+	{
+		auto & axis = data [ "Axis" ];
+
+		if ( axis.is_array ( ) && axis.size ( ) == 3 )
+		{
+			SetRotationAxis ( axis [ 0 ].get<bool> ( ) , axis [ 1 ].get<bool> ( ) , axis [ 2 ].get<bool> ( ) );
+		}
+	}
 }

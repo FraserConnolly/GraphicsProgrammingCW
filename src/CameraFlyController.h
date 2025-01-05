@@ -57,10 +57,11 @@ private:
     float Yaw;
     float Pitch;
 
+    float Zoom;
+
     // camera options
     float MovementSpeed;
     float MouseSensitivity;
-    float Zoom;
 
     /// <summary>
     /// Used to help debugging by preventing mouse movement from adjusting the camera.

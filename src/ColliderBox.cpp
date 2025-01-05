@@ -44,4 +44,18 @@ const Transform & ColliderBox::GetTransform ( ) const
 void ColliderBox::Deserialise ( const json & data )
 {
     __debugbreak ( );
+
+    if ( data.contains ( "Extents" ) )
+    {
+        auto extents = data [ "Extents" ];
+
+        if ( extents.is_array ( ) && extents.size ( ) == 3 )
+        {
+            SetExtents ( 
+                glm::vec3 ( 
+                    extents [ 0 ].get<float> ( ), 
+                    extents [ 1 ].get<float> ( ), 
+                    extents [ 2 ].get<float> ( ) ) );
+        }
+	}
 }

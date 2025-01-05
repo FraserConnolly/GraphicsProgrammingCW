@@ -16,15 +16,8 @@
 #include "CubeMap.h"
 
 // ComponentsMaterialSwitch
-#include "Rotator.h"
-#include "CameraFlyController.h"
-#include "Audio Event Emitter.h"
 #include "Audio Listener.h"
 #include "Audio.h"
-#include "Path Follow.h"
-#include "ExplosionController.h"
-#include "MaterialSwitch.h"
-#include "NoiseController.h"
 
 using json = nlohmann::json;
 
@@ -125,7 +118,7 @@ void GameEngine::initSystems ( )
 					newShader->LoadShaders ( vertexShader.c_str ( ) , fragmentShader.c_str ( ) );
 				}
 
-				m_shaders [ shaderName ] = newShader;
+				Renderer::RegisterShader ( shaderName , newShader );
 			}
 		}
 		catch ( const std::exception & )
@@ -147,7 +140,7 @@ void GameEngine::initSystems ( )
 				auto textureName = texture [ "Name" ].get<string> ( );
 				auto textureFile = texture [ "Path" ].get<string> ( );
 				newTexture->LoadTexture ( textureFile.c_str ( ) );
-				m_textures [ textureName ] = newTexture;
+				Renderer::RegisterTexure ( textureName , newTexture );
 			}
 		}
 		catch ( const std::exception & )
@@ -178,7 +171,7 @@ void GameEngine::initSystems ( )
 				}
 
 				newTexture->LoadCubeMap ( faces );
-				m_textures [ textureName ] = newTexture;
+				Renderer::RegisterTexure ( textureName, newTexture );
 			}
 		}
 		catch ( const std::exception & )
@@ -199,7 +192,7 @@ void GameEngine::initSystems ( )
 				auto materialName = material [ "Name" ].get<string> ( );
 
 				auto shaderName = material [ "Shader" ].get<string> ( );
-				auto newMaterial = new Material ( m_shaders [ shaderName ] );
+				auto newMaterial = new Material ( Renderer::GetShader ( shaderName ) );
 
 				if ( material.contains ( "Uniforms" ) )
 				{
@@ -222,7 +215,7 @@ void GameEngine::initSystems ( )
 						else if ( type == "Texture" )
 						{
 							auto textureName = uniform [ "Value" ].get<string> ( );
-							newMaterial->SetTexture ( name.c_str ( ) , m_textures [ textureName ] );
+							newMaterial->SetTexture ( name.c_str ( ) , Renderer::GetTexture ( textureName ) );
 						}
 						else
 						{
@@ -232,7 +225,7 @@ void GameEngine::initSystems ( )
 					}
 				}
 
-				m_materials [ materialName ] = newMaterial;
+				Renderer::RegisterMaterial ( materialName , newMaterial );
 			}
 		}
 		catch ( const std::exception & )
@@ -254,8 +247,8 @@ void GameEngine::initSystems ( )
 		{
 			auto skyboxData = m_gameData [ "Skybox" ];
 			CubeMap * skyBox = new CubeMap (
-				m_shaders [ skyboxData [ "Shader" ] ] ,
-				m_textures [ skyboxData [ "Texture" ] ] );
+				Renderer::GetShader ( skyboxData [ "Shader" ] ) ,
+				Renderer::GetTexture ( skyboxData [ "Texture" ] ) );
 
 			Renderer::SetSkybox ( skyBox );
 		}
@@ -271,6 +264,9 @@ void GameEngine::initSystems ( )
 
 	if ( m_gameData.contains ( "Objects" ) )
 	{
+		// this allows all new objects to be created and named before components are added.
+		map<GameObject *, json> objectComponents;
+
 		try
 		{
 			auto objects = m_gameData [ "Objects" ];
@@ -311,168 +307,33 @@ void GameEngine::initSystems ( )
 
 				if ( object.contains ( "Components" ) )
 				{
-					auto components = object [ "Components" ];
-					for ( auto & component : components )
-					{
-						auto type = component [ "Type" ].get<string> ( );
-						auto newComponent = obj->AddComponent ( type );
-						newComponent->Deserialise ( component );
-					}
+					objectComponents[ obj ] = object [ "Components" ];
 				}
+			}
 
+			// add components to objects
+			for ( auto & object : objectComponents )
+			{
+				auto & obj = object.first;			// the game object	
+				auto & components = object.second;	// the json array of components
+
+				for ( auto & component : components )
+				{
+					auto type = component [ "Type" ].get<string> ( );
+					auto newComponent = obj->AddComponent ( type );
+					newComponent->Deserialise ( component );
+				}
 			}
 		}
 		catch ( const std::exception & )
 		{
 			std::cerr << "Failed to load objects" << std::endl;
 		}
+
+		objectComponents.clear ( );
 	}
 
 #pragma endregion
-
-	Transform * toFollow = nullptr;
-
-	std::vector<glm::vec3> points;
-	std::vector<const Transform *> transforms;
-
-	points.push_back ( glm::vec3 ( -2.5, 0, -2.5 ) );
-	points.push_back ( glm::vec3 ( +2.5, 5, -2.5 ) );
-	points.push_back ( glm::vec3 ( +2.5, 0, +2.5 ) );
-	points.push_back ( glm::vec3 ( -2.5, 0, +2.5 ) );
-
-	for ( size_t i = 0; i < points.size ( ) + 1; i++ )
-	{
-		auto obj = GameObjectManager::CreateObject ( );
-
-		auto emitter = ( AudioEventEmitter * ) obj->AddComponent ( ComponentTypes::AUDIO_EVENT_EMITTER );
-		emitter->SetCollisionBehaviour ( true, false );
-
-		if ( i != points.size ( ) )
-		{
-			obj->GetTransform ( ).SetPosition ( points [ i ] );
-			obj->GetTransform ( ).SetScale ( 1.0f );
-			obj->AddComponent ( SPHERE_COLIDER );
-		}
-		else
-		{
-			// arrow
-			obj->AddComponent ( SPHERE_COLIDER );
-		}
-
-		// create a mesh object
-		auto mesh = ( MeshRenderer * ) obj->AddComponent ( ComponentTypes::MESH_RENDERER );
-
-		if ( i != points.size ( ) )
-		{
-			transforms.push_back ( &( obj->GetTransform ( ) ) );
-
-			auto r = ( Rotator * ) obj->AddComponent ( ComponentTypes::ROTATOR );
-
-			switch ( i % 4 )
-			{
-				case 0:
-					mesh->loadObjModel ( "monkey3.obj" );
-					mesh->SetMaterial ( m_materials[ "Brick" ] );
-					r->SetRotationAxis ( true, !true, !true );
-					emitter->LoadEvent ( "event:/Orchestra 1st Star" );
-					break;
-				case 1:
-					mesh->loadObjModel ( "SM_Prop_Cone_02.obj" );
-					mesh->SetMaterial ( m_materials[ "Synty" ] );
-					r->SetRotationAxis ( !true, true, !true );
-					emitter->LoadEvent ( "event:/Orchestra 2nd Star" );
-					break;
-				case 2:
-					mesh->loadObjModel ( "SM_Prop_Cone_01.obj" );
-					mesh->SetMaterial ( m_materials [ "Synty" ] );
-					r->SetRotationAxis ( !true, !true, true );
-					emitter->LoadEvent ( "event:/Orchestra 3rd Star" );
-					break;
-				case 3:
-					mesh->loadObjModel ( "UnitCube.obj" );
-					mesh->SetMaterial ( m_materials [ "Synty" ] );
-					r->SetRotationAxis ( !true, !true, !true );
-					emitter->LoadEvent ( "event:/Casual Win 1" );
-					break;
-			}
-		}
-
-		if ( i == 1 )
-		{
-			// make this object player controllable.
-			obj->AddComponent ( ComponentTypes::PLAYER_CONTROLLER );
-		}
-		
-		if ( i == points.size( ) )
-		{
-			// This object is an arrow that will move between the four previously defined objects.
-			mesh->loadObjModel ( "ArrowNegZ.obj" );
-
-			mesh->SetMaterial ( m_materials [ "Synty" ] );
-
-			obj->GetTransform ( ).SetPosition ( ( float ) ( 0 ), 0, 0 );
-
-			auto path = ( PathFollow * ) obj->AddComponent ( PATH_FOLLOW );
-
-			// using world coordinates
-			for ( auto & point : points )
-			{
-				path->AddWayPoint ( point );
-			}
-
-			// using Transforms 
-			for ( auto point : transforms )
-			{
-				path->AddWayPoint ( point );
-			}
-
-			path->SetSpeed ( 2.5f );
-
-			toFollow = &obj->GetTransform ( );
-		}
-	}
-
-#pragma region Suzanna
-
-	auto obj = GameObjectManager::CreateObject ( );
-	obj->GetTransform ( ).SetScale ( 2.5f );
-	obj->GetTransform ( ).SetPosition ( 4.0f , 0.0f , 0.0f );
-
-	auto mesh = ( MeshRenderer * ) obj->AddComponent ( ComponentTypes::MESH_RENDERER );
-	mesh->SetMaterial ( m_materials [ "Exploding" ] );
-	mesh->loadObjModel ( "monkey3.obj" );
-
-	auto exp = ( ExplosionController * ) obj->AddComponent ( ComponentTypes::EXPLOSION_CONTROLLER );
-	exp->SetMaterial ( m_materials [ "Exploding" ] );
-	exp->SetSpeed ( 0.5f );
-
-	auto switcher = ( MaterialSwitch * ) obj->AddComponent ( ComponentTypes::MATERIAL_SWITCHER );
-	switcher->AddMaterial ( SDLK_1 , m_materials [ "Exploding" ] );
-	switcher->AddMaterial ( SDLK_2 , m_materials [ "Brick" ] );
-	switcher->AddMaterial ( SDLK_3 , m_materials [ "Synty" ] );
-	switcher->AddMaterial ( SDLK_4 , m_materials [ "Fog" ] );
-	switcher->AddMaterial ( SDLK_5 , m_materials [ "Rim" ] );
-	switcher->AddMaterial ( SDLK_6 , m_materials [ "Toon" ] );
-	switcher->AddMaterial ( SDLK_7 , m_materials [ "Planet" ] );
-
-#pragma endregion
-
-#pragma region Planet
-
-	auto planetObj = GameObjectManager::CreateObject ( );
-	planetObj->GetTransform ( ).SetScale ( 1.0f );
-	planetObj->GetTransform ( ).SetPosition ( 0.0f , 5.0f , 0.0f );
-
-	auto planetMesh = ( MeshRenderer * ) planetObj->AddComponent ( ComponentTypes::MESH_RENDERER );
-	planetMesh->SetMaterial ( m_materials[ "Planet" ] );
-	planetMesh->loadObjModel ( "ball.obj" );
-
-	auto noise = ( NoiseController * ) planetObj->AddComponent ( ComponentTypes::NOISE_CONTROLLER );
-	noise->SetMaterial ( m_materials [ "Planet" ] );
-	noise->SetSpeed ( 0.5f );
-
-#pragma endregion
-
 
 #if USE_DEBUG_CONSOLE
 	_debugScene.initaliseScene ( 0 );
@@ -505,24 +366,6 @@ void GameEngine::gameLoop ( )
 
 void GameEngine::shutdown ( )
 {
-	for ( auto & material : m_materials )
-	{
-		delete material.second;
-	}
-	m_materials.clear ( );
-
-	for ( auto & texture : m_textures )
-	{
-		delete texture.second;
-	}
-	m_textures.clear ( );
-
-	for ( auto & shader : m_shaders )
-	{
-		delete shader.second;
-	}
-	m_shaders.clear ( );
-
 	GameObjectManager::Shutdown ( );
 	CollisionManager::Shutdown ( );
 	Audio::Shutdown ( );

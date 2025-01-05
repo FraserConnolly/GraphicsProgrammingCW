@@ -1,4 +1,5 @@
 #include "Path Follow.h"
+#include "GameObjectManager.h"
 
 PathFollow::PathFollow ( GameObject & hostObject ) :
 	Component ( hostObject, ComponentTypes::PATH_FOLLOW ),
@@ -85,5 +86,56 @@ const float PathFollow::GetSpeed ( )
 
 void PathFollow::Deserialise ( const json & data )
 {
-	__debugbreak ( );
+	if ( data.contains ( "Speed" ) )
+	{
+		SetSpeed ( data [ "Speed" ].get<float> ( ) );
+	}
+
+	// this doesn't have a public setter so maybe shouldn't be in the game file.
+	if ( data.contains ( "CheckDistance" ) )
+	{
+		m_checkDistance = data [ "CheckDistance" ].get<float> ( );
+	}
+
+	// if the path is made up of transforms then we can't use global coordinates and vice versa.
+	// relies on objects having unique names in the game file.
+	if ( data.contains ( "TransformWayPoints" ) )
+	{
+		auto & wayPoints = data [ "TransformWayPoints" ];
+
+		if ( wayPoints.is_array ( ) )
+		{
+			for ( auto & point : wayPoints )
+			{
+				if ( point.is_string( ) )
+				{
+					auto gameObject = GameObjectManager::FindObjectByName ( point.get<std::string> ( ) );
+					if ( gameObject != nullptr )
+					{
+						AddWayPoint ( & gameObject->GetTransform ( ) );
+					}
+				}
+			}
+		}
+	}
+	else if ( data.contains ( "WorldWayPoints" ) )
+	{
+		auto & wayPoints = data [ "WorldWayPoints" ];
+
+		if ( wayPoints.is_array ( ) )
+		{
+			for ( auto & point : wayPoints )
+			{
+				if ( point.is_array ( ) && point.size ( ) == 3 )
+				{
+					AddWayPoint ( 
+						glm::vec3 ( 
+							point [ 0 ].get<float> ( ) , 
+							point [ 1 ].get<float> ( ) , 
+							point [ 2 ].get<float> ( ) ) );
+				}
+			}
+		}
+	}
+
 }

@@ -51,10 +51,6 @@ private:
 	int m_screenWidth = 640;
 	int m_screenHeight = 480;
 
-	map<string, Texture *> m_textures;
-	map<string, Shader *> m_shaders;
-	map<string, Material *> m_materials;
-
 #if USE_DEBUG_CONSOLE
 	ConsoleDebugScene _debugScene;
 #endif

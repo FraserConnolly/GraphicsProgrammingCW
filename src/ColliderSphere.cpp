@@ -30,7 +30,10 @@ inline void ColliderSphere::SetRadious ( const float radious )
 
 void ColliderSphere::Deserialise ( const json & data )
 {
-    __debugbreak ( );
+    if ( data.contains ( "Radious" ) )
+    {
+		SetRadious ( data [ "Radious" ].get<float> ( ) );
+	}
 }
 
 const glm::quat & ColliderSphere::GetRotation ( ) const

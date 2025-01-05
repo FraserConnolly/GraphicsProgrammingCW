@@ -1,6 +1,7 @@
 #include "ExplosionController.h"
 #include "Time.h"
 #include "Material.h"
+#include "Renderer.h"
 
 ExplosionController::ExplosionController ( GameObject & hostObject ) : 
 	Component( hostObject , ComponentTypes::EXPLOSION_CONTROLLER ), 
@@ -41,5 +42,13 @@ void ExplosionController::SetMaterial ( Material * const material )
 
 void ExplosionController::Deserialise ( const json & data )
 {
-	__debugbreak ( );
+	if ( data.contains ( "Speed" ) )
+	{
+		SetSpeed ( data [ "Speed" ].get<float> ( ) );
+	}
+
+	if ( data.contains ( "Material" ) )
+	{
+		SetMaterial ( Renderer::GetMaterial ( data [ "Material" ].get<std::string> ( ) ) );
+	}
 }

@@ -3,9 +3,13 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Camera.h"
+#include "Texture.h"
+#include "Shader.h"
 #include "CubeMap.h"
 
 #include <GL\glew.h>
+#include <map>
+#include <vector>
 
 void Renderer::Startup ( )
 {
@@ -138,10 +142,154 @@ void Renderer::RenderObjectsForCamera ( Camera *& camera )
 
 void Renderer::Shutdown ( )
 {
+
+    for ( auto & material : s_instance->m_materials )
+    {
+    	delete material.second;
+    }
+    s_instance->m_materials.clear ( );
+
+    for ( auto & texture : s_instance->m_textures )
+    {
+    	delete texture.second;
+    }
+    s_instance->m_textures.clear ( );
+
+    for ( auto & shader : s_instance->m_shaders )
+    {
+    	delete shader.second;
+    }
+    s_instance->m_shaders.clear ( );
+
     // to do, this deletion is not ideal.
     delete s_instance->m_skybox;
+
     delete s_instance;
     delete[ ] s_activeTextures;
+
+}
+
+void Renderer::RegisterTexure ( const std::string & name , Texture * pTexture )
+{
+    if ( pTexture == nullptr )
+    {
+		// to do - log this error.
+		return;
+	}
+
+    s_instance->m_textures [ name ] = pTexture;
+}
+
+void Renderer::DeregisterTexture ( const Texture * pTexture )
+{
+    if ( pTexture == nullptr )
+    {
+		// to do - log this error.
+		return;
+	}
+
+    for ( auto itor = s_instance->m_textures.begin ( ); itor != s_instance->m_textures.end ( ); itor++ )
+    {
+        if ( itor->second == pTexture )
+        {
+            s_instance->m_textures.erase ( itor );
+			return;
+		}
+	}
+}
+
+Texture * Renderer::GetTexture ( const std::string & name )
+{
+    auto t = s_instance->m_textures.find( name );
+    
+    if ( t == s_instance->m_textures.end ( ) )
+    {
+        return nullptr;
+    }
+
+    return t->second;
+}
+
+void Renderer::RegisterShader ( const std::string & name , Shader * pShader )
+{
+    if ( pShader == nullptr )
+    {
+		// to do - log this error.
+		return;
+	}
+
+    s_instance->m_shaders [ name ] = pShader;
+}
+
+void Renderer::DeregisterShader ( const Shader * pShader )
+{
+    if ( pShader == nullptr )
+    {
+		// to do - log this error.
+		return;
+	}
+
+    for ( auto itor = s_instance->m_shaders.begin ( ); itor != s_instance->m_shaders.end ( ); itor++ )
+    {
+        if ( itor->second == pShader )
+        {
+            s_instance->m_shaders.erase ( itor );
+			return;
+		}
+	}
+}
+
+Shader * Renderer::GetShader ( const std::string & name )
+{
+	auto s = s_instance->m_shaders.find ( name );
+
+    if ( s == s_instance->m_shaders.end ( ) )
+    {
+		return nullptr;
+	}
+
+	return s->second;
+}
+
+void Renderer::RegisterMaterial ( const std::string & name , Material * pMaterial )
+{
+    if ( pMaterial == nullptr )
+    {
+		// to do - log this error.
+		return;
+	}
+
+    s_instance->m_materials [ name ] = pMaterial;
+}
+
+void Renderer::DeregisterMaterial ( const Material * pMaterial )
+{
+    if ( pMaterial == nullptr )
+    {
+		// to do - log this error.
+		return;
+	}
+
+    for ( auto itor = s_instance->m_materials.begin ( ); itor != s_instance->m_materials.end ( ); itor++ )
+    {
+        if ( itor->second == pMaterial )
+        {
+            s_instance->m_materials.erase ( itor );
+			return;
+		}
+	}
+}
+
+Material * Renderer::GetMaterial ( const std::string & name )
+{
+    auto m = s_instance->m_materials.find ( name );
+
+    if ( m == s_instance->m_materials.end ( ) )
+    {
+		return nullptr;
+	}
+
+	return m->second;
 }
 
 void Renderer::RegisterMeshRenderer ( const MeshRenderer * pMeshRenderer )

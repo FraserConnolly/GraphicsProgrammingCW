@@ -15,7 +15,7 @@ MeshRenderer::~MeshRenderer ( )
 	glDeleteVertexArrays ( 1, &_vertexArrayObject );
 }
 
-void MeshRenderer::loadObjModel ( const std::string & filename )
+void MeshRenderer::LoadObjModel ( const std::string & filename )
 { 
 	IndexedModel model = OBJModel ( filename ).ToIndexedModel ( );
 
@@ -94,7 +94,15 @@ void MeshRenderer::OnDestroy ( )
 
 void MeshRenderer::Deserialise ( const json & data )
 {
-	__debugbreak ( );
+	if ( data.contains ( "Material" ) && data[ "Material" ].is_string ( ) )
+	{
+		SetMaterial ( Renderer::GetMaterial ( data [ "Material" ].get<std::string> ( ) ) );
+	}
+
+	if ( data.contains ( "Mesh" ) && data [ "Mesh" ].is_string ( ) )
+	{
+		LoadObjModel ( data [ "Mesh" ].get<std::string> ( ) );
+	}
 }
 
 void MeshRenderer::initModel ( const IndexedModel & model )

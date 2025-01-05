@@ -72,7 +72,7 @@ GameObject * GameObjectManager::FindObjectByName ( const std::string name )
 {
 	for ( auto & object : s_instance->m_gameObjects )
 	{
-		if ( object->GetName( ).compare( name ) )
+		if ( object->GetName( ) == name )
 		{
 			return object;
 		}

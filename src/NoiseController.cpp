@@ -1,6 +1,7 @@
 #include "NoiseController.h"
 #include "Time.h"
 #include "Material.h"
+#include "Renderer.h"
 
 NoiseController::NoiseController ( GameObject & hostObject ) :
 	Component( hostObject , ComponentTypes::NOISE_CONTROLLER ), 
@@ -50,5 +51,17 @@ void NoiseController::SetMaterial ( Material * const material )
 
 void NoiseController::Deserialise ( const json & data )
 {
-	__debugbreak ( );
+	if ( data.contains ( "Speed" ) )
+	{
+		SetSpeed ( data [ "Speed" ].get<float> ( ) );
+	}
+
+	if ( data.contains ( "Material" ) )
+	{
+		auto & material = data [ "Material" ];
+		if ( material.is_string ( ) )
+		{
+			SetMaterial ( Renderer::GetMaterial ( material.get<std::string> ( ) ) );
+		}
+	}
 }

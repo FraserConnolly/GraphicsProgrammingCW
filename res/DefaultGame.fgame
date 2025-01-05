@@ -214,25 +214,234 @@
 		},
 
 
+		{
+			"Name": "Planet",
+			"Position": [ 0, 5, 0 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "Planet",
+					"Mesh": "ball.obj"
+				},
+				{
+					"Type": "NoiseController",
+					"Speed": 0.5,
+					"Material": "Planet"
+				}
+			],
+			"Children": [
 
+			]
+		},
 
 		{
-			"Name": "",
+			"Name": "Suzanna",
+			"Position": [ 4, 0, 0 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 2.5, 2.5, 2.5 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "Exploding",
+					"Mesh": "monkey3.obj"
+				},
+				{
+					"Type": "ExplosionController",
+					"Material": "Exploding",
+					"Speed": 0.5
+				},
+				{
+					"Type": "MaterialSwitch",
+					"Materials": [
+						{
+							"Keycode": 49,
+							"Material": "Exploding"
+						},
+						{
+							"Keycode": 50,
+							"Material": "Brick"
+						},
+						{
+							"Keycode": 51,
+							"Material": "Synty"
+						},
+						{
+							"Keycode": 52,
+							"Material": "Fog"
+						},
+						{
+							"Keycode": 53,
+							"Material": "Rim"
+						},
+						{
+							"Keycode": 54,
+							"Material": "Toon"
+						},
+						{
+							"Keycode": 55,
+							"Material": "Planet"
+						}
+					]
+				}
+			],
+			"Children": [
+
+			]
+		},
+
+		{
+			"Name": "Point A",
+			"Position": [ -2.5, 0, -2.5 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "Brick",
+					"Mesh": "monkey3.obj"
+				},
+				{
+					"Type": "AudioEventEmitter",
+					"EventName": "event:/Orchestra 1st Star",
+					"StartOnEnter": true
+				},
+				{
+					"Type": "SphereCollider"
+				},
+				{
+					"Type": "Rotator",
+					"Speed": 1,
+					"Axis": [ true, false, false ]
+				}
+			],
+			"Children": [
+
+			]
+		},
+
+		{
+			"Name": "Point B",
+			"Position": [ 2.5, 5, -2.5 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "Synty",
+					"Mesh": "SM_Prop_Cone_02.obj"
+				},
+				{
+					"Type": "AudioEventEmitter",
+					"EventName": "event:/Orchestra 2nd Star",
+					"StartOnEnter": true
+				},
+				{
+					"Type": "SphereCollider"
+				},
+				{
+					"Type": "Rotator",
+					"Speed": 1,
+					"Axis": [ false, true, false ]
+				},
+				{
+					"Type": "PlayerController"
+				}
+			],
+			"Children": [
+
+			]
+		},
+
+		{
+			"Name": "Point C",
+			"Position": [ 2.5, 0, 2.5 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "Synty",
+					"Mesh": "SM_Prop_Cone_01.obj"
+				},
+				{
+					"Type": "AudioEventEmitter",
+					"EventName": "event:/Orchestra 3rd Star",
+					"StartOnEnter": true
+				},
+				{
+					"Type": "SphereCollider"
+				},
+				{
+					"Type": "Rotator",
+					"Speed": 1,
+					"Axis": [ false, false, true ]
+				}
+			],
+			"Children": [
+
+			]
+		},
+
+		{
+			"Name": "Point D",
+			"Position": [ -2.5, 0, 2.5 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "Synty",
+					"Mesh": "UnitCube.obj"
+				},
+				{
+					"Type": "AudioEventEmitter",
+					"EventName": "event:/Casual Win 1",
+					"StartOnEnter": true
+				},
+				{
+					"Type": "SphereCollider"
+				},
+				{
+					"Type": "Rotator",
+					"Speed": 1,
+					"Axis": [ false, false, false ]
+				}
+			],
+			"Children": [
+
+			]
+		},
+
+		{
+			"Name": "Arrow",
 			"Position": [ 0, 0, 0 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],
 			"Components": [
-
+				{
+					"Type": "MeshRenderer",
+					"Material": "Synty",
+					"Mesh": "ArrowNegZ.obj"
+				},
+				{
+					"Type": "PathFollow",
+					"TransformWayPoints": [
+						"Point A",
+						"Point B",
+						"Point C",
+						"Point D"
+					],
+					"Speed": 2.5
+				},
+				{
+					"Type": "SphereCollider"
+				}
 			],
 			"Children": [
 
 			]
 		}
-
-
-
-
-
 	]
-
 }

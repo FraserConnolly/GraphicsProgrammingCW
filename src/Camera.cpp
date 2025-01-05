@@ -24,7 +24,7 @@ void Camera::OnDestroy ( )
 
 void Camera::Deserialise ( const json & data )
 {
-	__debugbreak ( );
+	// nothing to deserialise (yet)
 }
 
 glm::mat4 Camera::GetViewMatrix ( )
