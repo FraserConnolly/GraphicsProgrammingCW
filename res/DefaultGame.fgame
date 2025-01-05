@@ -178,7 +178,7 @@
 		{
 			"Name": "Exploding",
 			"Shader": "Geometry",
-			"Unifroms": [
+			"Uniforms": [
         {
           "Name": "diffuse",
           "Type": "Texture",
