@@ -478,6 +478,12 @@
     <CopyFileToFolders Include="..\res\DefaultGame.fgame">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\shaderEMap.frag">
+      <Filter>Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\shaderEMap.vert">
+      <Filter>Shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />

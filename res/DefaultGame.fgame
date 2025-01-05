@@ -45,7 +45,12 @@
 			"Name": "Skybox",
 			"Vertex": "cubeMap.vert",
 			"Fragment": "cubeMap.frag"
-		}
+		},
+		{
+      "Name": "EnviornmentMapped",
+      "Vertex": "shaderEMap.vert",
+      "Fragment": "shaderEmap.frag"
+    }
 	],
 	"ImageTextures": [
 		{
@@ -179,12 +184,33 @@
 			"Name": "Exploding",
 			"Shader": "Geometry",
 			"Uniforms": [
-        {
-          "Name": "diffuse",
-          "Type": "Texture",
-          "Value": "Brick"
+				{
+					"Name": "diffuse",
+					"Type": "Texture",
+					"Value": "Brick"
+				}
+			]
+		},
+		{
+			"Name": "EMap",
+			"Shader": "EnviornmentMapped",
+			"Uniforms": [
+				{
+					"Name": "diffuse",
+					"Type": "Texture",
+					"Value": "Brick"
+				},
+				{
+					"Name": "skybox",
+					"Type": "Texture",
+					"Value": "Skybox"
+				},
+				{
+          "Name": "reflectivity",
+          "Type": "float",
+          "Value": 0.4
         }
-      ]
+			]
 		}
 	],
 	"Skybox": {
@@ -221,7 +247,7 @@
 			"Components": [
 				{
 					"Type": "MeshRenderer",
-					"Material": "Exploding",
+					"Material": "EMap",
 					"Mesh": "monkey3.obj"
 				},
 				{
@@ -259,6 +285,10 @@
 						{
 							"Keycode": 55,
 							"Material": "Planet"
+						},
+						{
+							"Keycode": 56,
+							"Material": "EMap"
 						}
 					]
 				}
@@ -292,6 +322,7 @@
 
 		{
 			"Name": "Point A",
+			"Active":  false,
 			"Position": [ -2.5, 0, -2.5 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],
@@ -322,6 +353,7 @@
 
 		{
 			"Name": "Point B",
+			"Active": false,
 			"Position": [ 2.5, 5, -2.5 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],
@@ -355,6 +387,7 @@
 
 		{
 			"Name": "Point C",
+			"Active": false,
 			"Position": [ 2.5, 0, 2.5 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],
@@ -385,6 +418,7 @@
 
 		{
 			"Name": "Point D",
+			"Active": false,
 			"Position": [ -2.5, 0, 2.5 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],
@@ -415,7 +449,7 @@
 
 		{
 			"Name": "Arrow",
-			"Active": true,
+			"Active": false,
 			"Position": [ 0, 0, 0 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],

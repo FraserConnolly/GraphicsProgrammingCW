@@ -59,9 +59,12 @@ private:
 		VIEW_U,
 		PROJECTION_U,
 		TIME_U,
-		FOG_COLOUR,
-		FOG_MIN_DIST,
-		FOG_MAX_DIST,
+
+		CAMERA_POS_U,
+
+		FOG_COLOUR_U,
+		FOG_MIN_DIST_U,
+		FOG_MAX_DIST_U,
 
 #ifdef USE_ADS
 		LIGHT_POSITION_U,
@@ -82,6 +85,6 @@ private:
 	int _numShaders;
 	GLuint _program; // Track the shader program
 	GLuint _shaders [ MAX_SHADER_COUNT ]; //array of shaders
-	GLuint _uniforms [ NUM_UNIFORMS ];
+	GLint  _uniforms [ NUM_UNIFORMS ];
 
 };

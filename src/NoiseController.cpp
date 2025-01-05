@@ -42,11 +42,6 @@ void NoiseController::SetMaterial ( Material * const material )
 
 	m_material = material;
 	m_uniformTimeLocation = m_material -> GetUniformLocation ( "time" );
-	m_unifromFogDensity = m_material -> GetUniformLocation ( "fogDensity" );
-	m_unifromFogColour = m_material->GetUniformLocation ( "fogColor" );
-	m_uniformMaxDist = m_material->GetUniformLocation ( "maxDist" );
-	m_UnifromMinDist = m_material->GetUniformLocation ( "minDist" );
-
 }
 
 void NoiseController::Deserialise ( const json & data )

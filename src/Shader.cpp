@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Camera.h"
+#include "GameObject.h"
 
 #ifdef USE_ADS
 #define VertexShaderPath "ads.vert"
@@ -97,11 +98,13 @@ void Shader::LoadShaders ( const char * vertexShader, const char * geoShader, co
 	_uniforms [ MODEL_U ]		= glGetUniformLocation ( _program, "model" );
 	_uniforms [ VIEW_U ]		= glGetUniformLocation ( _program, "view" );
 	_uniforms [ PROJECTION_U ]	= glGetUniformLocation ( _program, "projection" );
-	_uniforms [ TIME_U ]		= glGetUniformLocation ( _program, "time" );
+	_uniforms [ TIME_U ]		= glGetUniformLocation ( _program , "time" );
+	
+	_uniforms [ CAMERA_POS_U ]	= glGetUniformLocation ( _program, "cameraPos" );
 
-	_uniforms [ FOG_COLOUR ]	= glGetUniformLocation( _program, "fogColor" );
-	_uniforms [ FOG_MIN_DIST ]	= glGetUniformLocation( _program, "maxDist" );
-	_uniforms [ FOG_MAX_DIST ]  = glGetUniformLocation( _program, "minDist" );
+	_uniforms [ FOG_COLOUR_U ]		= glGetUniformLocation( _program, "fogColor" );
+	_uniforms [ FOG_MIN_DIST_U ]	= glGetUniformLocation( _program, "maxDist" );
+	_uniforms [ FOG_MAX_DIST_U ]	= glGetUniformLocation( _program, "minDist" );
 
 #ifdef USE_ADS
 	_uniforms[ LIGHT_POSITION_U ] = glGetUniformLocation( _program, "lightPos" );
@@ -273,5 +276,12 @@ void Shader::Update ( Camera & camera, Transform & transform )
 	glUniform3f ( _uniforms [ OBJECT_COLOUR_U ], 0.7f, 0.7f, 0.7f);
 #endif
 
+	if ( _uniforms [ CAMERA_POS_U ] >= 0 )
+	{
+		auto camPos = camera.GetGameObject ( ).GetTransform ( ).GetPosition ( );
+
+		// send the camera position as a uniform (world space)
+		glUniform3f ( _uniforms [ CAMERA_POS_U ], camPos.x , camPos.y , camPos.z );
+	}
 }
 

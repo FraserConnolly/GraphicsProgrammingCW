@@ -16,7 +16,6 @@ uniform sampler2D diffuse;
 // Output color
 out vec4 fragmentColour;
 
-// Pseudo code for main
 void main()
 {
 
@@ -36,5 +35,4 @@ void main()
 
     // 4. Set the final color output using FragColor.
     fragmentColour = texture(diffuse, textureCoord) * vec4(vertexColour, 1.0)  * vec4( colour, 1.0 );
-
 }
