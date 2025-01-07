@@ -96,7 +96,17 @@ void MeshRenderer::Deserialise ( const json & data )
 {
 	if ( data.contains ( "Material" ) && data[ "Material" ].is_string ( ) )
 	{
-		SetMaterial ( Renderer::GetMaterial ( data [ "Material" ].get<std::string> ( ) ) );
+		auto materialName = data [ "Material" ].get<std::string> ( );
+		auto material = Renderer::GetMaterial ( materialName );
+
+		if ( material == nullptr )
+		{
+			std::cerr << "Material not found: " << materialName << std::endl;
+		}
+		else
+		{
+			SetMaterial ( material );
+		}
 	}
 
 	if ( data.contains ( "Mesh" ) && data [ "Mesh" ].is_string ( ) )

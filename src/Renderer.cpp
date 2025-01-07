@@ -142,6 +142,11 @@ void Renderer::RenderObjectsForCamera ( Camera *& camera )
 
 void Renderer::Shutdown ( )
 {
+    for ( auto & frameBuffer : s_instance->m_fbos)
+    {
+        delete frameBuffer.second;
+    }
+    s_instance->m_fbos.clear ( );
 
     for ( auto & material : s_instance->m_materials )
     {
@@ -169,7 +174,7 @@ void Renderer::Shutdown ( )
 
 }
 
-void Renderer::RegisterTexure ( const std::string & name , Texture * pTexture )
+void Renderer::RegisterTexture ( const std::string & name , Texture * pTexture )
 {
     if ( pTexture == nullptr )
     {
@@ -290,6 +295,47 @@ Material * Renderer::GetMaterial ( const std::string & name )
 	}
 
 	return m->second;
+}
+
+void Renderer::RegisterFrameBuffer ( const std::string & name , FrameBuffer * pFrameBuffer )
+{
+    if ( pFrameBuffer == nullptr )
+    {
+        // to do - log this error.
+        return;
+    }
+
+    s_instance->m_fbos [ name ] = pFrameBuffer;
+}
+
+void Renderer::DeregisterFrameBuffer ( const FrameBuffer * pFrameBuffer )
+{
+    if ( pFrameBuffer == nullptr )
+    {
+        // to do - log this error.
+        return;
+    }
+
+    for ( auto itor = s_instance->m_fbos.begin ( ); itor != s_instance->m_fbos.end ( ); itor++ )
+    {
+        if ( itor->second == pFrameBuffer )
+        {
+            s_instance->m_fbos.erase ( itor );
+            return;
+        }
+    }
+}
+
+FrameBuffer * Renderer::GetFrameBuffer ( const std::string & name )
+{
+    auto m = s_instance->m_fbos.find ( name );
+
+    if ( m == s_instance->m_fbos.end ( ) )
+    {
+        return nullptr;
+    }
+
+    return m->second;
 }
 
 void Renderer::RegisterMeshRenderer ( const MeshRenderer * pMeshRenderer )

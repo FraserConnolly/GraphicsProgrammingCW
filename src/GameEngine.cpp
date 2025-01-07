@@ -14,6 +14,10 @@
 
 #include "GameObject.h"
 #include "CubeMap.h"
+#include "FrameBuffer.h"
+#include "Material.h"
+#include "Shader.h"
+#include "Texture.h"
 
 // ComponentsMaterialSwitch
 #include "Audio Listener.h"
@@ -83,12 +87,6 @@ void GameEngine::initSystems ( )
 	Audio::LoadBank ( "Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL );
 	Audio::LoadBank ( "Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL );
 
-	// load and play background music - this event is set to loop in FMOD.
-	// note that I am note setting 3D attributes for this event as it is configured in
-	// FMOD to be a 2D event.
-	Audio::LoadEvent ( "event:/Lighthearted LOOP SHORT" );
-	//Audio::PlayEvent ( "event:/Lighthearted LOOP SHORT" );
-
 #pragma endregion
 
 #pragma region Load shaders, materials, and textures
@@ -140,7 +138,7 @@ void GameEngine::initSystems ( )
 				auto textureName = texture [ "Name" ].get<string> ( );
 				auto textureFile = texture [ "Path" ].get<string> ( );
 				newTexture->LoadTexture ( textureFile.c_str ( ) );
-				Renderer::RegisterTexure ( textureName , newTexture );
+				Renderer::RegisterTexture ( textureName , newTexture );
 			}
 		}
 		catch ( const std::exception & )
@@ -171,12 +169,55 @@ void GameEngine::initSystems ( )
 				}
 
 				newTexture->LoadCubeMap ( faces );
-				Renderer::RegisterTexure ( textureName, newTexture );
+				Renderer::RegisterTexture ( textureName, newTexture );
 			}
 		}
 		catch ( const std::exception & )
 		{
 			std::cerr << "Failed to load textures" << std::endl;
+		}
+	}
+
+	// create frame buffers
+
+	if ( m_gameData.contains ( "FrameBuffers" ) )
+	{
+		try
+		{
+			auto fbData = m_gameData [ "FrameBuffers" ];
+			for ( auto & frameBuffer : fbData )
+			{
+				if ( !frameBuffer.contains ( "Name" ) || !frameBuffer.contains ( "Texture" ) )
+				{
+					std::cerr << "Frame buffer missing name or texture." << std::endl;
+					continue;
+				}
+
+				auto frameBufferName = frameBuffer [ "Name" ].get<string> ( );
+				auto textureName = frameBuffer [ "Texture" ].get<string> ( );
+
+				// default screen size comes from Display
+				int frameBufferWidth = m_gameDisplay.getWidth ( );
+				int frameBufferHeight = m_gameDisplay.getHeight ( );
+
+				if ( frameBuffer.contains ( "Width" ) )
+				{
+					frameBufferWidth = frameBuffer [ "Width" ].get<int> ( );
+				}
+
+				if ( frameBuffer.contains ( "Height" ) )
+				{
+					frameBufferHeight = frameBuffer [ "Height" ].get<int> ( );
+				}
+
+				auto newFrameBuffer = new FrameBuffer ( frameBufferWidth , frameBufferHeight , textureName );
+
+				Renderer::RegisterFrameBuffer ( frameBufferName , newFrameBuffer );
+			}
+		}
+		catch ( const std::exception & )
+		{
+			std::cerr << "Failed to load frame buffers." << std::endl;
 		}
 	}
 
@@ -233,9 +274,6 @@ void GameEngine::initSystems ( )
 			std::cerr << "Failed to load materials" << std::endl;
 		}
 	}
-
-	// get screen size from SDL
-	//m_FBO = new FrameBuffer ( _gameDisplay.getWidth( ), _gameDisplay.getHeight( ) );
 
 #pragma endregion
 

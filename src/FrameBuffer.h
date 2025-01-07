@@ -8,12 +8,14 @@ class FrameBuffer
 {
 
 public:
-	FrameBuffer( int w , int h );
+	FrameBuffer( int w , int h, const std::string textureName );
 	~FrameBuffer();
 
 	void Bind ( );
 	void Unbind ( );
 	void RenderQuad ( Shader * fboShader );
+
+	Texture * GetTexture ( ) const { return m_texture; }
 
 private:
 
@@ -26,11 +28,11 @@ private:
 
 	Texture * m_texture = nullptr;
 
-	GLuint m_FBO; // Frame Buffer 
-	GLuint m_RBO; // Render Buffer 
-	GLuint m_CBO; // Colour Buffer 
-	GLuint m_quadVAO;
-	GLuint m_quadVBO;
+	GLuint m_FBO = 0; // Frame Buffer 
+	GLuint m_RBO = 0; // Render Buffer 
+	GLuint m_CBO = 0; // Colour Buffer 
+	GLuint m_quadVAO = 0;
+	GLuint m_quadVBO = 0;
 
 };
 

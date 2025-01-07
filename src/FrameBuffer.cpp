@@ -1,12 +1,13 @@
+#include <string>
+#include <iostream>
+
 #include "FrameBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Renderer.h"
 
-#include <iostream>
 
-
-FrameBuffer::FrameBuffer ( int w , int h ) : 
+FrameBuffer::FrameBuffer ( int w , int h, const std::string textureName ) :
 	m_width ( w ) , 
 	m_height ( h ),
 	m_quadVAO ( 0 ) ,
@@ -17,6 +18,8 @@ FrameBuffer::FrameBuffer ( int w , int h ) :
 
 	// create a colorbuffer for attachment texture
 	m_texture = new Texture ( m_width , m_height );
+
+	Renderer::RegisterTexture ( textureName , m_texture );
 
 	// create a renderbuffer object for depth and stencil attachment 
 	glGenRenderbuffers ( 1 , &m_RBO );
@@ -47,7 +50,8 @@ FrameBuffer::FrameBuffer ( int w , int h ) :
 
 FrameBuffer::~FrameBuffer ( )
 {
-
+	Renderer::DeregisterTexture ( m_texture );
+	delete m_texture;
 }
 
 void FrameBuffer::Bind ( )

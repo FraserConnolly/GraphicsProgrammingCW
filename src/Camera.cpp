@@ -24,7 +24,11 @@ void Camera::OnDestroy ( )
 
 void Camera::Deserialise ( const json & data )
 {
-	// nothing to deserialise (yet)
+	if ( data.contains ( "FrameBuffer" ) && data[ "FrameBuffer" ].is_string( ) )
+	{
+		auto frameBuffer = Renderer::GetFrameBuffer( data[ "FrameBuffer" ] );
+		SetFrameBufferObject ( frameBuffer );
+	}
 }
 
 glm::mat4 Camera::GetViewMatrix ( )

@@ -47,10 +47,10 @@
 			"Fragment": "cubeMap.frag"
 		},
 		{
-      "Name": "EnviornmentMapped",
-      "Vertex": "shaderEMap.vert",
-      "Fragment": "shaderEmap.frag"
-    }
+			"Name": "EnviornmentMapped",
+			"Vertex": "shaderEMap.vert",
+			"Fragment": "shaderEmap.frag"
+		}
 	],
 	"ImageTextures": [
 		{
@@ -68,6 +68,12 @@
 		{
 			"Name": "Noise",
 			"Path": "noise.png"
+		}
+	],
+	"FrameBuffers": [
+		{
+			"Name": "FollowCammeraBuffer",
+			"Texture": "FollowCammeraTexture"
 		}
 	],
 	"CubeMaps": [
@@ -206,18 +212,70 @@
 					"Value": "Skybox"
 				},
 				{
-          "Name": "reflectivity",
-          "Type": "float",
-          "Value": 0.4
-        }
+					"Name": "reflectivity",
+					"Type": "float",
+					"Value": 0.4
+				}
 			]
-		}
+		},
+		{
+      "Name": "FollowCameraMaterial",
+      "Shader": "Default",
+      "Uniforms": [
+        {
+          "Name": "diffuse",
+          "Type": "Texture",
+          "Value": "FollowCammeraTexture"
+        }
+      ]
+    }
 	],
 	"Skybox": {
 		"Shader": "Skybox",
 		"Texture": "Skybox"
 	},
+
 	"Objects": [
+
+		{
+			"Name": "FollowCamera",
+			"Position": [ 10.0, 4.5, 0.0 ],
+			"Rotation": [ -29, 90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "Camera",
+					"FrameBuffer": "FollowCammeraBuffer"
+				},
+				{
+					"Type": "MeshRenderer",
+					"Material": "Synty",
+					"Mesh": "ArrowNegZ.obj"
+				},
+				{
+					"Type": "PlayerController"
+				},
+				{
+					"Type": "LookAt",
+					"Target": "Suzanna"
+				},
+				{
+					"Type": "PathFollow",
+					"Speed": 2.5,
+					"WorldWayPoints": [
+						[ 10.0, 4.5, 0.0 ],
+						[ 0.0, 4.5, 10.0 ],
+						[ -10.0, 4.5, 0.0 ],
+						[ 0.0, 4.5, -10.0 ]
+					],
+					"LookAtNextPoint": false
+				}
+			],
+			"Children": [
+
+			]
+		},
+
 		{
 			"Name": "MainCamera",
 			"Position": [ 0.0, 7.5, 10.0 ],
@@ -241,10 +299,16 @@
 
 		{
 			"Name": "Suzanna",
-			"Position": [ 4, 0, 0 ],
+			"Active": true,
+			"Position": [ 0, 0, 0 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 2.5, 2.5, 2.5 ],
 			"Components": [
+				{
+					"Type": "Rotator",
+					"Speed": 0.5,
+					"Axis": [ false, true, false ]
+				},
 				{
 					"Type": "MeshRenderer",
 					"Material": "EMap",
@@ -299,7 +363,26 @@
 		},
 
 		{
+			"Name": "Unit Cube",
+			"Active": true,
+			"Position": [ 0, 5, 0 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "FollowCameraMaterial",
+					"Mesh": "UnitCube.obj"
+				}
+			],
+			"Children": [
+
+			]
+		},
+
+		{
 			"Name": "Planet",
+			"Active": false,
 			"Position": [ 0, 5, 0 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],
@@ -322,7 +405,7 @@
 
 		{
 			"Name": "Point A",
-			"Active":  false,
+			"Active": false,
 			"Position": [ -2.5, 0, -2.5 ],
 			"Rotation": [ 0, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],
