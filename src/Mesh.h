@@ -6,7 +6,8 @@
 #include <GL\glew.h>
 #include "Vertex.h"
 #include "obj_loader.h"
-#include "Material.h"
+
+class Material;
 
 class MeshRenderer : public Component
 {

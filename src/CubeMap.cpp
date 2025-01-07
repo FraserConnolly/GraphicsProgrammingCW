@@ -1,6 +1,8 @@
 #include "CubeMap.h"
 #include "Renderer.h"
 #include "Camera.h"
+#include "Shader.h"
+#include "Texture.h"
 
 CubeMap::CubeMap ( ) :
 	m_shader ( new Shader ( ) ), 
