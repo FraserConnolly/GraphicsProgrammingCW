@@ -168,6 +168,9 @@
     <ClCompile Include="NoiseController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LookAt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Display.h">
@@ -310,6 +313,9 @@
     </ClInclude>
     <ClInclude Include="NoiseController.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LookAt.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

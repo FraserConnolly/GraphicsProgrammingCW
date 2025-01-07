@@ -15,6 +15,7 @@
 #include "ExplosionController.h"
 #include "MaterialSwitch.h"
 #include "NoiseController.h"
+#include "LookAt.h"
 
 unsigned int GameObject::s_objectIDCounter = 0;
 
@@ -69,6 +70,8 @@ Component * GameObject::CreateComponent ( ComponentTypes component, GameObject &
             return new MaterialSwitch ( hostObject );
         case NOISE_CONTROLLER:
 			return new NoiseController ( hostObject );
+        case LOOK_AT:
+			return new LookAt ( hostObject );
     }
 
     return nullptr;
@@ -154,6 +157,8 @@ Component * GameObject::AddComponent ( const std::string component )
         type = MATERIAL_SWITCHER;
     else if ( component == "NoiseController" )
         type = NOISE_CONTROLLER;
+    else if ( component == "LookAt" )
+        type = LOOK_AT;
 
     if ( type == ComponentTypes::NOT_FOUND )
     {
