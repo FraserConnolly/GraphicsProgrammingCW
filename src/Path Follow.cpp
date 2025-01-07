@@ -44,8 +44,16 @@ void PathFollow::Update ( )
 		return;
 	}
 
+	// store the rotation so we can restore it if we're not looking at the next point.
+	glm::quat rotation = m_transform.GetRotation ( );
+
 	m_transform.LookAt ( *nextPoint );
 	m_transform.Translate ( Time::GetDeltaTime ( ) * m_speed * m_transform.GetForward ( ) );
+
+	if ( !m_lookAtNextPoint ) {
+		// restore the rotation if we're not looking at the next point.
+		m_transform.SetRotation ( rotation );
+	}
 }
 
 /// <summary>
@@ -79,7 +87,7 @@ void PathFollow::SetSpeed ( float speed )
 	m_speed = speed;
 }
 
-const float PathFollow::GetSpeed ( )
+const float PathFollow::GetSpeed ( ) const
 {
 	return m_speed;
 }
@@ -95,6 +103,11 @@ void PathFollow::Deserialise ( const json & data )
 	if ( data.contains ( "CheckDistance" ) )
 	{
 		m_checkDistance = data [ "CheckDistance" ].get<float> ( );
+	}
+
+	if ( data.contains ( "LookAtNextPoint" ) )
+	{
+		m_lookAtNextPoint = data [ "LookAtNextPoint" ].get<bool> ( );
 	}
 
 	// if the path is made up of transforms then we can't use global coordinates and vice versa.

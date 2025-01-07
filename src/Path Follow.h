@@ -25,8 +25,11 @@ public:
 	void AddWayPoint ( const Transform * point );
 	void ClearWayPoints ( );
 	
+	void SetLookAtNextPoint ( bool lookAtNextPoint ) { m_lookAtNextPoint = lookAtNextPoint; }
+	bool GetLookAtNextPoint ( ) const { return m_lookAtNextPoint; }
+	
 	void SetSpeed ( float speed );
-	const float GetSpeed ( );
+	const float GetSpeed ( ) const;
 
 	void Deserialise ( const json & data ) override;
 
@@ -34,6 +37,7 @@ private:
 
 	float m_speed;
 	float m_checkDistance;
+	bool m_lookAtNextPoint = true;
 	size_t m_nextPointIndex = 0;
 	std::vector<glm::vec3> m_path;
 	std::vector<const Transform *> m_pathTransforms;
