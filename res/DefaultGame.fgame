@@ -1,14 +1,16 @@
 {
-	"GameName": "Game Name",
-	"Display": {
-		"Width": 800,
-		"Height": 600
-	},
+	"GameName": "Fraser Connolly Graphics Programming Coursework",
+	"Display": { "Width": 1920, "Height": 1080 },
 	"Shaders": [
 		{
 			"Name": "Default",
 			"Vertex": "ads.vert",
 			"Fragment": "ads.frag"
+		},
+		{
+			"Name": "Unlit",
+			"Vertex": "shader.vert",
+			"Fragment": "shader.frag"
 		},
 		{
 			"Name": "Geometry",
@@ -58,6 +60,10 @@
 			"Path": "PolygonCity_Texture_01_A.png"
 		},
 		{
+			"Name": "PolygonScifi_01_A",
+			"Path": "PolygonScifi_01_A.png"
+		},
+		{
 			"Name": "Brick",
 			"Path": "bricks.jpg"
 		},
@@ -91,13 +97,24 @@
 	],
 	"Materials": [
 		{
-			"Name": "Synty",
+			"Name": "SyntyCity",
 			"Shader": "Default",
 			"Uniforms": [
 				{
 					"Name": "diffuse",
 					"Type": "Texture",
 					"Value": "PolygonCity_Texture_01_A"
+				}
+			]
+		},
+		{
+			"Name": "SyntySciFiCity",
+			"Shader": "Default",
+			"Uniforms": [
+				{
+					"Name": "diffuse",
+					"Type": "Texture",
+					"Value": "PolygonScifi_01_A"
 				}
 			]
 		},
@@ -219,16 +236,16 @@
 			]
 		},
 		{
-      "Name": "FollowCameraMaterial",
-      "Shader": "Default",
-      "Uniforms": [
-        {
-          "Name": "diffuse",
-          "Type": "Texture",
-          "Value": "FollowCammeraTexture"
-        }
-      ]
-    }
+			"Name": "FollowCameraMaterial",
+			"Shader": "Unlit",
+			"Uniforms": [
+				{
+					"Name": "diffuse",
+					"Type": "Texture",
+					"Value": "FollowCammeraTexture"
+				}
+			]
+		}
 	],
 	"Skybox": {
 		"Shader": "Skybox",
@@ -239,47 +256,52 @@
 
 		{
 			"Name": "FollowCamera",
-			"Position": [ 10.0, 4.5, 0.0 ],
-			"Rotation": [ -29, 90, 0 ],
-			"Scale": [ 1, 1, 1 ],
 			"Components": [
 				{
 					"Type": "Camera",
 					"FrameBuffer": "FollowCammeraBuffer"
 				},
 				{
-					"Type": "MeshRenderer",
-					"Material": "Synty",
-					"Mesh": "ArrowNegZ.obj"
-				},
+					"Type": "TransformFollow",
+					"Target": "Drone",
+					"Offset": [ 0, 0, -0.25 ]
+				}
+			]
+		},
+
+		{
+			"Name": "Drone",
+			"Position": [ 5.0, 4.5, 0.0 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
 				{
-					"Type": "PlayerController"
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "SM_Prop_Drone_Ball_01.obj"
 				},
 				{
 					"Type": "LookAt",
-					"Target": "Suzanna"
+					"Target": "SuzannaMid"
 				},
 				{
 					"Type": "PathFollow",
-					"Speed": 2.5,
+					"Speed": 1.5,
 					"WorldWayPoints": [
-						[ 10.0, 4.5, 0.0 ],
-						[ 0.0, 4.5, 10.0 ],
-						[ -10.0, 4.5, 0.0 ],
-						[ 0.0, 4.5, -10.0 ]
+						[ 5.0, 4.5, 5.0 ],
+						[ -5.0, 4.5, 5.0 ],
+						[ -5.0, 4.5, -4.0 ],
+						[ 5.0, 4.5, -4.0 ]
 					],
 					"LookAtNextPoint": false
 				}
-			],
-			"Children": [
-
 			]
 		},
 
 		{
 			"Name": "MainCamera",
-			"Position": [ 0.0, 7.5, 10.0 ],
-			"Rotation": [ -29, 0, 0 ],
+			"Position": [ 0.0, 8, 12.0 ],
+			"Rotation": [ -25, 0, 0 ],
 			"Scale": [ 1, 1, 1 ],
 			"Components": [
 				{
@@ -291,92 +313,204 @@
 				{
 					"Type": "AudioListener"
 				}
-			],
-			"Children": [
-
 			]
 		},
 
 		{
-			"Name": "Suzanna",
 			"Active": true,
-			"Position": [ 0, 0, 0 ],
+			"Position": [ -3, 0, -1 ],
 			"Rotation": [ 0, 0, 0 ],
-			"Scale": [ 2.5, 2.5, 2.5 ],
+			"Scale": [ 2, 2, 2 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "SM_Env_Railing_02_Pillar.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "SuzannaLeft",
+			"Active": true,
+			"Position": [ -3, 3.5, -1 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 0.8, 0.8, 0.8 ],
 			"Components": [
 				{
 					"Type": "Rotator",
-					"Speed": 0.5,
+					"Speed": 0.1,
 					"Axis": [ false, true, false ]
 				},
 				{
 					"Type": "MeshRenderer",
-					"Material": "EMap",
+					"Material": "Exploding",
 					"Mesh": "monkey3.obj"
 				},
 				{
 					"Type": "ExplosionController",
 					"Material": "Exploding",
-					"Speed": 0.5
+					"Speed": 1,
+					"ExplosionAmount": 1.5
 				},
 				{
 					"Type": "MaterialSwitch",
 					"Materials": [
 						{
 							"Keycode": 49,
+							"Material": "EMap"
+						},
+						{
 							"Material": "Exploding"
 						},
 						{
-							"Keycode": 50,
-							"Material": "Brick"
-						},
-						{
-							"Keycode": 51,
-							"Material": "Synty"
-						},
-						{
-							"Keycode": 52,
-							"Material": "Fog"
-						},
-						{
-							"Keycode": 53,
-							"Material": "Rim"
-						},
-						{
-							"Keycode": 54,
-							"Material": "Toon"
-						},
-						{
-							"Keycode": 55,
 							"Material": "Planet"
 						},
 						{
-							"Keycode": 56,
-							"Material": "EMap"
+							"Material": "Fog"
+						},
+						{
+							"Material": "Rim"
+						},
+						{
+							"Material": "Toon"
 						}
 					]
 				}
-			],
-			"Children": [
-
 			]
 		},
 
 		{
-			"Name": "Unit Cube",
 			"Active": true,
-			"Position": [ 0, 5, 0 ],
+			"Position": [ 0, 0, 1 ],
 			"Rotation": [ 0, 0, 0 ],
-			"Scale": [ 1, 1, 1 ],
+			"Scale": [ 2, 2, 2 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "SM_Env_Railing_02_Pillar.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "CubeMid",
+			"Active": true,
+			"Position": [ 0, 4, 1 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 0.8, 0.8, 0.8 ],
+			"Components": [
+				{
+					"Type": "Rotator",
+					"Speed": 0.3,
+					"Axis": [ false, true, true ]
+				},
+				{
+					"Type": "MeshRenderer",
+					"Material": "EMap",
+					"Mesh": "UnitCube.obj"
+				},
+				{
+					"Type": "ExplosionController",
+					"Material": "Exploding",
+					"Speed": 1,
+					"ExplosionAmount": 1.5
+				}
+			]
+		},
+
+		{
+			"Active": true,
+			"Position": [ 3, 0, -1 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 2, 2, 2 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "SM_Env_Railing_02_Pillar.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "PlanetRight",
+			"Active": true,
+			"Position": [ 3, 3.5, -1 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 0.8, 0.8, 0.8 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "Planet",
+					"Mesh": "UnitSphere.obj"
+				}
+			]
+		},
+
+
+		{
+			"Name": "BillBoard1",
+			"Active": true,
+			"Position": [ -4, 6, -4 ],
+			"Rotation": [ 15, 45, 0 ],
+			"Scale": [ 2, 2, 2 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "SM_Sign_Billboard_Border_03.obj"
+				}
+			]
+		},
+		{
+			"Name": "BillBoard1Sreen",
+			"Active": true,
+			"Scale": [ 1, 0.7, 0.01 ],
 			"Components": [
 				{
 					"Type": "MeshRenderer",
 					"Material": "FollowCameraMaterial",
 					"Mesh": "UnitCube.obj"
+				},
+				{
+					"Type": "TransformFollow",
+					"Target": "BillBoard1",
+					"Rotation": [ 0, 0, 0 ]
 				}
-			],
-			"Children": [
+			]
+		},
 
+		{
+			"Name": "BillBoard2",
+			"Active": true,
+			"Position": [ 4, 6.5, -3 ],
+			"Rotation": [ 15, -45, 0 ],
+			"Scale": [ 2, 2, 2 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "SM_Sign_Billboard_Border_03.obj"
+				}
+			]
+		},
+		{
+			"Name": "BillBoard2Sreen",
+			"Active": true,
+			"Scale": [ 1, 0.7, 0.01 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "FollowCameraMaterial",
+					"Mesh": "UnitCube.obj"
+				},
+				{
+					"Type": "TransformFollow",
+					"Target": "BillBoard2",
+					"Rotation": [ 0, 0, 0 ]
+				}
 			]
 		},
 
@@ -397,9 +531,6 @@
 					"Speed": 0.5,
 					"Material": "Planet"
 				}
-			],
-			"Children": [
-
 			]
 		},
 
@@ -428,9 +559,6 @@
 					"Speed": 1,
 					"Axis": [ true, false, false ]
 				}
-			],
-			"Children": [
-
 			]
 		},
 
@@ -443,7 +571,7 @@
 			"Components": [
 				{
 					"Type": "MeshRenderer",
-					"Material": "Synty",
+					"Material": "SyntyCity",
 					"Mesh": "SM_Prop_Cone_02.obj"
 				},
 				{
@@ -462,9 +590,6 @@
 				{
 					"Type": "PlayerController"
 				}
-			],
-			"Children": [
-
 			]
 		},
 
@@ -477,7 +602,7 @@
 			"Components": [
 				{
 					"Type": "MeshRenderer",
-					"Material": "Synty",
+					"Material": "SyntyCity",
 					"Mesh": "SM_Prop_Cone_01.obj"
 				},
 				{
@@ -493,9 +618,6 @@
 					"Speed": 1,
 					"Axis": [ false, false, true ]
 				}
-			],
-			"Children": [
-
 			]
 		},
 
@@ -508,7 +630,7 @@
 			"Components": [
 				{
 					"Type": "MeshRenderer",
-					"Material": "Synty",
+					"Material": "SyntyCity",
 					"Mesh": "UnitCube.obj"
 				},
 				{
@@ -524,9 +646,6 @@
 					"Speed": 1,
 					"Axis": [ false, false, false ]
 				}
-			],
-			"Children": [
-
 			]
 		},
 
@@ -539,7 +658,7 @@
 			"Components": [
 				{
 					"Type": "MeshRenderer",
-					"Material": "Synty",
+					"Material": "SyntyCity",
 					"Mesh": "ArrowNegZ.obj"
 				},
 				{
@@ -555,10 +674,143 @@
 				{
 					"Type": "SphereCollider"
 				}
-			],
-			"Children": [
+			]
+		},
 
+		{
+			"Name": "GroundCornerA",
+			"Active": true,
+			"Position": [ 5, 0, 5 ],
+			"Rotation": [ 0, 180, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "Ground_Corner.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "GroundCornerB",
+			"Active": true,
+			"Position": [ -5, 0, 5 ],
+			"Rotation": [ 0, 90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "Ground_Corner.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "GroundCornerC",
+			"Active": true,
+			"Position": [ 5, 0, -5 ],
+			"Rotation": [ 0, -90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "Ground_Corner.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "GroundCornerD",
+			"Active": true,
+			"Position": [ -5, 0, -5 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "Ground_Corner.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "EdgeA",
+			"Active": true,
+			"Position": [ 5, 0, 0 ],
+			"Rotation": [ 0, 180, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "Ground_Edge.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "EdgeB",
+			"Active": true,
+			"Position": [ 0, 0, 5 ],
+			"Rotation": [ 0, 90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "Ground_Edge.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "EdgeC",
+			"Active": true,
+			"Position": [ -5, 0, 0 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "Ground_Edge.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "EdgeD",
+			"Active": true,
+			"Position": [ 0, 0, -5 ],
+			"Rotation": [ 0, -90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "Ground_Edge.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "Centre",
+			"Active": true,
+			"Position": [ 0, 0, 0 ],
+			"Rotation": [ 0, 90, 0 ],
+			"Scale": [ 1, 1, 1 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "SyntySciFiCity",
+					"Mesh": "Ground_Centre.obj"
+				}
 			]
 		}
+
 	]
 }
