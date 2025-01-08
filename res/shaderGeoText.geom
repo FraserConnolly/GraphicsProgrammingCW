@@ -1,7 +1,7 @@
 //Version number
 #version 330 core
 
-//Layout qualfier
+//Layout qualifier
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
@@ -13,14 +13,14 @@ in VS_OUT {
 //Passing out texture coordinates
 out vec2 TexCoords; 
 
-//Uniform variabe
+//Uniform variable
 uniform float time;
 
+// Amount of explosion
+uniform float magnitude = 6.0;
 
 vec4 explode(vec4 position, vec3 normal)
 {
-//Amout of explosion
-    float magnitude = 8.0;
 	//Direction of explosion, going along normal
     vec3 direction = normal * ((sin(time) + 1.0) / 2.0) * magnitude; 
 	//Returning position
