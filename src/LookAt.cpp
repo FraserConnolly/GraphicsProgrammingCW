@@ -25,7 +25,7 @@ void LookAt::Deserialise ( const json & data )
 
 		if ( object != nullptr )
 		{
-			m_target = & ( object->GetTransform( ) );
+			SetTarget ( & object->GetTransform ( ) );
 		}
 		else
 		{

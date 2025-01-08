@@ -20,8 +20,10 @@ public:
 
 	void Update ( ) override;
 	
-	void SetSpeed ( const float speed );
-	const float GetSpeed ( ) const;
+	void SetSpeed ( const float speed ) { m_speed = speed; }
+	const float GetSpeed ( ) const { return m_speed; }
+
+	void SetExplosionAmount ( const float amount );
 	
 	void SetMaterial ( Material * const material );
 

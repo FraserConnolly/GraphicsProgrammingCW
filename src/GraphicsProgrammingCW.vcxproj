@@ -122,6 +122,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="TransformFollow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio Event Emitter.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="TransformFollow.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>

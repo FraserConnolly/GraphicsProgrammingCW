@@ -171,6 +171,9 @@
     <ClCompile Include="LookAt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TransformFollow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Display.h">
@@ -305,16 +308,19 @@
     <ClInclude Include="FrameBuffer.h">
       <Filter>Header Files\Game Engine\Sub Systems</Filter>
     </ClInclude>
-    <ClInclude Include="ExplosionController.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="LookAt.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialSwitch.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="TransformFollow.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="NoiseController.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="LookAt.h">
+    <ClInclude Include="MaterialSwitch.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionController.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>

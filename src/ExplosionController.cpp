@@ -17,14 +17,9 @@ void ExplosionController::Update()
 	m_material -> SetFloat ( m_uniformTimeLocation, Time::GetTime ( ) * m_speed );
 }
 
-void ExplosionController::SetSpeed ( const float speed )
+void ExplosionController::SetExplosionAmount ( const float amount )
 {
-	m_speed = speed;
-}
-
-const float ExplosionController::GetSpeed ( ) const
-{
-	return m_speed;
+	m_material->SetFloatByName ( "magnitude" , amount );
 }
 
 void ExplosionController::SetMaterial ( Material * const material )
@@ -50,5 +45,10 @@ void ExplosionController::Deserialise ( const json & data )
 	if ( data.contains ( "Material" ) )
 	{
 		SetMaterial ( Renderer::GetMaterial ( data [ "Material" ].get<std::string> ( ) ) );
+	}
+
+	if ( data.contains ( "ExplosionAmount" ) )
+	{
+		SetExplosionAmount ( data [ "ExplosionAmount" ].get<float> ( ) );
 	}
 }

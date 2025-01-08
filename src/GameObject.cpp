@@ -16,6 +16,7 @@
 #include "MaterialSwitch.h"
 #include "NoiseController.h"
 #include "LookAt.h"
+#include "TransformFollow.h"
 
 unsigned int GameObject::s_objectIDCounter = 0;
 
@@ -72,6 +73,8 @@ Component * GameObject::CreateComponent ( ComponentTypes component, GameObject &
 			return new NoiseController ( hostObject );
         case LOOK_AT:
 			return new LookAt ( hostObject );
+        case TRANSFORM_FOLLOW:
+            return new TransformFollow ( hostObject );
     }
 
     return nullptr;
@@ -159,6 +162,8 @@ Component * GameObject::AddComponent ( const std::string component )
         type = NOISE_CONTROLLER;
     else if ( component == "LookAt" )
         type = LOOK_AT;
+    else if ( component == "TransformFollow" )
+		type = TRANSFORM_FOLLOW;
 
     if ( type == ComponentTypes::NOT_FOUND )
     {

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "MaterialSwitch.h"
 #include "Material.h"
 #include "Mesh.h"
@@ -48,16 +50,27 @@ void MaterialSwitch::Deserialise ( const json & data )
 {
 	if ( data.contains ( "Materials" ) && data [ "Materials" ].is_array( ) )
 	{
+		int lastKeycode = 49; // 1 key
 
 		for ( auto & material : data [ "Materials" ] )
 		{
-			if ( !material.contains ( "Keycode" ) || !material.contains ( "Material" ) )
+			if ( !material.contains ( "Material" ) )
 			{
 				// log error
+				std::cerr << "MaterialSwitch::Deserialise: MaterialSwitch component missing 'Material' key" << std::endl;
 				continue;
 			}
 
-			int keycode = material [ "Keycode" ].get<int> ( );
+			if ( !material.contains ( "Keycode" ) )
+			{
+				lastKeycode++;
+			}
+			else 
+			{
+				lastKeycode = material [ "Keycode" ].get<int> ( );
+			}
+
+			
 			std::string materialName = material [ "Material" ].get<std::string> ( );
 
 			Material * material = Renderer::GetMaterial ( materialName );
@@ -68,7 +81,7 @@ void MaterialSwitch::Deserialise ( const json & data )
 				continue;
 			}
 
-			AddMaterial ( keycode , material );
+			AddMaterial ( lastKeycode , material );
 		}
 	}
 }
