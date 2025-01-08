@@ -31,7 +31,6 @@ FrameBuffer::FrameBuffer ( int w , int h, const std::string textureName ) :
 	// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
 	if ( glCheckFramebufferStatus ( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE ) 
 	{
-		std::cout << "FRAMEBUFFER:: Framebuffer is complete!" << std::endl;
 		m_ready = true;
 	}
 	else 

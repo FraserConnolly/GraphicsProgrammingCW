@@ -48,8 +48,14 @@ int GameEngine::loadGame ( const wchar_t * filename )
 
 		// load game data into game engine
 		m_gameName = m_gameData [ "GameName" ].get<string> ( );
-		m_screenWidth = m_gameData [ "Display" ][ "Width" ].get<int> ( );
-		m_screenHeight = m_gameData [ "Display" ][ "Height" ].get<int> ( );
+		if ( m_gameData.contains ( "Display" ) )
+		{
+			if ( m_gameData [ "Display" ].contains ( "Width" ) && m_gameData [ "Display" ].contains ( "Height" ) )
+			{
+				m_screenWidth = m_gameData [ "Display" ][ "Width" ].get<int> ( );
+				m_screenHeight = m_gameData [ "Display" ][ "Height" ].get<int> ( );
+			}
+		}
 	}
 	catch ( const std::exception & )
 	{

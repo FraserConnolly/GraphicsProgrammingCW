@@ -48,8 +48,8 @@ private:
 	json m_gameData;
 	
 	string m_gameName;
-	int m_screenWidth = 640;
-	int m_screenHeight = 480;
+	int m_screenWidth = -1;
+	int m_screenHeight = -1;
 
 #if USE_DEBUG_CONSOLE
 	ConsoleDebugScene _debugScene;

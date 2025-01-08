@@ -101,14 +101,25 @@ void Display::initDisplay()
 
 }
 
-void Display::initDisplay ( const float width, const float height )
+void Display::initDisplay ( const int width, const int height )
 { 
-	_screenWidth = (int) width;
-	_screenHeight = (int) height;
+	_screenWidth = width;
+	_screenHeight = height;
+
+	if ( width < 0 )
+	{
+		_screenWidth = (int) 1920 * 0.95;
+	}
+
+	if ( height < 0 )
+	{
+		_screenHeight = (int) 1080 * 0.95;
+	}
+
 	initDisplay ( );
 }
 
-void Display::initDisplay ( const float width , const float height, const string title )
+void Display::initDisplay ( const int width , const int height, const string title )
 {
 	_title = title;
 	initDisplay ( width, height );

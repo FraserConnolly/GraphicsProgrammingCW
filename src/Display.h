@@ -15,8 +15,8 @@ public:
 	~Display();
 	
 	void initDisplay ( );
-	void initDisplay ( const float width, const float height );
-	void initDisplay ( const float width , const float height , const string title );
+	void initDisplay ( const int width, const int height );
+	void initDisplay ( const int width , const int height , const string title );
 	
 	void clearDisplay ( );
 	void clearDisplay ( const float r, const float g, const float b, const float a);
