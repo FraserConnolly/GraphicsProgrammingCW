@@ -374,6 +374,33 @@
     </CopyFileToFolders>
     <None Include="GameFileSchema.json" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\res\SM_Env_Railing_02_Pillar.obj">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\SM_Prop_Drone_Ball_01.obj">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\SM_Sign_Billboard_Border_03.obj">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\res\PolygonScifi_01_A.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\res\Ground_Corner.obj">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\Ground_Edge.obj">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\res\Ground_Centre.obj">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

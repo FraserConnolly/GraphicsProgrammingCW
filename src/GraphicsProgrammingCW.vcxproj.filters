@@ -490,6 +490,27 @@
     <CopyFileToFolders Include="..\res\shaderEMap.vert">
       <Filter>Shaders</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\SM_Env_Railing_02_Pillar.obj">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\SM_Prop_Drone_Ball_01.obj">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\SM_Sign_Billboard_Border_03.obj">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\PolygonScifi_01_A.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\Ground_Corner.obj">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\Ground_Edge.obj">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\Ground_Centre.obj">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Notes.txt" />
