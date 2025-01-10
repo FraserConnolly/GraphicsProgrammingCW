@@ -22,6 +22,12 @@ public:
 	void SetDirection ( const glm::vec3 & direction ) { m_direction = direction; };
 	const glm::vec3 & GetDirection ( ) const { return m_direction; };
 
+	void SetColor ( const glm::vec3 & color ) { m_color = color; };
+	const glm::vec3 & GetColor ( ) const { return m_color; };
+
+	void SetIntensity ( const float intensity ) { m_intensity = intensity; };
+	float GetIntensity ( ) const { return m_intensity; };
+
 	const glm::mat4 GetLightSpaceProjection ( ) const { return m_lightSpaceProjection; };
 	const glm::mat4 GetLightViewTransformMatrix ( ) const
 	{
@@ -44,7 +50,10 @@ private:
 	FrameBuffer * m_directionalShadowMap;
 	Shader * m_depthShader;
 	
-	glm::vec3 m_direction = glm::vec3();
+	glm::vec3 m_direction = glm::vec3 ( );
+	glm::vec3 m_color = glm::vec3();
+	float m_intensity = 1.0f;
+
 	glm::mat4 m_lightSpaceProjection;
 
 	float m_nearPlane	= 0.5f;

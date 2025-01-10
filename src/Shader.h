@@ -4,6 +4,7 @@
 #include "Transform.h"
 
 class Camera;
+class DirectionalLight;
 
 class Shader
 {
@@ -49,8 +50,8 @@ public:
 	void SetUniformByName ( const GLchar * name , const GLboolean v ) const;
 	void SetUniformByName ( const GLchar * name, const glm::mat4 & matrix ) const;
 	
-	void SetShadowMap ( const GLint textureUnit ) const;
-	void SetLightSpaceMatrix ( const glm::mat4 & matrix ) const;
+	// Make sure the texture is bound and shadow map has been rendered before calling this function
+	void SetDirectionalLight ( const DirectionalLight & light ) const;
 
 	GLint GetUniformLocation ( const GLchar * name ) const;
 

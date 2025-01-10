@@ -192,8 +192,7 @@ void Renderer::RenderObjectsForCamera ( Camera *& camera )
         if ( shadowMapTexture != nullptr )
         {
             BindTexture ( shadowMapTexture );
-            shader.SetShadowMap ( shadowMapTexture->_activeBind );
-            shader.SetLightSpaceMatrix ( s_instance->m_directionalLight->GetLightSpaceMatrix ( ) );
+            shader.SetDirectionalLight ( * s_instance->m_directionalLight );
         }
 
         // draw the mesh

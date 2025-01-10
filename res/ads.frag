@@ -10,6 +10,7 @@ in VS_OUT {
 } fs_in;
 
 // Uniforms
+uniform vec3 cameraPos;      // Light position in world space
 uniform vec3 lightPos;      // Light position in world space
 uniform vec3 lightColor;    // Color of the light
 uniform sampler2D diffuse;
@@ -53,20 +54,19 @@ void main()
     float diff = max(dot(lightDir, normal), 0.0);
     vec3 diffuse = diff * lightColor;
     
-    // specular (not implemented)
-    // vec3 viewDir = normalize(viewPos - fs_in.FragPos);
-    // float spec = 0.0;
-    // vec3 halfwayDir = normalize(lightDir + viewDir);  
-    // spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
-    // vec3 specular = spec * lightColor;    
+    // specular
+    vec3 viewDir = normalize(cameraPos - fs_in.FragPos);
+    float spec = 0.0;
+    vec3 halfwayDir = normalize(lightDir + viewDir);  
+    spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
+    vec3 specular = spec * lightColor;    
 
     // calculate shadow bias
     float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005); 
 
     // calculate shadow
     float shadow = ShadowCalculation(fs_in.FragPosLightSpace, bias);       
-    vec3 lighting = (ambient + (1.0 - shadow) * diffuse) * color;    
-    // vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    // with specular
+    vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    // with specular
     
     fragmentColour = vec4(lighting, 1.0);
 

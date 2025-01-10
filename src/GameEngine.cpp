@@ -428,10 +428,27 @@ void GameEngine::LoadDirectionalLight ( json & lightData )
 		}
 
 		auto light = new DirectionalLight ( depthBuffer , shader );
-		light->SetDirection ( glm::vec3 (
-			lightData [ "Direction" ][ 0 ].get<float> ( ) ,
-			lightData [ "Direction" ][ 1 ].get<float> ( ) ,
-			lightData [ "Direction" ][ 2 ].get<float> ( ) ) );
+
+		if ( lightData.contains ( "Direction" ) )
+		{
+			light->SetDirection ( glm::vec3 (
+				lightData [ "Direction" ][ 0 ].get<float> ( ) ,
+				lightData [ "Direction" ][ 1 ].get<float> ( ) ,
+				lightData [ "Direction" ][ 2 ].get<float> ( ) ) );
+		}
+
+		if ( lightData.contains ( "Colour" ) )
+		{
+			light->SetColor ( glm::vec3 (
+				lightData [ "Colour" ][ 0 ].get<float> ( ) ,
+				lightData [ "Colour" ][ 1 ].get<float> ( ) ,
+				lightData [ "Colour" ][ 2 ].get<float> ( ) ) );
+		}
+
+		if ( lightData.contains ( "Intensity" ) )
+		{
+			light->SetIntensity ( lightData [ "Intensity" ].get<float> ( ) );
+		}
 
 		Renderer::SetDirectionalLight ( light );
 	}

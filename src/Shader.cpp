@@ -6,6 +6,8 @@
 
 #include "Camera.h"
 #include "GameObject.h"
+#include "DirectionalLight.h"
+#include "Texture.h"
 
 #ifdef USE_ADS
 #define VertexShaderPath "ads.vert"
@@ -262,14 +264,17 @@ void Shader::SetUniformByName ( const GLchar * name, const glm::mat4 & matrix ) 
 	glUniformMatrix4fv ( GetUniformLocation ( name ), 1, GLU_FALSE, glm::value_ptr ( matrix ) );
 }
 
-void Shader::SetShadowMap ( const GLint textureUnit ) const
+void Shader::SetDirectionalLight ( const DirectionalLight & light ) const
 {
-	SetUniform( _uniforms [ SHADOW_MAP_U ], textureUnit );
-}
+	auto textureUnit = light.GetShadowMap ( )->GetActiveBind ( );
+	SetUniform ( _uniforms [ SHADOW_MAP_U ] , textureUnit );
+	SetUniform ( _uniforms [ LIGHT_SPACE_MATRIX_U ] , light.GetLightSpaceMatrix ( ) );
+	
+	const glm::vec3 & lightPos = light.GetDirection ( );
+	SetUniform ( _uniforms [ LIGHT_POSITION_U ] , lightPos.x, lightPos.y, lightPos.z );
 
-void Shader::SetLightSpaceMatrix ( const glm::mat4 & matrix ) const
-{
-	SetUniform( _uniforms [ LIGHT_SPACE_MATRIX_U ], matrix );
+	const glm::vec3 & lightColor = light.GetColor ( ) * light.GetIntensity ( );
+	SetUniform ( _uniforms [ LIGHT_COLOUR_U ] , lightColor.x , lightColor.y , lightColor.z );
 }
 
 #pragma endregion
@@ -288,15 +293,6 @@ void Shader::Update ( Camera & camera, Transform & transform )
 
 	glm::mat4 projection = camera.GetProjectionMatrix ( );
 	glUniformMatrix4fv ( _uniforms [ PROJECTION_U ], 1, GLU_FALSE, glm::value_ptr ( projection ) );
-
-#ifdef USE_ADS
-	// These should be moved to a lighting object
-	// Set the uniforms for the ADS shader
-	// Set the light position
-	glUniform3f ( _uniforms [ LIGHT_POSITION_U ], 20.0f, 20.0f, 20.0f);
-	// Set the light colour
-	glUniform3f ( _uniforms [ LIGHT_COLOUR_U ], 1.0f, 1.0f, 1.0f);
-#endif
 
 	if ( _uniforms [ CAMERA_POS_U ] >= 0 )
 	{

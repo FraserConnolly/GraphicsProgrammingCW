@@ -26,6 +26,8 @@ public:
 	// On Nvidia GForce 1050TI it is 192.
 	void Bind ( GLint unit ); 
 
+	const GLint GetActiveBind ( ) const { return _activeBind; };
+
 protected: 
 
 private:
