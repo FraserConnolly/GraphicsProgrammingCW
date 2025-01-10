@@ -42,6 +42,16 @@ public:
 		return _material;
 	}
 
+	void SetCastShadows ( bool castShadows )
+	{
+		_castShadows = castShadows;
+	}
+
+	const bool GetCastShadows ( ) const
+	{
+		return _castShadows;
+	}
+
 	void Draw ( ) const;
 
 	void Awake ( ) override;
@@ -78,6 +88,8 @@ private:
 
 	unsigned int _drawCount; //how much of the vertexArrayObject do we want to draw
 	unsigned int _indiciesCount; 
+
+	bool _castShadows = true;
 
 	Material * _material = nullptr;
 };

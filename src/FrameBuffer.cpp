@@ -7,7 +7,7 @@
 #include "Renderer.h"
 
 
-FrameBuffer::FrameBuffer ( int w , int h, const std::string textureName ) :
+FrameBuffer::FrameBuffer ( int w , int h, const std::string textureName, bool depthOnly ) :
 	m_width ( w ) , 
 	m_height ( h ),
 	m_quadVAO ( 0 ) ,
@@ -16,17 +16,28 @@ FrameBuffer::FrameBuffer ( int w , int h, const std::string textureName ) :
 	glGenFramebuffers ( 1 , &m_FBO );
 	glBindFramebuffer ( GL_FRAMEBUFFER , m_FBO );
 
-	// create a colorbuffer for attachment texture
-	m_texture = new Texture ( m_width , m_height );
+	if ( depthOnly )
+	{
+		// create a depth map texture
+		m_texture = new Texture ( );
+		m_texture->CreateDepthMap ( m_width , m_height );
+		glDrawBuffer ( GL_NONE );
+		glReadBuffer ( GL_NONE );
+	}
+	else
+	{
+		// create a colorbuffer for attachment texture
+		m_texture = new Texture ( m_width , m_height );
+
+		// create a renderbuffer object for depth and stencil attachment 
+		glGenRenderbuffers ( 1 , &m_RBO );
+		glBindRenderbuffer ( GL_RENDERBUFFER , m_RBO );
+		glRenderbufferStorage ( GL_RENDERBUFFER , GL_DEPTH24_STENCIL8 , m_width , m_height ); // use a single renderbuffer object for both a depth AND stencil buffer.
+		glBindRenderbuffer ( GL_RENDERBUFFER , 0 );
+		glFramebufferRenderbuffer ( GL_FRAMEBUFFER , GL_DEPTH_STENCIL_ATTACHMENT , GL_RENDERBUFFER , m_RBO ); // now actually attach it
+	}
 
 	Renderer::RegisterTexture ( textureName , m_texture );
-
-	// create a renderbuffer object for depth and stencil attachment 
-	glGenRenderbuffers ( 1 , &m_RBO );
-	glBindRenderbuffer ( GL_RENDERBUFFER , m_RBO );
-	glRenderbufferStorage ( GL_RENDERBUFFER , GL_DEPTH24_STENCIL8 , m_width , m_height ); // use a single renderbuffer object for both a depth AND stencil buffer.
-	glBindRenderbuffer ( GL_RENDERBUFFER , 0 );
-	glFramebufferRenderbuffer ( GL_FRAMEBUFFER , GL_DEPTH_STENCIL_ATTACHMENT , GL_RENDERBUFFER , m_RBO ); // now actually attach it
 
 	// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
 	if ( glCheckFramebufferStatus ( GL_FRAMEBUFFER ) == GL_FRAMEBUFFER_COMPLETE ) 
@@ -59,6 +70,8 @@ void FrameBuffer::Bind ( )
 	{
 		return;
 	}
+
+	glViewport ( 0 , 0 , GetWidth ( ) , GetHeight ( ) );
 
 	glBindFramebuffer ( GL_FRAMEBUFFER , m_FBO );
 	//glEnable ( GL_DEPTH_TEST );
@@ -123,6 +136,6 @@ void FrameBuffer::RenderQuad ( Shader * fboShader )
 	glBindVertexArray ( m_quadVAO );
 
 	GLint tu = Renderer::BindTexture ( m_texture );
-	fboShader->SetUniform ( "screenTexture" , tu );
+	fboShader->SetUniformByName ( "screenTexture" , tu );
 	glDrawArrays ( GL_TRIANGLES , 0 , 6 );
 }

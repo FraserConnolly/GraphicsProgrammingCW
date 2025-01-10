@@ -76,13 +76,13 @@ public:
 		}
 	}
 
-	void SetFloatByName(const GLchar* const name, const float const value )
+	void SetFloatByName(const GLchar* const name, const float value )
 	{
 		auto location = GetUniformLocation ( name );
 		SetFloat ( location , value );
 	}
 
-	void SetFloat ( const GLint location , const float const value )
+	void SetFloat ( const GLint location , const float value )
 	{
 		if ( location >= 0 )
 		{
@@ -104,13 +104,13 @@ public:
 		SetFloat3 ( location , value.x , value.y , value.z );
 	}
 
-	void SetFloat3ByName(const GLchar* const name, const float const x, const float const y, const float const z)
+	void SetFloat3ByName(const GLchar* const name, const float x, const float y, const float z)
 	{
 		auto location = GetUniformLocation ( name );
 		SetFloat3 ( location , x, y, z );
 	}
 
-	void SetFloat3 ( const GLint location , const float const x , const float const y , const float const z )
+	void SetFloat3 ( const GLint location , const float x , const float y , const float z )
 	{
 		if ( location >= 0 )
 		{

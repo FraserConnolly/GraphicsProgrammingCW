@@ -113,6 +113,11 @@ void MeshRenderer::Deserialise ( const json & data )
 	{
 		LoadObjModel ( data [ "Mesh" ].get<std::string> ( ) );
 	}
+
+	if ( data.contains ( "CastShadows" ) )
+	{
+		SetCastShadows ( data [ "CastShadows" ].get<bool> ( ) );
+	}
 }
 
 void MeshRenderer::initModel ( const IndexedModel & model )

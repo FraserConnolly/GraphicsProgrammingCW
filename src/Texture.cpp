@@ -9,7 +9,8 @@ enum Texture::TextureType
 	UNDEFINED,
 	TEXTURE_2D,
 	CUBEMAP,
-	RENDER_TEXTURE
+	RENDER_TEXTURE,
+	DEPTH_MAP
 };
 
 Texture::Texture ( ) : 
@@ -50,7 +51,6 @@ void Texture::LoadTexture ( const char * filename )
 {
 	stbi_set_flip_vertically_on_load ( true );
 
-	DeleteCurrentTexture ( );
 	m_textureType = TEXTURE_2D;
 
 	// load and generate the texture
@@ -122,6 +122,24 @@ void Texture::LoadCubeMap ( const std::vector<char *> & cubeMapFilePaths )
 	glTexParameteri ( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
 
 	_fileLoaded = true;
+}
+
+// Make sure the frame buffer is bound before calling this function.
+void Texture::CreateDepthMap ( const int width , const int height )
+{
+	DeleteCurrentTexture ( );
+
+	m_textureType = DEPTH_MAP;
+
+	glGenTextures ( 1 , &_texture );
+	glBindTexture ( GL_TEXTURE_2D , _texture );
+	glTexImage2D ( GL_TEXTURE_2D , 0 , GL_DEPTH_COMPONENT , width , height , 0 , GL_DEPTH_COMPONENT , GL_FLOAT , NULL );
+	glTexParameteri ( GL_TEXTURE_2D , GL_TEXTURE_MIN_FILTER , GL_NEAREST );
+	glTexParameteri ( GL_TEXTURE_2D , GL_TEXTURE_MAG_FILTER , GL_NEAREST );
+	glTexParameteri ( GL_TEXTURE_2D , GL_TEXTURE_WRAP_S , GL_REPEAT );
+	glTexParameteri ( GL_TEXTURE_2D , GL_TEXTURE_WRAP_T , GL_REPEAT );
+
+	glFramebufferTexture2D ( GL_FRAMEBUFFER , GL_DEPTH_ATTACHMENT , GL_TEXTURE_2D , _texture , 0 );
 }
 
 void Texture::Bind ( GLint unit )

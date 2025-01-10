@@ -18,6 +18,7 @@
 #include "Material.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "DirectionalLight.h"
 
 // ComponentsMaterialSwitch
 #include "Audio Listener.h"
@@ -75,16 +76,15 @@ void GameEngine::run ( )
 
 void GameEngine::initSystems ( )
 {
-	m_gameDisplay.initDisplay ( m_screenWidth, m_screenHeight, m_gameName );
-
-	SDL_SetRelativeMouseMode ( SDL_TRUE );
 
 	Time::StartUp ( );
 	Input::StartUp ( );
-	Renderer::Startup ( );
+	Renderer::Startup ( m_screenWidth , m_screenHeight , m_gameName );
 	Audio::Startup ( );
 	CollisionManager::Startup ( );
 	GameObjectManager::Startup ( );
+
+	SDL_SetRelativeMouseMode ( SDL_TRUE );
 
 	Input::RegisterKey ( SDLK_ESCAPE ); // escape
 
@@ -103,7 +103,7 @@ void GameEngine::initSystems ( )
 	{
 		try
 		{
-			auto shaderData = m_gameData [ "Shaders" ];
+			auto & shaderData = m_gameData [ "Shaders" ];
 			for ( auto & shader : shaderData )
 			{
 				auto newShader = new Shader ( );
@@ -137,7 +137,7 @@ void GameEngine::initSystems ( )
 	{
 		try
 		{
-			auto textureData = m_gameData [ "ImageTextures" ];
+			auto & textureData = m_gameData [ "ImageTextures" ];
 			for ( auto & texture : textureData )
 			{
 				auto newTexture = new Texture ( );
@@ -159,12 +159,12 @@ void GameEngine::initSystems ( )
 	{
 		try
 		{
-			auto cubeMapData = m_gameData [ "CubeMaps" ];
+			auto & cubeMapData = m_gameData [ "CubeMaps" ];
 			for ( auto & texture : cubeMapData )
 			{
 				auto newTexture = new Texture ( );
 				auto textureName = texture [ "Name" ].get<string> ( );
-				auto textureFiles = texture [ "Paths" ];
+				auto & textureFiles = texture [ "Paths" ];
 				vector<char *> faces;
 
 				// Loop through the JSON array and convert each string to char*
@@ -190,7 +190,7 @@ void GameEngine::initSystems ( )
 	{
 		try
 		{
-			auto fbData = m_gameData [ "FrameBuffers" ];
+			auto & fbData = m_gameData [ "FrameBuffers" ];
 			for ( auto & frameBuffer : fbData )
 			{
 				if ( !frameBuffer.contains ( "Name" ) || !frameBuffer.contains ( "Texture" ) )
@@ -203,8 +203,8 @@ void GameEngine::initSystems ( )
 				auto textureName = frameBuffer [ "Texture" ].get<string> ( );
 
 				// default screen size comes from Display
-				int frameBufferWidth = m_gameDisplay.getWidth ( );
-				int frameBufferHeight = m_gameDisplay.getHeight ( );
+				int frameBufferWidth = Renderer::GetScreenWidth ( );
+				int frameBufferHeight = Renderer::GetScreenHeight ( );
 
 				if ( frameBuffer.contains ( "Width" ) )
 				{
@@ -216,8 +216,14 @@ void GameEngine::initSystems ( )
 					frameBufferHeight = frameBuffer [ "Height" ].get<int> ( );
 				}
 
-				auto newFrameBuffer = new FrameBuffer ( frameBufferWidth , frameBufferHeight , textureName );
+				
+				bool depthMapOnly = false;
+				if ( frameBuffer.contains ( "DepthMapOnly" ) )
+				{
+					depthMapOnly = frameBuffer [ "DepthMapOnly" ].get<bool> ( );
+				}
 
+				auto newFrameBuffer = new FrameBuffer ( frameBufferWidth , frameBufferHeight , textureName, depthMapOnly );
 				Renderer::RegisterFrameBuffer ( frameBufferName , newFrameBuffer );
 			}
 		}
@@ -233,7 +239,7 @@ void GameEngine::initSystems ( )
 	{
 		try
 		{
-			auto materialData = m_gameData [ "Materials" ];
+			auto & materialData = m_gameData [ "Materials" ];
 			for ( auto & material : materialData )
 			{
 				auto materialName = material [ "Name" ].get<string> ( );
@@ -289,7 +295,7 @@ void GameEngine::initSystems ( )
 	{
 		try
 		{
-			auto skyboxData = m_gameData [ "Skybox" ];
+			auto & skyboxData = m_gameData [ "Skybox" ];
 			CubeMap * skyBox = new CubeMap (
 				Renderer::GetShader ( skyboxData [ "Shader" ] ) ,
 				Renderer::GetTexture ( skyboxData [ "Texture" ] ) );
@@ -304,6 +310,17 @@ void GameEngine::initSystems ( )
 
 #pragma endregion
 
+#pragma region Lighting
+
+	// load lighting
+
+	if ( m_gameData.contains ( "DirectionalLight" ) )
+	{
+		LoadDirectionalLight ( m_gameData [ "DirectionalLight" ] );
+	}
+
+#pragma endregion
+
 #pragma region Create game objects
 
 	if ( m_gameData.contains ( "Objects" ) )
@@ -313,7 +330,7 @@ void GameEngine::initSystems ( )
 
 		try
 		{
-			auto objects = m_gameData [ "Objects" ];
+			auto & objects = m_gameData [ "Objects" ];
 			for ( auto & object : objects )
 			{
 				// Note, object name is currently not implemented.
@@ -327,7 +344,7 @@ void GameEngine::initSystems ( )
 
 				if ( object.contains ( "Position" ) )
 				{
-					auto position = object [ "Position" ];
+					auto & position = object [ "Position" ];
 					obj->GetTransform ( ).SetPosition ( position [ 0 ].get<float> ( ) ,
 						position [ 1 ].get<float> ( ) ,
 						position [ 2 ].get<float> ( ) );
@@ -335,7 +352,7 @@ void GameEngine::initSystems ( )
 
 				if ( object.contains ( "Rotation" ) )
 				{
-					auto rotation = object [ "Rotation" ];
+					auto & rotation = object [ "Rotation" ];
 					obj->GetTransform ( ).SetRotationEulerInDegrees ( rotation [ 0 ].get<float> ( ) ,
 												rotation [ 1 ].get<float> ( ) ,
 												rotation [ 2 ].get<float> ( ) );
@@ -343,7 +360,7 @@ void GameEngine::initSystems ( )
 
 				if ( object.contains ( "Scale" ) )
 				{
-					auto scale = object [ "Scale" ];
+					auto & scale = object [ "Scale" ];
 					obj->GetTransform ( ).SetScale ( scale [ 0 ].get<float> ( ) ,
 						scale [ 1 ].get<float> ( ) ,
 						scale [ 2 ].get<float> ( ) );
@@ -394,11 +411,41 @@ void GameEngine::initSystems ( )
 #endif
 }
 
+void GameEngine::LoadDirectionalLight ( json & lightData )
+{
+	try
+	{
+		auto & shaderName		= lightData [ "Shader"		].get<std::string> ( );
+		auto & frameBufferName	= lightData [ "FrameBuffer" ].get<std::string> ( );
+
+		auto shader = Renderer::GetShader ( shaderName );
+		auto depthBuffer = Renderer::GetFrameBuffer ( frameBufferName );
+
+		if ( shader == nullptr || depthBuffer == nullptr )
+		{
+			std::cerr << "Failed to load directional light" << std::endl;
+			return;
+		}
+
+		auto light = new DirectionalLight ( depthBuffer , shader );
+		light->SetDirection ( glm::vec3 (
+			lightData [ "Direction" ][ 0 ].get<float> ( ) ,
+			lightData [ "Direction" ][ 1 ].get<float> ( ) ,
+			lightData [ "Direction" ][ 2 ].get<float> ( ) ) );
+
+		Renderer::SetDirectionalLight ( light );
+	}
+	catch ( const std::exception & )
+	{
+		std::cerr << "Failed to load directional light" << std::endl;
+	}
+}
+
 void GameEngine::gameLoop ( )
 {
 	while ( m_gameState != GameState::EXIT )
 	{
-		Time::Service ( m_gameDisplay.getTime ( ) );
+		Time::Service ( Renderer::GetTime ( ) );
 
 		processInput ( );
 		CollisionManager::Service ( );
@@ -456,31 +503,6 @@ void GameEngine::processInput ( )
 
 void GameEngine::drawGame ( )
 {
-	m_gameDisplay.clearDisplay ( );
-
-	/*if ( m_FBO != nullptr )
-	{
-		m_FBO->Bind ( );
-		Renderer::Service ( );
-		if ( m_skyBox != nullptr )
-		{
-			m_skyBox->Draw ( );
-		}
-		m_FBO->Unbind ( );
-	}
-
-	// not yet implemented in RendererService!
-	if ( m_FBO != nullptr )
-	{
-		m_FBO->RenderQuad ( m_shaders[ "FBO" ] );
-	}*/
-
 	Renderer::Service ( );
-	/*if ( m_skyBox != nullptr )
-	{
-		m_skyBox->Draw ( );
-	}*/
-
-	m_gameDisplay.swapBuffer ( );
 }
 

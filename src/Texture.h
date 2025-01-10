@@ -19,6 +19,7 @@ public:
 	
 	void LoadTexture ( const char * filename );
 	void LoadCubeMap ( const std::vector<char *> & cubeMapFilePaths );
+	void CreateDepthMap ( const int width , const int height );
 
 	// bind up to 80 in OpenGL 4 textures. 
 	// true limit is determined at runtime.

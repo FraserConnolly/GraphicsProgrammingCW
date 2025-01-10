@@ -42,8 +42,9 @@ private:
 	void shutdown ( );
 	void drawGame ( );
 
+	void LoadDirectionalLight ( json & lightData );
+
 	GameState m_gameState = GameState::PLAY;
-	Display m_gameDisplay;
 
 	json m_gameData;
 	

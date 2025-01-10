@@ -6,14 +6,17 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "CubeMap.h"
+#include "DirectionalLight.h"
 
 #include <GL\glew.h>
 #include <map>
 #include <vector>
 
-void Renderer::Startup ( )
+void Renderer::Startup ( const int width , const int height , const std::string title )
 {
     s_instance = new Renderer ( );
+    s_instance->m_gameDisplay.initDisplay ( width , height , title );
+
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &s_maxTextureUnit );
     
     // create an array which will contain a pointer to each of the active textures.
@@ -29,6 +32,17 @@ void Renderer::Startup ( )
 
 void Renderer::Service ( )
 { 
+    s_instance->m_gameDisplay.clearDisplay ( );
+
+    // 1st pass to render the scene from the perspective of the light source
+    if ( s_instance->m_directionalLight != nullptr )
+	{
+        s_instance->m_directionalLight->Bind ( );
+        RenderObjectsForDepthMap ( );
+        s_instance->m_directionalLight->Unbind ( );
+	}
+
+    // 2nd pass to render the scene with shadow mapping
     for ( auto & camera : s_instance->m_cameras )
     {
         if ( !camera->IsActiveAndEnabled ( ) )
@@ -41,7 +55,13 @@ void Renderer::Service ( )
 
         if ( fbo != nullptr )
         {
+            // this will set the viewport to the size of the texture for the frame buffer
             fbo->Bind ( );
+        }
+        else
+        {
+            // reset the viewport to the screen size
+            glViewport ( 0 , 0 , GetScreenWidth ( ) , GetScreenHeight ( ) );
         }
 
         RenderObjectsForCamera ( camera );
@@ -56,10 +76,44 @@ void Renderer::Service ( )
 			fbo->Unbind ( );
 		}
     }
+
+    s_instance->m_gameDisplay.swapBuffer ( );
+}
+
+void Renderer::RenderObjectsForDepthMap ( )
+{
+    for ( auto & object : s_instance->m_renderers )
+    {
+        if ( !object->IsActiveAndEnabled ( ) )
+        {
+            // this mesh should not be rendered
+            continue;
+        }
+
+        if ( ! object->GetCastShadows ( ) )
+		{
+			// this mesh should not cast shadows
+			continue;
+		}
+
+        s_instance->m_directionalLight->SetModelInShader (
+            object->GetGameObject().GetTransform ( ).GetModel ( ) );
+
+        // draw the mesh
+        object->Draw ( );
+    }
 }
 
 void Renderer::RenderObjectsForCamera ( Camera *& camera )
 {
+    Texture * shadowMapTexture = nullptr;
+
+    if ( s_instance->m_directionalLight != nullptr )
+    {
+        shadowMapTexture = s_instance->m_directionalLight->GetShadowMap ( );
+        BindTexture ( shadowMapTexture );
+    }
+
     for ( auto & object : s_instance->m_renderers )
     {
         if ( !object->IsActiveAndEnabled ( ) )
@@ -133,6 +187,13 @@ void Renderer::RenderObjectsForCamera ( Camera *& camera )
             glm::vec3 value = pair.second;
 
             shader.SetUniform ( pair.first , value.x , value.y , value.z );
+        }
+
+        if ( shadowMapTexture != nullptr )
+        {
+            BindTexture ( shadowMapTexture );
+            shader.SetShadowMap ( shadowMapTexture->_activeBind );
+            shader.SetLightSpaceMatrix ( s_instance->m_directionalLight->GetLightSpaceMatrix ( ) );
         }
 
         // draw the mesh
@@ -398,6 +459,11 @@ void Renderer::DeregisterCamera ( Camera * pCamera )
         return;
 
     s_instance->m_cameras.erase ( itor );
+}
+
+void Renderer::SetDirectionalLight ( DirectionalLight * pDirectionalLight )
+{
+    s_instance->m_directionalLight = pDirectionalLight;
 }
 
 void Renderer::SetSkybox ( CubeMap * pCubeMap )

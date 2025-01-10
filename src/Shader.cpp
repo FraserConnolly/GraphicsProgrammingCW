@@ -98,7 +98,7 @@ void Shader::LoadShaders ( const char * vertexShader, const char * geoShader, co
 	_uniforms [ MODEL_U ]		= glGetUniformLocation ( _program, "model" );
 	_uniforms [ VIEW_U ]		= glGetUniformLocation ( _program, "view" );
 	_uniforms [ PROJECTION_U ]	= glGetUniformLocation ( _program, "projection" );
-	_uniforms [ TIME_U ]		= glGetUniformLocation ( _program , "time" );
+	_uniforms [ TIME_U ]		= glGetUniformLocation ( _program, "time" );
 	
 	_uniforms [ CAMERA_POS_U ]	= glGetUniformLocation ( _program, "cameraPos" );
 
@@ -109,8 +109,10 @@ void Shader::LoadShaders ( const char * vertexShader, const char * geoShader, co
 #ifdef USE_ADS
 	_uniforms[ LIGHT_POSITION_U ] = glGetUniformLocation( _program, "lightPos" );
 	_uniforms[ LIGHT_COLOUR_U ]   = glGetUniformLocation( _program, "lightColor" );
-	_uniforms[ OBJECT_COLOUR_U ]  = glGetUniformLocation( _program, "objectColor" );
 #endif
+
+	_uniforms [ LIGHT_SPACE_MATRIX_U ]	= glGetUniformLocation ( _program, "lightSpaceMatrix" );
+	_uniforms [ SHADOW_MAP_U ]			= glGetUniformLocation ( _program, "shadowMap" );
 
 	for ( size_t i = 0; i < _numShaders; i++ )
 	{
@@ -182,7 +184,7 @@ GLuint Shader::CreateShader ( const std::string & text, GLenum type )
 		return 0;
 	}
 
-	const GLchar * source [ 1 ];
+	const GLchar * source [ 1 ] { nullptr };
 	source[ 0 ] = text.c_str ( );
 	glShaderSource ( shader, 1, source, NULL );
 	glCompileShader ( shader );
@@ -200,12 +202,12 @@ inline GLint Shader::GetUniformLocation ( const GLchar * name ) const
 	return location;
 }
 
-void Shader::SetUniform ( const GLchar * name, const GLboolean v ) const
+void Shader::SetUniformByName ( const GLchar * name, const GLboolean v ) const
 {
 	glUniform1i ( GetUniformLocation ( name ), v );
 }
 
-void Shader::SetUniform ( const GLchar * name, const GLint v ) const
+void Shader::SetUniformByName ( const GLchar * name, const GLint v ) const
 {
 	glUniform1i ( GetUniformLocation ( name ), v );
 }
@@ -225,31 +227,53 @@ void Shader::SetUniform ( const GLint location, const float x, const float y, co
 	glUniform3f ( location, x, y, z );
 }
 
-void Shader::SetUniform ( const GLchar * name, const GLfloat v ) const
+void Shader::SetUniform ( const GLint location , const float x , const float y , const float z , const float w ) const
+{
+	glUniform4f ( location , x , y , z , w );
+}
+
+void Shader::SetUniformByName ( const GLchar * name, const GLfloat v ) const
 { 
 	glUniform1f ( GetUniformLocation ( name ), v );
 }
 
-void Shader::SetUniform ( const GLchar * name, const GLfloat x, const GLfloat y, const GLfloat z ) const
+void Shader::SetUniformByName ( const GLchar * name, const GLfloat x, const GLfloat y, const GLfloat z ) const
 { 
 	glUniform3f ( GetUniformLocation ( name ), x, y, z );
 }
 
-void Shader::SetUniform ( const GLchar * name, const GLfloat x, const GLfloat y, const GLfloat z, const GLfloat w ) const
+void Shader::SetUniformByName ( const GLchar * name, const GLfloat x, const GLfloat y, const GLfloat z, const GLfloat w ) const
 {
 	glUniform4f ( GetUniformLocation ( name ), x, y, z, w );
 }
 
-void Shader::SetUniform ( const GLchar * name, const glm::mat4 & matrix )
+void Shader::SetUniform ( const GLint location , const GLboolean v ) const
+{
+	glUniform1i ( location , v );
+}
+
+void Shader::SetUniform ( const GLint location , const glm::mat4 & matrix ) const
+{
+	glUniformMatrix4fv ( location , 1 , GLU_FALSE , glm::value_ptr ( matrix ) );
+}
+
+void Shader::SetUniformByName ( const GLchar * name, const glm::mat4 & matrix ) const
 {
 	glUniformMatrix4fv ( GetUniformLocation ( name ), 1, GLU_FALSE, glm::value_ptr ( matrix ) );
 }
 
+void Shader::SetShadowMap ( const GLint textureUnit ) const
+{
+	SetUniform( _uniforms [ SHADOW_MAP_U ], textureUnit );
+}
+
+void Shader::SetLightSpaceMatrix ( const glm::mat4 & matrix ) const
+{
+	SetUniform( _uniforms [ LIGHT_SPACE_MATRIX_U ], matrix );
+}
+
 #pragma endregion
 
-void Shader::SetTransform ( const glm::mat4 & modelMatrix )
-{
-}
 
 void Shader::Update ( Camera & camera, Transform & transform )
 { 
@@ -272,13 +296,11 @@ void Shader::Update ( Camera & camera, Transform & transform )
 	glUniform3f ( _uniforms [ LIGHT_POSITION_U ], 20.0f, 20.0f, 20.0f);
 	// Set the light colour
 	glUniform3f ( _uniforms [ LIGHT_COLOUR_U ], 1.0f, 1.0f, 1.0f);
-	// Set the object colour
-	glUniform3f ( _uniforms [ OBJECT_COLOUR_U ], 0.7f, 0.7f, 0.7f);
 #endif
 
 	if ( _uniforms [ CAMERA_POS_U ] >= 0 )
 	{
-		auto camPos = camera.GetGameObject ( ).GetTransform ( ).GetPosition ( );
+		auto & camPos = camera.GetGameObject ( ).GetTransform ( ).GetPosition ( );
 
 		// send the camera position as a uniform (world space)
 		glUniform3f ( _uniforms [ CAMERA_POS_U ], camPos.x , camPos.y , camPos.z );

@@ -35,16 +35,23 @@ public:
 	/// <summary>
 	/// Ensure that the shader program is being used before applying uniforms.
 	/// </summary>
-	void SetUniform ( const GLchar * name, const GLboolean v ) const;
-	void SetUniform ( const GLchar * name, const GLint v ) const;
 	void SetUniform ( const GLint location, const GLint v ) const;
-	void SetUniform ( const GLint location, const float value ) const;
-	void SetUniform ( const GLint location, const float x, const float y, const float z ) const;
-	void SetUniform ( const GLchar * name, const GLfloat v ) const;
-	void SetUniform ( const GLchar * name, const GLfloat x, const GLfloat y, const GLfloat z ) const;
-	void SetUniform ( const GLchar * name, const GLfloat x, const GLfloat y, const GLfloat z, const GLfloat w ) const;
-	void SetUniform ( const GLchar * name, const glm::mat4 & matrix );
-	void SetTransform ( const glm::mat4 & transform );
+	void SetUniform ( const GLint location , const float value ) const;
+	void SetUniform ( const GLint location , const float x , const float y , const float z ) const;
+	void SetUniform ( const GLint location , const float x , const float y , const float z, const float w ) const;
+	void SetUniform ( const GLint location , const GLboolean v ) const;
+	void SetUniform ( const GLint location , const glm::mat4 & matrix ) const;
+
+	void SetUniformByName ( const GLchar * name , const GLint v ) const;
+	void SetUniformByName ( const GLchar * name , const GLfloat v ) const;
+	void SetUniformByName ( const GLchar * name , const GLfloat x , const GLfloat y , const GLfloat z ) const;
+	void SetUniformByName ( const GLchar * name , const GLfloat x , const GLfloat y , const GLfloat z , const GLfloat w ) const;
+	void SetUniformByName ( const GLchar * name , const GLboolean v ) const;
+	void SetUniformByName ( const GLchar * name, const glm::mat4 & matrix ) const;
+	
+	void SetShadowMap ( const GLint textureUnit ) const;
+	void SetLightSpaceMatrix ( const glm::mat4 & matrix ) const;
+
 	GLint GetUniformLocation ( const GLchar * name ) const;
 
 	void Update ( Camera & camera, Transform & transform );
@@ -66,10 +73,13 @@ private:
 		FOG_MIN_DIST_U,
 		FOG_MAX_DIST_U,
 
+		//Lighting
+		LIGHT_SPACE_MATRIX_U,
+		SHADOW_MAP_U,
+
 #ifdef USE_ADS
 		LIGHT_POSITION_U,
 		LIGHT_COLOUR_U,
-		OBJECT_COLOUR_U,
 #endif
 
 		NUM_UNIFORMS
@@ -82,7 +92,7 @@ private:
 	void operator=( const Shader & other )
 	{ }
 	
-	int _numShaders;
+	unsigned int _numShaders;
 	GLuint _program; // Track the shader program
 	GLuint _shaders [ MAX_SHADER_COUNT ]; //array of shaders
 	GLint  _uniforms [ NUM_UNIFORMS ];

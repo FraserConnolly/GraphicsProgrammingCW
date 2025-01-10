@@ -56,13 +56,13 @@ void CubeMap::Draw ( Camera & camera )
     
     m_shader->Bind ( );
 
-    m_shader->SetUniform ( "view", camera.GetViewMatrixNoTranslation( ) );
-    m_shader->SetUniform ( "projection", camera.GetProjectionMatrix ( ) );
+    m_shader->SetUniformByName ( "view", camera.GetViewMatrixNoTranslation( ) );
+    m_shader->SetUniformByName ( "projection", camera.GetProjectionMatrix ( ) );
     
     // skybox cube
     glBindVertexArray ( m_skyboxVAO );
     auto textureUnit = Renderer::BindTexture ( m_texture );
-    m_shader->SetUniform ( "skybox", textureUnit );
+    m_shader->SetUniformByName ( "skybox", textureUnit );
 
     glDrawArrays ( GL_TRIANGLES, 0, 36 );
     glBindVertexArray ( 0 );

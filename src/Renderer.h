@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
+
 #include "Mesh.h"
+#include "Display.h"
 
 class MeshRenderer;
 class Texture;
@@ -9,13 +12,14 @@ class Shader;
 class Material;
 class Camera;
 class FrameBuffer;
+class DirectionalLight;
 
 class Renderer
 {
 
 public:
 
-	static void Startup  ( );
+	static void Startup  ( const int width , const int height , const std::string title );
 	static void Service  ( );
 	static void Shutdown ( );
 
@@ -41,6 +45,8 @@ public:
 	static void RegisterCamera   ( Camera * pCamera );
 	static void DeregisterCamera ( Camera * pCamera );
 
+	static void SetDirectionalLight ( DirectionalLight * pDirectionalLight );
+
 	// This will set the cube map to be used by the renderer.
 	// This is a known limiting factor, all cameras must either use this cube map or none at all.
 	// In future this could be moved to the camera class.
@@ -53,9 +59,25 @@ public:
 	
 	static GLint BindTexture ( Texture * pTexture );
 
+	static int GetScreenWidth ( )
+	{
+		return s_instance->m_gameDisplay.getWidth ( );
+	}
+
+	static int GetScreenHeight ( )
+	{
+		return s_instance->m_gameDisplay.getHeight ( );
+	}
+
+	static float GetTime ( )
+	{
+		return s_instance->m_gameDisplay.getTime ( );
+	}
+
 private:
 
 	static Renderer * s_instance;
+	Display m_gameDisplay;
 	std::vector<const MeshRenderer *> m_renderers;
 	std::map<std::string , Texture *> m_textures;
 	std::map<std::string , Shader *> m_shaders;
@@ -63,12 +85,17 @@ private:
 	std::map<std::string , FrameBuffer *> m_fbos;
 	std::vector<Camera *> m_cameras; // can't be const because of the cache on getting the view matrix.
 	CubeMap * m_skybox = nullptr;
+
+	DirectionalLight * m_directionalLight = nullptr;
+
 	static GLint s_maxTextureUnit;
+
 	
 	// An array which will contain a pointer to each of the active textures.
 	static Texture ** s_activeTextures;
 	static GLint s_lastUsedTextureUnit;
 
+	static void RenderObjectsForDepthMap ( );
 	static void RenderObjectsForCamera ( Camera *& camera );
 
 	/// <summary>

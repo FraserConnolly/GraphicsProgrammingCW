@@ -1,5 +1,6 @@
 #pragma once
 #include <GL/glew.h>
+#include <string>
 
 class Shader;
 class Texture;
@@ -8,7 +9,7 @@ class FrameBuffer
 {
 
 public:
-	FrameBuffer( int w , int h, const std::string textureName );
+	FrameBuffer( int w , int h, const std::string textureName, bool depthOnly = false );
 	~FrameBuffer();
 
 	void Bind ( );
@@ -16,6 +17,9 @@ public:
 	void RenderQuad ( Shader * fboShader );
 
 	Texture * GetTexture ( ) const { return m_texture; }
+
+	int GetWidth ( ) const { return m_width; }
+	int GetHeight ( ) const { return m_height; }
 
 private:
 

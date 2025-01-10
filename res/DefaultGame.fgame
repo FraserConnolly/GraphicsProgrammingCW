@@ -13,6 +13,11 @@
 			"Fragment": "shader.frag"
 		},
 		{
+			"Name": "DepthMap",
+			"Vertex": "shaderSimpleDepth.vert",
+			"Fragment": "shaderEmpty.frag"
+		},
+		{
 			"Name": "Geometry",
 			"Vertex": "shaderGeoText.vert",
 			"Geometry": "shaderGeoText.geom",
@@ -52,6 +57,11 @@
 			"Name": "EnviornmentMapped",
 			"Vertex": "shaderEMap.vert",
 			"Fragment": "shaderEmap.frag"
+		},
+		{
+			"Name": "ShadowDebug",
+			"Vertex": "shader.vert",
+			"Fragment": "shaderShadowDebug.frag"
 		}
 	],
 	"ImageTextures": [
@@ -80,6 +90,11 @@
 		{
 			"Name": "FollowCammeraBuffer",
 			"Texture": "FollowCammeraTexture"
+		},
+		{
+			"Name": "ShadowMap",
+			"Texture": "ShadowMapTexture",
+			"DepthMapOnly": true
 		}
 	],
 	"CubeMaps": [
@@ -245,13 +260,30 @@
 					"Value": "FollowCammeraTexture"
 				}
 			]
+		},
+		{
+			"Name": "ShadowTest",
+			"Shader": "ShadowDebug",
+			"Uniforms": [
+        {
+          "Name": "depthMap",
+          "Type": "Texture",
+          "Value": "ShadowMapTexture"
+        }
+      ]
 		}
 	],
 	"Skybox": {
 		"Shader": "Skybox",
 		"Texture": "Skybox"
 	},
-
+	"DirectionalLight": {
+		"Shader": "DepthMap",
+		"FrameBuffer": "ShadowMap",
+		"Direction": [ -6, 4, 6 ],
+		"Color": [ 1, 1, 1 ],
+		"Intensity": 0.5
+	},
 	"Objects": [
 
 		{
@@ -282,7 +314,7 @@
 				},
 				{
 					"Type": "LookAt",
-					"Target": "SuzannaMid"
+					"Target": "CubeMid"
 				},
 				{
 					"Type": "PathFollow",
@@ -808,6 +840,22 @@
 					"Type": "MeshRenderer",
 					"Material": "SyntySciFiCity",
 					"Mesh": "Ground_Centre.obj"
+				}
+			]
+		},
+
+		{
+			"Name": "ShadowMapDebugger",
+			"Active": false,
+			"Position": [ 0, 4, -10 ],
+			"Rotation": [ 0, 0, 0 ],
+			"Scale": [ 2, 2, 0 ],
+			"Components": [
+				{
+					"Type": "MeshRenderer",
+					"Material": "ShadowTest",
+					"Mesh": "UnitCube.obj",
+					"CastShadows": false
 				}
 			]
 		}

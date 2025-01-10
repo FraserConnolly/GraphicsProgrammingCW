@@ -96,6 +96,7 @@
     <ClCompile Include="Console\ScreenBuffer.cpp" />
     <ClCompile Include="Console\Window.cpp" />
     <ClCompile Include="CubeMap.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Display.cpp" />
     <ClCompile Include="ExplosionController.cpp" />
     <ClCompile Include="FMOD.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Console\UiText.h" />
     <ClInclude Include="Console\Window.h" />
     <ClInclude Include="CubeMap.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="ExplosionController.h" />
     <ClInclude Include="FMOD.h" />
@@ -372,6 +374,15 @@
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\res\shaderEMap.vert">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\shaderSimpleDepth.vert">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\shaderEmpty.frag">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\res\shaderShadowDebug.frag">
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <None Include="GameFileSchema.json" />
