@@ -9,18 +9,6 @@
 #include "DirectionalLight.h"
 #include "Texture.h"
 
-#ifdef USE_ADS
-#define VertexShaderPath "ads.vert"
-#define FragmentShaderPath "ads.frag"
-#else
-#define VertexShaderPath "shader.vert"
-#define FragmentShaderPath "shader.frag"
-#endif 
-
-#define VertexGeoShaderPath "shaderGeoText.vert"
-#define GeometryShaderPath "shaderGeoText.geom"
-#define FragmentGeoShaderPath "shaderGeoText.frag"
-
 Shader::Shader ( )
 	: _program( 0 ), _shaders( ), _uniforms( ), _numShaders( 0 )
 { 
@@ -37,15 +25,6 @@ Shader::~Shader ( )
 	}
 	
 	glDeleteProgram ( _program );
-}
-
-void Shader::LoadDefaultShaders ( )
-{
-	LoadShaders ( VertexShaderPath, FragmentShaderPath );
-}
-
-void Shader::LoadDefaultGeometoryShaders() {
-	LoadShaders ( VertexGeoShaderPath, GeometryShaderPath, FragmentGeoShaderPath );
 }
 
 void Shader::LoadShaders ( const std::string & vertShader, const std::string & fragShader )
@@ -108,10 +87,8 @@ void Shader::LoadShaders ( const char * vertexShader, const char * geoShader, co
 	_uniforms [ FOG_MIN_DIST_U ]	= glGetUniformLocation( _program, "maxDist" );
 	_uniforms [ FOG_MAX_DIST_U ]	= glGetUniformLocation( _program, "minDist" );
 
-#ifdef USE_ADS
 	_uniforms[ LIGHT_POSITION_U ] = glGetUniformLocation( _program, "lightPos" );
 	_uniforms[ LIGHT_COLOUR_U ]   = glGetUniformLocation( _program, "lightColor" );
-#endif
 
 	_uniforms [ LIGHT_SPACE_MATRIX_U ]	= glGetUniformLocation ( _program, "lightSpaceMatrix" );
 	_uniforms [ SHADOW_MAP_U ]			= glGetUniformLocation ( _program, "shadowMap" );

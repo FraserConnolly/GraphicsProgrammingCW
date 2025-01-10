@@ -19,8 +19,6 @@ public:
 	Shader ( );
 	~Shader ( );
 	
-	void LoadDefaultShaders ( );
-	void LoadDefaultGeometoryShaders( );
 	void LoadShaders ( const std::string& vertShader, const std::string& fragShader );
 	void LoadShaders ( const std::string & vertShader, const std::string& geoShader, const std::string & fragShader );
 	void LoadShaders ( const char * vertexShader, const char * geoShader, const char * fargmentShader );
@@ -78,10 +76,8 @@ private:
 		LIGHT_SPACE_MATRIX_U,
 		SHADOW_MAP_U,
 
-#ifdef USE_ADS
 		LIGHT_POSITION_U,
 		LIGHT_COLOUR_U,
-#endif
 
 		NUM_UNIFORMS
 	};
